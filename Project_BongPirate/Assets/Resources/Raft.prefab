@@ -368,7 +368,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3567507026925108279}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 60.988, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children:
   - {fileID: 1170936307692499084}
@@ -476,11 +476,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 50
   RotateSpeed: 10
+  MoveSpeedTmp: 0
   RB: {fileID: 3433671627736073804}
   SR: {fileID: 0}
   PV: {fileID: 3073172608852465319}
   NickNameText: {fileID: 5665631415054730532}
   HealthImage: {fileID: 5482857998271304205}
+  GM: {fileID: 0}
+  anchage_UI: {fileID: 0}
 --- !u!114 &-2406257447604646091
 MonoBehaviour:
   m_ObjectHideFlags: 0

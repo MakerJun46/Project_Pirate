@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public NetworkManager instance;
+
+    public GameManager GM;
+
     public GameObject DisconnetPanel;
     public GameObject RespawnPanel;
     public PhotonView PV;
@@ -14,6 +18,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        instance = this;
         Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
@@ -68,12 +73,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if(PhotonNetwork.IsMasterClient) // 생성 지점 구분을 위한 조건
         {
             GameObject go = PhotonNetwork.Instantiate("Raft", new Vector3(100, 0, 100), Quaternion.Euler(0, 90, 0));
+            Debug.Log(go);
+            GM.instance.MyShip = go;
+            SpawnSailor(1, go.transform);
         }
         else
         {
             GameObject go = PhotonNetwork.Instantiate("Ship", new Vector3(-100, 0, -100), Quaternion.Euler(0, 90, 0));
+            GM.instance.MyShip = go;
+            SpawnSailor(1, go.transform);
         }
         RespawnPanel.SetActive(false);
+    }
+
+    public void SpawnSailor(int count, Transform SpawnPoint)
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            GameObject go = PhotonNetwork.Instantiate("Sailor", SpawnPoint.position + new Vector3(4.5f, 8, 0), Quaternion.identity);
+            go.transform.parent = SpawnPoint;
+        }
     }
 
 
