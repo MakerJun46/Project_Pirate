@@ -83,6 +83,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GM.instance.MyShip = go;
             SpawnSailor(1, go.transform);
         }
+
+        if (FindObjectOfType<CombatManager>())
+        {
+            FindObjectOfType<CombatManager>().SetMyShip(GM.instance.MyShip.GetComponent<Player_Combat_Ship>());
+        }
+
         RespawnPanel.SetActive(false);
     }
 
