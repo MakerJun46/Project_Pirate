@@ -6,6 +6,9 @@ using Photon.Pun;
 using Photon.Realtime;
 public class Player_Combat_Ship : MonoBehaviour
 {
+    public float health;
+    public float maxHealth;
+
     [SerializeField] private List<Transform> CannonSpots;
 
     [SerializeField] private List<Cannon> myCannons;
@@ -14,7 +17,8 @@ public class Player_Combat_Ship : MonoBehaviour
 
     private void Start()
     {
-        for(int i=0;i< CannonSpots.Count; i++)
+        health = maxHealth;
+        for (int i=0;i< CannonSpots.Count; i++)
         {
             myCannons.Add(null);
         }

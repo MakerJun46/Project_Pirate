@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class AutoCannon : Cannon
 {
@@ -45,6 +46,11 @@ public class AutoCannon : Cannon
                 currCoolTime = maxCoolTime;
                 LaunchTrajectory();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            myCannonType = (CannonType)((int)(myCannonType+1)%5);
         }
     }
 
@@ -217,7 +223,7 @@ public class AutoCannon : Cannon
 
     protected void LaunchStraight(Vector3 targetPos)
     {
-        GameObject tmp = Instantiate(Resources.Load("CannonBall") as GameObject, this.transform.position, Quaternion.identity);
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity);
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.zero;
         ball.velocity = (targetPos - this.transform.position).normalized * 300f;
@@ -228,7 +234,7 @@ public class AutoCannon : Cannon
     }
     protected void LaunchTrajectory()
     {
-        GameObject tmp = Instantiate(Resources.Load("CannonBall") as GameObject, this.transform.position, Quaternion.identity);
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity);
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
         ball.velocity = CalculateLaunchData(Vector3.zero).initialVelocity;
@@ -242,7 +248,7 @@ public class AutoCannon : Cannon
     {
         for (int i = 0; i < 20; i++)
         {
-            GameObject tmp = Instantiate(Resources.Load("CannonBall") as GameObject, cursor.transform.position + new Vector3(Random.value * cannonDistance, Random.Range(500, 1000f), Random.value * cannonDistance), Quaternion.identity);
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", cursor.transform.position + new Vector3(Random.value * cannonDistance, Random.Range(500, 1000f), Random.value * cannonDistance), Quaternion.identity);
             tmp.transform.localScale *= 0.5f;
             ball = tmp.GetComponent<Rigidbody>();
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
@@ -257,7 +263,7 @@ public class AutoCannon : Cannon
     {
         for (int i = 0; i < 10; i++)
         {
-            GameObject tmp = Instantiate(Resources.Load("CannonBall") as GameObject, this.transform.position, Quaternion.identity);
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity);
             tmp.transform.localScale *= 0.2f;
             ball = tmp.GetComponent<Rigidbody>();
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;

@@ -7,14 +7,12 @@ public class Hook : MonoBehaviour
     public Player_Combat_Ship myShip;
     public Player_Combat_Ship enemyShip;
 
-    float force = 5;
-    // Start is called before the first frame update
+    float dragForce = 5;
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(myShip && enemyShip)
@@ -22,8 +20,8 @@ public class Hook : MonoBehaviour
             Vector3 distance = (enemyShip.transform.position - myShip.transform.position);
             if (distance.magnitude < 100f)
                 Destroy(this.gameObject);
-            myShip.additionalForce = distance.normalized * force;
-            enemyShip.additionalForce = -distance.normalized * force;
+            myShip.additionalForce = distance.normalized * dragForce;
+            enemyShip.additionalForce = -distance.normalized * dragForce;
         }
     }
 

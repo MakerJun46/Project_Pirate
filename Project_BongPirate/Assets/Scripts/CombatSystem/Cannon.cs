@@ -13,13 +13,13 @@ public class Cannon : MonoBehaviour
     protected int attackingState = 0;
 
     protected Transform cursor;
-    public float h = 25;
+    public float height = 25;
     public float gravity = -18;
     
     [SerializeField] protected Image attackAreaImage;
     public float cannonDistance = 0;
 
-    [SerializeField] protected float maxCoolTime = 5f;
+    [SerializeField] protected float maxCoolTime = 2f;
     protected float currCoolTime = 0f;
     [SerializeField] protected Image coolTimeImage;
 
@@ -29,7 +29,8 @@ public class Cannon : MonoBehaviour
 
     private void OnDestroy()
     {
-        Destroy(cursor.gameObject);
+        if(cursor)
+            Destroy(cursor.gameObject);
     }
 
     protected virtual void Start()
@@ -59,8 +60,8 @@ public class Cannon : MonoBehaviour
     {
         float displacementY = cursor.position.y - transform.position.y;
         Vector3 displacementXZ = new Vector3(cursor.position.x - transform.position.x, 0, cursor.position.z - transform.position.z)+ _offset;
-        float time = Mathf.Sqrt(-2 * h / gravity) + Mathf.Sqrt(2 * (displacementY - h) / gravity);
-        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * h);
+        float time = Mathf.Sqrt(-2 * height / gravity) + Mathf.Sqrt(2 * (displacementY - height) / gravity);
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * height);
         Vector3 velocityXZ = displacementXZ / time;
 
         return new LaunchData(velocityXZ + velocityY * -Mathf.Sign(gravity), time);
