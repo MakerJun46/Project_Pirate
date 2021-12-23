@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,9 +48,22 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void updateUI_Text()
     {
+        GameObject[] temp = GameObject.FindGameObjectsWithTag("Sailor");
+        List<GameObject> my_Sailors = new List<GameObject>();
+
+        foreach (GameObject go in temp)
+        {
+            if (go.GetComponent<PhotonView>().IsMine)
+            {
+                my_Sailors.Add(go);
+            }
+        }
+
+        Debug.Log(my_Sailors.Count);
+
         UI_Wood_Count.text = Resource_Wood_Count.ToString();
         UI_Rock_Count.text = Resource_Rock_Count.ToString();
-        UI_Sailor_Count.text = Resource_Sailor_Count.ToString();
+        UI_Sailor_Count.text = my_Sailors.Count.ToString();
     }
 
     public void island_Landing_Button()
@@ -57,4 +71,28 @@ public class GameManager : MonoBehaviour
         Island_Landing_UI.SetActive(false);
         MyShip.GetComponent<Player_Controller_Ship>().Ship_MoveSpeed_Reset();
     }
+
+    public void Turn_Left_Button_Down()
+    {
+        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Left = true;
+    }
+
+    public void Turn_Left_Button_Up()
+    {
+        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Left = false;
+    }
+
+    public void Turn_Right_Button_Down()
+    {
+        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Right = true;
+    }
+    public void Turn_Right_Button_Up()
+    {
+        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Right = false;
+    }
+    public void GoOrStop_Button()
+    {
+        MyShip.GetComponent<Player_Controller_Ship>().goOrStop = !MyShip.GetComponent<Player_Controller_Ship>().goOrStop;
+    }
+
 }

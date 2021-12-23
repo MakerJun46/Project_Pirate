@@ -15,6 +15,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject RespawnPanel;
     public PhotonView PV;
     public Camera MainCamera;
+    System.Random random = new System.Random();
+
+
+    public GameObject test_Island;
 
     private void Awake()
     {
@@ -76,12 +80,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log(go);
             GM.instance.MyShip = go;
             SpawnSailor(1, go.transform);
+            SpawnSailor(1, go.transform);
+            SpawnIsland_Resource(10, test_Island);
         }
         else
         {
             GameObject go = PhotonNetwork.Instantiate("Ship", new Vector3(-100, 0, -100), Quaternion.Euler(0, 90, 0));
             GM.instance.MyShip = go;
             SpawnSailor(1, go.transform);
+            SpawnSailor(1, go.transform);
+            SpawnIsland_Resource(10, test_Island);
         }
         RespawnPanel.SetActive(false);
     }
@@ -95,6 +103,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
+
+    public void SpawnIsland_Resource(int count, GameObject Island)
+    {
+        float island_location_min = -0.5f;
+        float island_location_max = 0.5f;
+
+
+        for(int i = 0; i < count; i ++)
+        {
+            float LocationX = random.Next(-300, -28);
+            float LocationZ = random.Next(-80, 180);
+
+            PhotonNetwork.Instantiate("Wood", new Vector3(LocationX, 25, LocationZ), Quaternion.identity).transform.parent = Island.transform;
+            
+            LocationX = random.Next(-300, -28);
+            LocationZ = random.Next(-80, 180);
+
+            PhotonNetwork.Instantiate("Rock", new Vector3(LocationX, 15, LocationZ), Quaternion.identity).transform.parent = Island.transform;
+        }
+
+        // -0.5 ~ 0.5;
+    }
 
     private void Update()
     {
