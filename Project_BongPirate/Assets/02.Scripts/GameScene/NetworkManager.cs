@@ -17,7 +17,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Camera MainCamera;
     System.Random random = new System.Random();
 
-
     public GameObject test_Island;
 
     [SerializeField] private Vector3 shipSpawnPos= new Vector3(100, 0, 100);
@@ -84,7 +83,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GM.instance.MyShip = go;
             SpawnSailor(1, go.transform);
             SpawnSailor(1, go.transform);
-            SpawnIsland_Resource(10, test_Island);
         }
         else
         {
@@ -92,7 +90,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GM.instance.MyShip = go;
             SpawnSailor(1, go.transform);
             SpawnSailor(1, go.transform);
-            SpawnIsland_Resource(10, test_Island);
         }
 
         if (FindObjectOfType<CombatManager>())
@@ -116,10 +113,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void SpawnIsland_Resource(int count, GameObject Island)
     {
-        float island_location_min = -0.5f;
-        float island_location_max = 0.5f;
-
-
         for(int i = 0; i < count; i ++)
         {
             float LocationX = random.Next((int)SpawnIsland_X_MinMax.x, (int)SpawnIsland_X_MinMax.y);

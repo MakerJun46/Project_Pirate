@@ -54,8 +54,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
         anchage_UI = GameObject.Find("UI_Canvas").transform.Find("Island_Landing_UI_Panel").gameObject;
 
-        motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
-        front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
+        motor = transform.Find("foam").GetComponent<ParticleSystem>().emission;
+        //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
 
         goOrStop = false;
     }
@@ -78,9 +78,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         }
 
         // 에러떠서 임시로 주석처리
-        //motor.rate = motorFoamMultiplier * Input.GetAxis("Vertical") + moterFoamBase;
+        motor.rate = motorFoamMultiplier * Input.GetAxis("Vertical") + moterFoamBase;
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
-
     }
 
     private void Update()

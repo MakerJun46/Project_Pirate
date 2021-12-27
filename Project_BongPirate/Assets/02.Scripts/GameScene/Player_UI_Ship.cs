@@ -19,7 +19,6 @@ public class Player_UI_Ship : MonoBehaviour
 
     void Update()
     {
-        //Vector3 vec = (MainCamera.transform.position - Canvas.transform.position).normalized;
         myCanvas.transform.rotation = Quaternion.LookRotation(myCanvas.transform.position -  myCam.transform.position); 
 
         myCam.transform.position = this.gameObject.transform.position + camOffset;
