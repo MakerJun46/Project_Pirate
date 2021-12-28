@@ -21,27 +21,35 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WaterShader
-  m_Shader: {fileID: -6465566751694194690, guid: 20cc24944650e0f448a80c1427fc80c7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: eb616639b9184774f9d44b776468975b, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_0ee29134f24d4eb8b70707392fe8504c:
+        m_Texture: {fileID: 2800000, guid: d407fc17600841d4f8125201ffcea1dc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_138f5e535e934830b8fbd96e45f84b7e:
         m_Texture: {fileID: 2800000, guid: 54974d71cc22ed648b296c5a6cc72d52, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_64cce0b742724d9dbf7098000b53616b:
-        m_Texture: {fileID: 2800000, guid: dea528a66c0f51843ae9feed3ab17b2d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_a889557de8d543149bcb99976b14f719:
-        m_Texture: {fileID: 2800000, guid: dea528a66c0f51843ae9feed3ab17b2d, type: 3}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_d3bf0077f1a344a0bdc10008d9b7ff13:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_db2ba599081a4ff9af8fff9f2a6f0eb6:
@@ -105,34 +113,56 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_3db8a1ca73384dd1ba5d93089539827d: 1
+    - Vector1_4f1cefdc73f24fe497c6ad02f7a67142: 0
     - Vector1_76b93e865a2f449d9623ec6f41c21701: 1.5
     - Vector1_7a0fb7c71313430fb78669f2f5b1bc44: 5
+    - Vector1_9129712d707b4bdf9679113844efd13f: 1
+    - Vector1_91b28f8cc04547eeb1a7dae525dcadfc: 0
+    - Vector1_999bc83814eb48a8bf1527b2923bce5c: 2
     - Vector1_9b0dca0385db40ca906f2cd2b70be56a: 1
+    - Vector1_a095b84aecd04c9b85758123b3246e76: 0
     - Vector1_aa2935b52cdc4fd89321bbcf339e47b2: 2
     - Vector1_b1e940c4736e411b8643ca6efce4b7b8: 1.73
     - Vector1_c6eb4199e54040b48be6e6d20c157589: 0.06
     - Vector1_e58d42cec2b24589b8490f8829fc83d8: 10
+    - Vector1_f2981e041b2c4d9f8fce153393aa5d23: 0
     - _AlphaClip: 0
     - _Blend: 0
+    - _BlendOp: 0
     - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ColorMode: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0.1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _FlipbookBlending: 0
+    - _FlipbookMode: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
@@ -140,11 +170,18 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_2233ad2cf3ac4937a0592d937b613bfe: {r: 0.1318975, g: 0.7169812, b: 0.6096004, a: 0.7529412}
+    - Color_5691757baa304193b238e1f5acfdb73b: {r: 0, g: 0, b: 0, a: 0}
     - Color_79a9d776583545fc8d7cfd41ba7daa95: {r: 0.41037738, g: 0.7013543, b: 1, a: 0.6509804}
     - Color_873822b57823477a8ed82b1606794447: {r: 0.2967693, g: 0.3924202, b: 0.5377358, a: 0.9019608}
+    - Color_a00d15029aa441459a5bd26a9758a1ce: {r: 0.6933962, g: 0.952931, b: 1, a: 0}
     - Color_b651477eecb0423698ccf8e71bdd1c69: {r: 0.25605196, g: 0.3674055, b: 0.3962264, a: 0.7529412}
+    - Color_fc4bab55787440c49c028debaa95827d: {r: 0.3820755, g: 0.6366732, b: 1, a: 1}
+    - Vector2_2a8e7065c36f4388bb4cca73d386c6c7: {r: 1.5, g: 1.5, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _CameraFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
