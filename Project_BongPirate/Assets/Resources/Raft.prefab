@@ -354,9 +354,9 @@ GameObject:
   - component: {fileID: -8333245995007593276}
   - component: {fileID: -2406257447604646091}
   - component: {fileID: -9014573942241425512}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Raft
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -409,8 +409,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.2, z: 0.2}
-  m_Center: {x: 0, y: 0.1, z: 0}
+  m_Size: {x: 5, y: 5, z: 5}
+  m_Center: {x: 0, y: 2, z: 0}
 --- !u!114 &3073172608852465319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -510,9 +510,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f9c6dabb8941594d82fdaf12a5f27e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCam: {fileID: 0}
-  myCanvas: {fileID: 0}
-  camOffset: {x: 0, y: 60, z: -60}
+  myCanvas: {fileID: 5473967993594146477}
+  healthImage: {fileID: 5482857998271304205}
 --- !u!114 &-9014573942241425512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,8 +524,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef1028d2f16d55a46b6ad1bf0540b70d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
-  maxHealth: 0
+  health: 100
+  maxHealth: 100
   CannonSpots:
   - {fileID: 884121630341499367}
   - {fileID: 8886361117812981094}

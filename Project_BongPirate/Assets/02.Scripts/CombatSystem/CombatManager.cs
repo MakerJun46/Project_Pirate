@@ -6,8 +6,8 @@ public class CombatManager : MonoBehaviour
 {
     Player_Combat_Ship myShip;
 
-    [SerializeField] List<AttackJoyStick> joySticks = new List<AttackJoyStick>();
-    [SerializeField] List<AttackJoyStick> SpecialJoySticks = new List<AttackJoyStick>();
+    public List<AttackJoyStick> joySticks = new List<AttackJoyStick>();
+    public List<AttackJoyStick> SpecialJoySticks = new List<AttackJoyStick>();
 
     private void Update()
     {
@@ -32,22 +32,7 @@ public class CombatManager : MonoBehaviour
 
     private void EquipCannon(int _spotIndex, int _cannonIndex)
     {
-        Cannon tmpCannon = myShip.EquipCannon(_spotIndex, _cannonIndex);
-        if (_spotIndex <= 0)
-        {
-            SpecialJoySticks[_spotIndex].gameObject.SetActive(tmpCannon != null);
-            if (tmpCannon != null)
-            {
-                tmpCannon.tmpJoyStick = SpecialJoySticks[_spotIndex];
-            }
-        }
-        else
-        {
-            joySticks[_spotIndex].gameObject.SetActive(tmpCannon != null);
-            if (tmpCannon != null)
-            {
-                tmpCannon.tmpJoyStick = joySticks[_spotIndex];
-            }
-        }
+        //Cannon tmpCannon = myShip.EquipCannon(_spotIndex, _cannonIndex);
+        myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipCannon", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _cannonIndex });
     }
 }

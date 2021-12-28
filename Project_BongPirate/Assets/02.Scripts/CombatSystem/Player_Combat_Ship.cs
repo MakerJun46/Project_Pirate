@@ -4,10 +4,10 @@ using UnityEngine;
 
 using Photon.Pun;
 using Photon.Realtime;
-public class Player_Combat_Ship : MonoBehaviour
+public class Player_Combat_Ship : MonoBehaviourPun
 {
-    public float health;
-    public float maxHealth;
+    [SerializeField] private float health;
+    [SerializeField] private float maxHealth;
 
     [SerializeField] private List<Transform> CannonSpots;
 
@@ -32,28 +32,57 @@ public class Player_Combat_Ship : MonoBehaviour
             additionalForce = Vector3.Lerp(additionalForce, Vector3.zero, Time.deltaTime);
         }
     }
+    [PunRPC]
+    public void Attacked(float damage)
+    {
+        health -= damage;
+        GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
 
-    public Cannon EquipCannon(int _spotIndex, int _cannonIndex)
+        if (health <= 0)
+            Destroy(this.gameObject);
+    }
+
+    [PunRPC]
+    public void EquipCannon(int _spotIndex, int _cannonIndex)
     {
         if (myCannons[_spotIndex] == null)
         {
             GameObject tmpCannon = null;
             if (_spotIndex == 0)
-                tmpCannon= PhotonNetwork.Instantiate("Cannon_" + _cannonIndex, Vector3.zero, Quaternion.identity);
+                tmpCannon= Instantiate(Resources.Load("Cannon_" + _cannonIndex) as GameObject, Vector3.zero, Quaternion.identity);
             else
-                tmpCannon = PhotonNetwork.Instantiate("AutoCannon_" + _cannonIndex, Vector3.zero, Quaternion.identity);
+                tmpCannon = Instantiate(Resources.Load("AutoCannon_" + _cannonIndex) as GameObject, Vector3.zero, Quaternion.identity);
             tmpCannon.transform.SetParent(CannonSpots[_spotIndex]);
             tmpCannon.transform.localPosition = Vector3.zero;
             tmpCannon.transform.localScale = Vector3.one;
             tmpCannon.transform.localRotation = Quaternion.identity;
             myCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
-
-            return myCannons[_spotIndex];
+            tmpCannon.GetComponent<Cannon>().Initialize(this);
         }
         else
         {
-            PhotonNetwork.Destroy(myCannons[_spotIndex].gameObject);
-            return null;
+            Destroy(myCannons[_spotIndex].gameObject);
+        }
+
+        if (photonView.IsMine)
+        {
+            CombatManager combatManager = FindObjectOfType<CombatManager>();
+            if (_spotIndex <= 0)
+            {
+                combatManager.SpecialJoySticks[_spotIndex].gameObject.SetActive(myCannons[_spotIndex] != null);
+                if (myCannons[_spotIndex] != null)
+                {
+                    myCannons[_spotIndex].tmpJoyStick = combatManager.SpecialJoySticks[_spotIndex];
+                }
+            }
+            else
+            {
+                combatManager.joySticks[_spotIndex].gameObject.SetActive(myCannons[_spotIndex] != null);
+                if (myCannons[_spotIndex] != null)
+                {
+                    myCannons[_spotIndex].tmpJoyStick = combatManager.joySticks[_spotIndex];
+                }
+            }
         }
     }
 }

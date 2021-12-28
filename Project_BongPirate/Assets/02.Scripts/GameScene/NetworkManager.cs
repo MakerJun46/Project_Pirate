@@ -14,7 +14,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject DisconnetPanel;
     public GameObject RespawnPanel;
     public PhotonView PV;
-    public Camera MainCamera;
     System.Random random = new System.Random();
 
 
@@ -77,27 +76,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Spawn()
     {
-        if(PhotonNetwork.IsMasterClient) // 생성 지점 구분을 위한 조건
+        GameObject go = null;
+        if (PhotonNetwork.IsMasterClient) // 생성 지점 구분을 위한 조건
         {
-            GameObject go = PhotonNetwork.Instantiate("Raft", shipSpawnPos, Quaternion.Euler(0, 90, 0));
-            Debug.Log(go);
-            GM.instance.MyShip = go;
-            SpawnSailor(1, go.transform);
-            SpawnSailor(1, go.transform);
+            go = PhotonNetwork.Instantiate("Raft", shipSpawnPos, Quaternion.Euler(0, 90, 0));
             SpawnIsland_Resource(10, test_Island);
         }
         else
         {
-            GameObject go = PhotonNetwork.Instantiate("Ship", new Vector3(-100, 0, -100), Quaternion.Euler(0, 90, 0));
+            go = PhotonNetwork.Instantiate("Raft", shipSpawnPos+new Vector3(10,0,10), Quaternion.Euler(0, 90, 0));
+        }
+
+        if (FindObjectOfType<CombatManager>() && go.GetComponent<PhotonView>().IsMine)
+        {
             GM.instance.MyShip = go;
             SpawnSailor(1, go.transform);
             SpawnSailor(1, go.transform);
-            SpawnIsland_Resource(10, test_Island);
-        }
-
-        if (FindObjectOfType<CombatManager>())
-        {
-            FindObjectOfType<CombatManager>().SetMyShip(GM.instance.MyShip.GetComponent<Player_Combat_Ship>());
+            FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
         }
 
         RespawnPanel.SetActive(false);

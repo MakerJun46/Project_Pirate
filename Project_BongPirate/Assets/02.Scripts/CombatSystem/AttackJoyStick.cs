@@ -30,6 +30,7 @@ public class AttackJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
                 joyStickInput = joyStickInput.normalized* joyStickBackground.rectTransform.sizeDelta.x/2f;
 
             joyStick.rectTransform.anchoredPosition = joyStickInput;
+            print("OnDrag");
         }
     }
 

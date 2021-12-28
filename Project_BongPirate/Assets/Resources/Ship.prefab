@@ -498,8 +498,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f9c6dabb8941594d82fdaf12a5f27e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainCamera: {fileID: 0}
-  Canvas: {fileID: 5607896821879868024}
+  myCam: {fileID: 0}
+  myCanvas: {fileID: 0}
+  camOffset: {x: 0, y: 372, z: -290}
 --- !u!1001 &7962105014547467027
 PrefabInstance:
   m_ObjectHideFlags: 0

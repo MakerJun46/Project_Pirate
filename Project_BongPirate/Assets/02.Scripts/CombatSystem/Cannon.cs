@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 
 public class Cannon : MonoBehaviour
 {
+    protected Player_Combat_Ship myShip;
+
     public AttackJoyStick tmpJoyStick;
     protected Vector2 tmpInput;
 
@@ -27,23 +29,37 @@ public class Cannon : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     [SerializeField] protected List<LineRenderer> lrs;
 
+
+    public virtual void Initialize(Player_Combat_Ship _myShip)
+    {
+        myShip = _myShip;
+        if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
+        {
+            cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
+        }
+        else
+        {
+
+        }
+    }
     private void OnDestroy()
     {
-        if(cursor)
+        if (cursor)
             Destroy(cursor.gameObject);
     }
 
-    protected virtual void Start()
-    {
-        cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
-    }
 
     protected virtual void Update()
     {
-        tmpInput = tmpJoyStick.GetJoyStickInput();
+        if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
+        {
+            tmpInput = tmpJoyStick.GetJoyStickInput();
 
-        currCoolTime -= Time.deltaTime;
-        coolTimeImage.fillAmount = currCoolTime / maxCoolTime;
+            print("JoystickInpu : " + tmpInput);
+
+            currCoolTime -= Time.deltaTime;
+            coolTimeImage.fillAmount = currCoolTime / maxCoolTime;
+        }
     }
 
 
@@ -58,6 +74,7 @@ public class Cannon : MonoBehaviour
 
     protected LaunchData CalculateLaunchData(Vector3 _offset)
     {
+        print("Caluclate");
         float displacementY = cursor.position.y - transform.position.y;
         Vector3 displacementXZ = new Vector3(cursor.position.x - transform.position.x, 0, cursor.position.z - transform.position.z)+ _offset;
         float time = Mathf.Sqrt(-2 * height / gravity) + Mathf.Sqrt(2 * (displacementY - height) / gravity);

@@ -21,36 +21,47 @@ public class AutoCannon : Cannon
 
     Transform targetCursor;
 
-    protected override void Start()
+    public override void Initialize(Player_Combat_Ship _myShip)
     {
-        fov = GetComponent<FieldOfView>();
+        myShip = _myShip;
+        if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
+        {
+            fov = GetComponent<FieldOfView>();
+            targetCursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
+        }
+        else
+        {
 
-        targetCursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
+        }
+
     }
 
     protected override void Update()
     {
         base.Update();
 
-        InitializeBullet();
-        if (attackingState > 0)
+        if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
-            cursor = targetCursor;
-            launchingBullet();
-        }
-        else
-        {
-            cursor = fov.currTarget;
-            if (cursor != null && currCoolTime <= 0)
+            InitializeBullet();
+            if (attackingState > 0)
             {
-                currCoolTime = maxCoolTime;
-                LaunchTrajectory();
+                cursor = targetCursor;
+                launchingBullet();
             }
-        }
+            else
+            {
+                cursor = fov.currTarget;
+                if (cursor != null && currCoolTime <= 0)
+                {
+                    currCoolTime = maxCoolTime;
+                    LaunchTrajectory();
+                }
+            }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            myCannonType = (CannonType)((int)(myCannonType+1)%5);
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                myCannonType = (CannonType)((int)(myCannonType + 1) % 5);
+            }
         }
     }
 

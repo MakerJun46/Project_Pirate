@@ -16,24 +16,28 @@ public class SpecialCannon : Cannon
 
     [SerializeField] private float ShootVelocity = 100f;
 
-    protected override void Start()
+    public override void Initialize(Player_Combat_Ship _myShip)
     {
-        base.Start();
+        base.Initialize(_myShip);
     }
 
     protected override void Update()
     {
         base.Update();
-        InitializeBullet();
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
-            mySpecialCannonType = (SpecialCannonType)((int)(mySpecialCannonType+1) % 3);
-        }
+            InitializeBullet();
 
-        if (attackingState > 0)
-        {
-            launchingBullet();
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                mySpecialCannonType = (SpecialCannonType)((int)(mySpecialCannonType + 1) % 3);
+            }
+
+            if (attackingState > 0)
+            {
+                launchingBullet();
+            }
         }
     }
 

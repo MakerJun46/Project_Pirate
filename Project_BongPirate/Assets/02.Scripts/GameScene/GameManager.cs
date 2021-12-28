@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public GameObject Island_Landing_UI;
 
     public GameObject MyShip;
+    public Camera MainCamera;
+    [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
 
     /// <summary>
     /// 보유한 목재 수
@@ -34,12 +36,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         instance = this;
+        MainCamera = Camera.main;
     }
 
     // Update is called once per frame
     void Update()
     {
         updateUI_Text();
+        if(MyShip)
+            MainCamera.transform.position = MyShip.transform.position + camOffset;
     }
 
 
