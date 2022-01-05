@@ -10,7 +10,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 {
     public float MoveSpeed;
     public float MaxSpeed;
-    public float RotateSpeed;
     public float MoveSpeedTmp;
     public bool goOrStop;
     public bool is_Turn_Left;
@@ -23,13 +22,10 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     public float moterFoamBase;
     public float frontFoamMultiplier;
 
-    public Rigidbody RB;
-    public SpriteRenderer SR;
-    public PhotonView PV;
+    private Rigidbody RB;
+    private PhotonView PV;
     public Text NickNameText;
-    public Image HealthImage;
-    public GameManager GM;
-    public GameObject anchage_UI;
+    private GameObject anchage_UI;
 
 
     Vector3 curPos;
@@ -37,21 +33,15 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
     ParticleSystem.EmissionModule motor, front;
 
-    private void Awake()
+    private void Start()
     {
+        RB = GetComponent<Rigidbody>();
+
         PV = GetComponent<PhotonView>();
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
-    }
-
-    private void Start()
-    {
-        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-        RB = GetComponent<Rigidbody>();
-
 
         MoveSpeedTmp = MoveSpeed;
-        turningSpeed = 0.2f;
         MaxSpeed = 30f;
 
         anchage_UI = GameObject.Find("UI_Canvas").transform.Find("Island_Landing_UI_Panel").gameObject;
@@ -60,7 +50,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
         //motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
         //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
-
+        GameManager.GetIstance().AllShip.Add(this);
     }
 
     /// <summary>
@@ -71,6 +61,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     {
         if (PV.IsMine)
         {
+            /*
             if (Input.GetAxis("Horizontal") < -0.2f || Input.GetAxis("Horizontal") > 0.2f)
             {
                 Debug.Log("horizontal");
@@ -81,7 +72,23 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
                 Debug.Log("Vertical");
                 RB.AddRelativeForce(Vector3.forward * trust * Time.deltaTime);
             }
+            */
+            if (goOrStop)
+            {
+                //gameObject.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * trust * Time.deltaTime);
+                RB.velocity = Vector3.Lerp(RB.velocity, this.transform.forward * trust, Time.deltaTime);
+                //RB.AddForce(this.transform.forward * trust);
+            }
+            else
+            {
+                RB.velocity = Vector3.Lerp(RB.velocity, Vector3.zero, Time.deltaTime);
+            }
+            if (is_Turn_Left)
+                Turn_Left();
+            if (is_Turn_Right)
+                Turn_Right();
         }
+
         // 에러떠서 임시로 주석처리
         //motor.rate = motorFoamMultiplier * Input.GetAxis("Vertical") + moterFoamBase;
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
@@ -111,16 +118,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
             }
             */
 
-            if(goOrStop)
-            {
-                print("GOGO" + gameObject.GetComponent<Rigidbody>().velocity);
-                //gameObject.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * trust * Time.deltaTime);
-                RB.AddForce(this.transform.forward * trust * Time.deltaTime);
-            }
-            if (is_Turn_Left)
-                Turn_Left();
-            if (is_Turn_Right)
-                Turn_Right();
+
         }
         if(RB.velocity.magnitude > MaxSpeed )
         {
@@ -134,10 +132,9 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         MoveSpeed = MoveSpeedTmp;
     }
 
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.tag != "Sea")
+        if (other.gameObject.CompareTag("anchoragePoint"))
         {
             Debug.Log("enter");
             MoveSpeed = 1; // 콜라이더 통과 버그 방지를 위함
@@ -146,7 +143,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag == "anchoragePoint")
+        if (other.gameObject.CompareTag("anchoragePoint"))
         {
             Debug.Log("On anchoragePoint");
             if (Input.GetKeyDown(KeyCode.Q))
@@ -157,9 +154,9 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if(collision.gameObject.tag != "Sea")
+        if (other.gameObject.CompareTag("anchoragePoint"))
         {
             Debug.Log("exit");
             MoveSpeed = MoveSpeedTmp;

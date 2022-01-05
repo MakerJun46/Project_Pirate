@@ -3,19 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
-    public GameManager instance;
+    private static GameManager instance;
+    public static GameManager GetIstance()
+    {
+        if (instance == null)
+        {
+            instance = FindObjectOfType<GameManager>();
+        }
+        return instance;
+    }
 
     public Text UI_Wood_Count;
     public Text UI_Rock_Count;
     public Text UI_Sailor_Count;
 
+    private float steeringRot;
+    [SerializeField]private Image SteeringImg;
+
     public GameObject Island_Landing_UI;
 
-    public GameObject MyShip;
+    public List<Player_Controller_Ship> AllShip;
+    public Player_Controller_Ship MyShip;
     public Camera MainCamera;
+    public CinemachineVirtualCamera VC_Top;
+    public CinemachineVirtualCamera VC_TPS;
+    private bool topView=true;
+
+    [SerializeField] private float deathFieldRadius = 100;
+    [SerializeField] private ParticleSystem DeathFieldPS;
+    [SerializeField] private LayerMask deathFieldLayer;
+
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
 
     /// <summary>
@@ -37,14 +59,74 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         MainCamera = Camera.main;
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected==false)
+        {
+            StartCoroutine("DeathFieldCoroutine");
+        }
+    }
+
+    public void SetMyShip(Player_Controller_Ship _myShip)
+    {
+        MyShip = _myShip;
+        VC_Top.m_Follow = _myShip.transform;
+        VC_Top.m_LookAt = _myShip.transform;
+        VC_TPS.m_Follow = _myShip.transform;
+        VC_TPS.m_LookAt = _myShip.transform;
+    }
+    public void ToggleGameView(bool _topView)
+    {
+        topView = _topView;
+        VC_TPS.m_Priority = topView ? 9 : 11;
     }
 
     // Update is called once per frame
     void Update()
     {
         updateUI_Text();
-        if(MyShip)
-            MainCamera.transform.position = MyShip.transform.position + camOffset;
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            topView = !topView;
+            ToggleGameView(topView);
+        }
+
+        if (MyShip) {
+            if (MyShip.is_Turn_Left)
+                steeringRot += 180 * Time.deltaTime;
+            else if (MyShip.is_Turn_Right)
+                steeringRot += -180 * Time.deltaTime;
+            else
+                steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+            steeringRot = Mathf.Clamp(steeringRot, -720, 720);
+            SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+        }
+        deathFieldRadius -= Time.deltaTime;
+        deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
+        DeathFieldPS.gameObject.transform.localScale = Vector3.one * deathFieldRadius/250f;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(Vector3.zero, deathFieldRadius);
+    }
+    IEnumerator DeathFieldCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        Collider[] innerFieldShips = Physics.OverlapSphere(Vector3.zero, deathFieldRadius, deathFieldLayer);
+        List<Player_Controller_Ship> tmpColls = new List<Player_Controller_Ship>();
+        foreach(Collider c in innerFieldShips)
+        {
+            tmpColls.Add(c.GetComponent<Player_Controller_Ship>());
+        }
+        for (int i = 0; i < AllShip.Count; i++)
+        {
+            if (tmpColls.Contains(AllShip[i]) == false)
+            {
+                AllShip[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, 10f);
+            }
+        }
+        StartCoroutine("DeathFieldCoroutine");
     }
 
 
@@ -74,30 +156,30 @@ public class GameManager : MonoBehaviour
     public void island_Landing_Button()
     {
         Island_Landing_UI.SetActive(false);
-        MyShip.GetComponent<Player_Controller_Ship>().Ship_MoveSpeed_Reset();
+        MyShip.Ship_MoveSpeed_Reset();
     }
 
     public void Turn_Left_Button_Down()
     {
-        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Left = true;
+        MyShip.is_Turn_Left = true;
     }
 
     public void Turn_Left_Button_Up()
     {
-        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Left = false;
+        MyShip.is_Turn_Left = false;
     }
 
     public void Turn_Right_Button_Down()
     {
-        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Right = true;
+        MyShip.is_Turn_Right = true;
     }
     public void Turn_Right_Button_Up()
     {
-        MyShip.GetComponent<Player_Controller_Ship>().is_Turn_Right = false;
+        MyShip.is_Turn_Right = false;
     }
     public void GoOrStop_Button()
     {
-        MyShip.GetComponent<Player_Controller_Ship>().goOrStop = !MyShip.GetComponent<Player_Controller_Ship>().goOrStop;
+        MyShip.goOrStop = !MyShip.goOrStop;
     }
 
 }

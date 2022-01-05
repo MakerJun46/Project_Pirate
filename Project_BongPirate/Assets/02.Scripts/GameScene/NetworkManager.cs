@@ -9,7 +9,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public NetworkManager instance;
 
-    public GameManager GM;
 
     public GameObject DisconnetPanel;
     public GameObject RespawnPanel;
@@ -80,7 +79,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient) // 생성 지점 구분을 위한 조건
         {
             go = PhotonNetwork.Instantiate("Raft", shipSpawnPos, Quaternion.Euler(0, 90, 0));
-            SpawnIsland_Resource(10, test_Island);
         }
         else
         {
@@ -89,7 +87,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if (FindObjectOfType<CombatManager>() && go.GetComponent<PhotonView>().IsMine)
         {
-            GM.instance.MyShip = go;
+            GameManager.GetIstance().SetMyShip(go.GetComponent<Player_Controller_Ship>());
             SpawnSailor(1, go.transform);
             SpawnSailor(1, go.transform);
             FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
@@ -106,34 +104,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             go.transform.parent = _ship.transform.Find("SailorSpawnPos");
             go.transform.localPosition = Vector3.zero;
         }
-    }
-
-
-    public void SpawnIsland_Resource(int count, GameObject Island)
-    {
-        float island_location_min = -0.5f;
-        float island_location_max = 0.5f;
-
-
-        for(int i = 0; i < count; i ++)
-        {
-            float LocationX = random.Next((int)SpawnIsland_X_MinMax.x, (int)SpawnIsland_X_MinMax.y);
-            float LocationZ = random.Next((int)SpawnIsland_Y_MinMax.x, (int)SpawnIsland_Y_MinMax.y);
-
-            GameObject tmpObj;
-            tmpObj = PhotonNetwork.Instantiate("Wood", Vector3.zero, Quaternion.identity).gameObject;
-            tmpObj.transform.parent = Island.transform;
-            tmpObj.transform.localPosition = new Vector3(LocationX, 0, LocationZ);
-
-            LocationX = random.Next((int)SpawnIsland_X_MinMax.x, (int)SpawnIsland_X_MinMax.y);
-            LocationZ = random.Next((int)SpawnIsland_Y_MinMax.x, (int)SpawnIsland_Y_MinMax.y);
-
-            tmpObj = PhotonNetwork.Instantiate("Rock", Vector3.zero, Quaternion.identity).gameObject;
-            tmpObj.transform.parent = Island.transform;
-            tmpObj.transform.localPosition = new Vector3(LocationX, 0, LocationZ);
-        }
-
-        // -0.5 ~ 0.5;
     }
 
     private void Update()

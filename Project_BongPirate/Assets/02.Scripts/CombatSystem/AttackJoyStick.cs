@@ -7,12 +7,17 @@ using UnityEngine.EventSystems;
 public class AttackJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
     [SerializeField] Image joyStickBackground;
+    [SerializeField] Image coolTimeImage;
     [SerializeField] Image joyStick;
 
     private Vector2 joyStickInput;
     public Vector2 GetJoyStickInput()
     {
         return joyStickInput;
+    }
+    public void UpdateCoolTime(float _percent)
+    {
+        coolTimeImage.fillAmount= _percent;
     }
 
     private void Start()

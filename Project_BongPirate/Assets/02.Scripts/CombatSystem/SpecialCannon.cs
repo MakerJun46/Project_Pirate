@@ -29,10 +29,6 @@ public class SpecialCannon : Cannon
         {
             InitializeBullet();
 
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                mySpecialCannonType = (SpecialCannonType)((int)(mySpecialCannonType + 1) % 3);
-            }
 
             if (attackingState > 0)
             {
@@ -40,6 +36,15 @@ public class SpecialCannon : Cannon
             }
         }
     }
+
+    public override void ChangeCannonType(int _typeIndex, bool _isSet)
+    {
+        if (_isSet)
+            mySpecialCannonType = (SpecialCannonType)(_typeIndex);
+        else
+            mySpecialCannonType = (SpecialCannonType)(((int)mySpecialCannonType + _typeIndex) % 3);
+    }
+
 
     protected override void InitializeBullet()
     {
@@ -151,6 +156,7 @@ public class SpecialCannon : Cannon
         GameObject tmp = PhotonNetwork.Instantiate("Cannon_Hook", this.transform.position, Quaternion.identity);
         tmp.GetComponent<Rigidbody>().velocity = (targetPos - this.transform.position).normalized * ShootVelocity;
         tmp.GetComponent<Hook>().myShip = GetComponentInParent<Player_Combat_Ship>();
+        AttackPS.Play(true);
 
         attackingState = 0;
         currCannonDistance = 0;
@@ -162,6 +168,7 @@ public class SpecialCannon : Cannon
         GameObject tmp = PhotonNetwork.Instantiate("Cannon_Shark", this.transform.position, Quaternion.identity);
         tmp.GetComponent<Rigidbody>().velocity = (targetPos - this.transform.position).normalized * ShootVelocity;
         tmp.GetComponent<Shark>().myShip = GetComponentInParent<Player_Combat_Ship>();
+        AttackPS.Play(true);
 
         attackingState = 0;
         currCannonDistance = 0;
@@ -174,6 +181,7 @@ public class SpecialCannon : Cannon
         GameObject tmp = PhotonNetwork.Instantiate("Cannon_Barrel", this.transform.position, Quaternion.identity);
         tmp.GetComponent<Barrel>().gravity = Vector3.up * gravity;
         tmp.GetComponent<Rigidbody>().velocity = CalculateLaunchData(Vector3.zero).initialVelocity;
+        AttackPS.Play(true);
         attackingState = 0;
         currCannonDistance = 0;
 

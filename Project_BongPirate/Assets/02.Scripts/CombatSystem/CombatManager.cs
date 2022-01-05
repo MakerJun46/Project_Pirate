@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatManager : MonoBehaviour
 {
@@ -34,5 +35,9 @@ public class CombatManager : MonoBehaviour
     {
         //Cannon tmpCannon = myShip.EquipCannon(_spotIndex, _cannonIndex);
         myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipCannon", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _cannonIndex });
+    }
+    public void AddCannonType(int param)
+    {
+        myShip.ChangeCannonType(param, 1,false);
     }
 }
