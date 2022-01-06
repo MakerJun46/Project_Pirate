@@ -11,12 +11,12 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     public float MoveSpeed;
     public float MaxSpeed;
     public float MoveSpeedTmp;
+    public float turningSpeed;
+
     public bool goOrStop;
     public bool is_Turn_Left;
     public bool is_Turn_Right;
-
-    public float trust = 10000;
-    public float turningSpeed;
+    public bool is_Landing;
 
     public float motorFoamMultiplier;
     public float moterFoamBase;
@@ -27,57 +27,52 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     public Text NickNameText;
     private GameObject anchage_UI;
 
-
-    Vector3 curPos;
-    Vector3 lookDirection;
+    public int Laned_island_ID;
 
     ParticleSystem.EmissionModule motor, front;
 
-    private void Start()
+    private void Awake()
+    {
+        Reset_Ship_Status();
+    }
+
+    private void Update()
+    {
+        Move();
+    }
+    public void Reset_Ship_Status()
     {
         RB = GetComponent<Rigidbody>();
-
         PV = GetComponent<PhotonView>();
+
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
 
+        MoveSpeed = 20f;
+        turningSpeed = 0.4f;
         MoveSpeedTmp = MoveSpeed;
         MaxSpeed = 30f;
 
-        anchage_UI = GameObject.Find("UI_Canvas").transform.Find("Island_Landing_UI_Panel").gameObject;
-
         goOrStop = false;
+        is_Turn_Left = false;
+        is_Turn_Right = false;
+        is_Landing = false;
+
+        anchage_UI = GameManager.GetIstance().Island_Landing_UI;
+
+        GameManager.GetIstance().AllShip.Add(this);
 
         //motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
         //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
-        GameManager.GetIstance().AllShip.Add(this);
     }
 
-    /// <summary>
-    /// 플레이어 조작 감지
-    /// </summary>
-
-    private void FixedUpdate()
+    public void Move()
     {
-        if (PV.IsMine)
+        if (PV.IsMine && !is_Landing)
         {
-            /*
-            if (Input.GetAxis("Horizontal") < -0.2f || Input.GetAxis("Horizontal") > 0.2f)
-            {
-                Debug.Log("horizontal");
-                transform.rotation = Quaternion.EulerRotation(0, transform.rotation.ToEulerAngles().y + Input.GetAxis("Horizontal") * turningSpeed * Time.fixedDeltaTime, 0);
-            }
-            if (Input.GetAxis("Vertical") > 0.2f)
-            {
-                Debug.Log("Vertical");
-                RB.AddRelativeForce(Vector3.forward * trust * Time.deltaTime);
-            }
-            */
             if (goOrStop)
             {
-                //gameObject.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * trust * Time.deltaTime);
-                RB.velocity = Vector3.Lerp(RB.velocity, this.transform.forward * trust, Time.deltaTime);
-                //RB.AddForce(this.transform.forward * trust);
+                RB.velocity = Vector3.Lerp(RB.velocity, this.transform.forward * MoveSpeed, Time.deltaTime);
             }
             else
             {
@@ -88,43 +83,16 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
             if (is_Turn_Right)
                 Turn_Right();
         }
+        else
+        {
+            Ship_Stop();
+        }
 
-        // 에러떠서 임시로 주석처리
+        // 에러떠서 임시로 주석처리 => 배가 지나간 잔상 파티클 부분
         //motor.rate = motorFoamMultiplier * Input.GetAxis("Vertical") + moterFoamBase;
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
-
     }
 
-    private void Update()
-    {
-        if (PV.IsMine)
-        {
-            /*
-            if(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.W) ||
-                Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) ||
-                Input.GetKey(KeyCode.UpArrow) ||    Input.GetKey(KeyCode.D) ||
-                Input.GetKey(KeyCode.DownArrow) ||  Input.GetKey(KeyCode.S))
-            {
-                float xAxis = Input.GetAxisRaw("Horizontal");
-                float zAxis = Input.GetAxisRaw("Vertical");
-                lookDirection = xAxis * Vector3.right + zAxis * Vector3.forward;
-
-                this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * RotateSpeed);
-                //this.transform.Translate(Vector3.forward * MoveSpeed * Time.deltaTime);
-
-                Vector3 movedirection = new Vector3(xAxis, 0, zAxis);
-                gameObject.GetComponent<Rigidbody>().velocity = movedirection * MoveSpeed;
-
-            }
-            */
-
-
-        }
-        if(RB.velocity.magnitude > MaxSpeed )
-        {
-            //gameObject.GetComponent<Rigidbody>().AddRelativeForce(Vector3.back * trust * Time.deltaTime);
-        }
-    }
 
 
     public void Ship_MoveSpeed_Reset()
@@ -132,13 +100,11 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         MoveSpeed = MoveSpeedTmp;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Ship_Stop()
     {
-        if (other.gameObject.CompareTag("anchoragePoint"))
-        {
-            Debug.Log("enter");
-            MoveSpeed = 1; // 콜라이더 통과 버그 방지를 위함
-        }
+        RB.velocity = Vector3.zero;
+        goOrStop = false;
+
     }
 
     private void OnTriggerStay(Collider other)
@@ -146,11 +112,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
             Debug.Log("On anchoragePoint");
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                anchage_UI.SetActive(true);
-                MoveSpeed = 0;
-            }
+            GameManager.GetIstance().MyShip_On_Landing_Point = true;
+            Laned_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
         }
     }
 
@@ -158,8 +121,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     {
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
-            Debug.Log("exit");
-            MoveSpeed = MoveSpeedTmp;
+            GameManager.GetIstance().MyShip_On_Landing_Point = false;
         }
     }
 

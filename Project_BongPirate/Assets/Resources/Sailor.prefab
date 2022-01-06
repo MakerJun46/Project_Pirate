@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 951308765059675380}
   - component: {fileID: 951308765059675387}
   - component: {fileID: 2510172937558612617}
+  - component: {fileID: 951268073189083722}
   m_Layer: 0
   m_Name: Sailor
   m_TagString: Sailor
@@ -41,7 +42,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 951308765059675384}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2
@@ -70,6 +71,22 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &951268073189083722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951308765059675384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0915826f97ce214da2cc58f7886faac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  status: 2
+  Landed_island: {fileID: 0}
+  MyShip: {fileID: 0}
+  Gathering_target: {fileID: 0}
 --- !u!1 &2714491093551714675
 GameObject:
   m_ObjectHideFlags: 0

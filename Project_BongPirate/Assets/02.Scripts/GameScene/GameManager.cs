@@ -22,12 +22,18 @@ public class GameManager : MonoBehaviour
     public Text UI_Rock_Count;
     public Text UI_Sailor_Count;
 
+    public Text LandingEscape_Button_Text;
+
     private float steeringRot;
     [SerializeField]private Image SteeringImg;
 
     public GameObject Island_Landing_UI;
+    public GameObject PlayerInfo_UI_Panel;
+    bool PlayerInfo_UI_Opened = false;
 
+    public List<Island_Info> All_Island;
     public List<Player_Controller_Ship> AllShip;
+    public List<GameObject> MySailors;
     public Player_Controller_Ship MyShip;
     public Camera MainCamera;
     public CinemachineVirtualCamera VC_Top;
@@ -40,19 +46,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
 
-    /// <summary>
-    /// 보유한 목재 수
-    /// </summary>
     public int Resource_Wood_Count;
-    /// <summary>
-    /// 보유한 석재 수
-    /// </summary>
     public int Resource_Rock_Count;
-    /// <summary>
-    /// 보유한 선원 수
-    /// </summary>
-    public int Resource_Sailor_Count;
+    public int My_Sailor_Count;
 
+    public bool MyShip_On_Landing_Point;
+    public GameObject Landing_Button_Blur;
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +62,8 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine("DeathFieldCoroutine");
         }
+
+        MyShip_On_Landing_Point = false;
     }
 
     public void SetMyShip(Player_Controller_Ship _myShip)
@@ -82,7 +83,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        updateUI_Text();
+        UI_Resources_Text_Update();
+        UI_Panel_Update();
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -93,7 +95,7 @@ public class GameManager : MonoBehaviour
         if (MyShip) {
             if (MyShip.is_Turn_Left)
                 steeringRot += 180 * Time.deltaTime;
-            else if (MyShip.is_Turn_Right)
+            else if (MyShip.is_Turn_Right) 
                 steeringRot += -180 * Time.deltaTime;
             else
                 steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
@@ -133,7 +135,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// 플레이어 자원 표시 업데이트
     /// </summary>
-    void updateUI_Text()
+    public void UI_Resources_Text_Update()
     {
         GameObject[] temp = GameObject.FindGameObjectsWithTag("Sailor");
         List<GameObject> my_Sailors = new List<GameObject>();
@@ -146,17 +148,73 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Debug.Log(my_Sailors.Count);
+        My_Sailor_Count = my_Sailors.Count;
+        MySailors = my_Sailors;
+
+        Resource_Wood_Count = 0;
+        Resource_Rock_Count = 0;
+
+        foreach(Item_Inventory _item in Item_Manager.GetInstance().Player_items)
+        {
+            if (_item.name == "Wood")
+                Resource_Wood_Count++;
+            else if (_item.name == "Rock")
+                Resource_Rock_Count++;
+        }
 
         UI_Wood_Count.text = Resource_Wood_Count.ToString();
         UI_Rock_Count.text = Resource_Rock_Count.ToString();
-        UI_Sailor_Count.text = my_Sailors.Count.ToString();
+        UI_Sailor_Count.text = My_Sailor_Count.ToString();
+    }
+    public void UI_Panel_Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+            PlayerInfo_UI_Opened = !PlayerInfo_UI_Opened;
+
+        if (PlayerInfo_UI_Opened)
+        {
+            PlayerInfo_UI_Panel.SetActive(true);
+        }
+        else
+        {
+            PlayerInfo_UI_Panel.SetActive(false);
+        }
+
+        if(MyShip_On_Landing_Point)
+        {
+            Landing_Button_Blur.SetActive(false);
+        }
+        else
+        {
+            Landing_Button_Blur.SetActive(true);
+        }
     }
 
-    public void island_Landing_Button()
+    public void island_LandingEscape_Button()
     {
+        if (MyShip_On_Landing_Point && !MyShip.is_Landing)
+        {
+            Island_Landing_UI.SetActive(true);
+            MyShip.Ship_Stop();
+        }
+        else if (MyShip.is_Landing)
+        {
+            foreach(GameObject go in MySailors)
+            {
+                go.GetComponent<Sailor>().status = Sailor.Sailor_Status.Escaping;
+            }
+
+            MyShip.is_Landing = false;
+            LandingEscape_Button_Text.text = "Landing";
+        }
+    }
+
+    public void island_Landing_Accept_Button()
+    {
+        Island_Landing_UI.GetComponent<Island_Landing_UI>().Landing();
         Island_Landing_UI.SetActive(false);
-        MyShip.Ship_MoveSpeed_Reset();
+        MyShip.is_Landing = true;
+        LandingEscape_Button_Text.text = "Escape";
     }
 
     public void Turn_Left_Button_Down()

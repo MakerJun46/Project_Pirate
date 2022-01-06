@@ -479,25 +479,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebaad8824739c9e438daee9256492798, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 10
+  MoveSpeed: 0
   MaxSpeed: 0
-  RotateSpeed: 6
   MoveSpeedTmp: 0
+  turningSpeed: 0
   goOrStop: 0
   is_Turn_Left: 0
   is_Turn_Right: 0
-  trust: 500
-  turningSpeed: 0
+  is_Landing: 0
   motorFoamMultiplier: 100
   moterFoamBase: 10
   frontFoamMultiplier: 100
-  RB: {fileID: 3433671627736073804}
-  SR: {fileID: 0}
-  PV: {fileID: 3073172608852465319}
   NickNameText: {fileID: 5665631415054730532}
-  HealthImage: {fileID: 5482857998271304205}
-  GM: {fileID: 0}
-  anchage_UI: {fileID: 0}
+  Laned_island_ID: 0
 --- !u!114 &-2406257447604646091
 MonoBehaviour:
   m_ObjectHideFlags: 0

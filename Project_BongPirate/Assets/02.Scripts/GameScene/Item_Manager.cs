@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class Item_Manager : MonoBehaviour
 {
-    public List<Item_Inventory> items;
+    public static Item_Manager instance;
+
+    public static Item_Manager GetInstance()
+    {
+        if(instance == null)
+        {
+            instance = FindObjectOfType<Item_Manager>();
+        }
+        return instance;
+    }
+
+    public List<Item_Inventory> item_list;
+    public List<Item_Inventory> Player_items;
 
     [SerializeField] Transform slotParent;
     [SerializeField] Item_Slot[] slots;
-
 
     private void OnValidate()
     {
@@ -23,9 +34,9 @@ public class Item_Manager : MonoBehaviour
     public void FreshSlots()
     {
         int i = 0;
-        for(; i < items.Count && i < slots.Length; i++)
+        for(; i < Player_items.Count && i < slots.Length; i++)
         {
-            slots[i].item = items[i];
+            slots[i].item = Player_items[i];
         }
         for(; i < slots.Length; i++)
         {
@@ -35,9 +46,9 @@ public class Item_Manager : MonoBehaviour
 
     public void AddItem(Item_Inventory _item)
     {
-        if(items.Count < slots.Length)
+        if(Player_items.Count < slots.Length)
         {
-            items.Add(_item);
+            Player_items.Add(_item);
             FreshSlots();
         }
         else

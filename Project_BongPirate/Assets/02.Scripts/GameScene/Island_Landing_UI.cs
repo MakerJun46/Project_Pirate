@@ -19,8 +19,11 @@ public class Island_Landing_UI : MonoBehaviour
 
     public void UpButton()
     {
-        Count++;
-        SailorCount.text = "선원 선택 : " + Count;
+        if(GameManager.GetIstance().My_Sailor_Count > Count)
+        {
+            Count++;
+            SailorCount.text = "선원 선택 : " + Count;
+        }
     }
 
     public void DownButton()
@@ -28,12 +31,15 @@ public class Island_Landing_UI : MonoBehaviour
         if(Count > 0)
         {
             Count--;
-            SailorCount.text = "선원 선텍 : " + Count;
+            SailorCount.text = "선원 선택 : " + Count;
         }
     }
 
     public void Landing()
     {
-
+        for(int i = 0; i < Count; i++)
+        {
+            GameManager.GetIstance().MySailors[i].GetComponent<Sailor>().status = Sailor.Sailor_Status.Landing;
+        }
     }
 }

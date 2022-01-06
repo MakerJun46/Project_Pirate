@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class Island_Info : MonoBehaviour
 {
-    GameManager GM;
     System.Random random = new System.Random();
 
     public enum Island_Type { normal, cake, ice, mushroom, ruins, toy};
+
+    public int Island_ID;   // reset in inspector
 
     public int min_Wood_Count;
     public int max_Wood_Count;
@@ -20,9 +21,15 @@ public class Island_Info : MonoBehaviour
     public Island_Type type;
     bool ResourceCreate;
 
+    public List<GameObject> Wood_Object = new List<GameObject>();
+    public List<GameObject> Rock_Object = new List<GameObject>();
+    public List<GameObject> SpecialResource_Object = new List<GameObject>();
+
     void Start()
     {
         ResourceCreate = false;
+        Island_ID = GameManager.GetIstance().All_Island.Count;
+        GameManager.GetIstance().All_Island.Add(this);
     }
 
     private void Update()
@@ -75,6 +82,8 @@ public class Island_Info : MonoBehaviour
             GameObject tmpObj;
             tmpObj = PhotonNetwork.Instantiate("Wood", location, Quaternion.identity).gameObject;
             tmpObj.transform.parent = this.transform;
+
+            Wood_Object.Add(tmpObj);
         }
 
         for(int i = 0; i < RockCount; i++)
@@ -87,6 +96,8 @@ public class Island_Info : MonoBehaviour
             GameObject tmpObj;
             tmpObj = PhotonNetwork.Instantiate("Rock", location, Quaternion.identity).gameObject;
             tmpObj.transform.parent = this.transform;
+
+            Rock_Object.Add(tmpObj);
         }
 
         for(int i = 0; i < SpecialResourceCount; i++)
@@ -99,6 +110,23 @@ public class Island_Info : MonoBehaviour
             GameObject tmpObj;
             tmpObj = PhotonNetwork.Instantiate("SpecialResource", location, Quaternion.identity).gameObject;
             tmpObj.transform.parent = this.transform;
+
+            SpecialResource_Object.Add(tmpObj);
         }
+    }
+
+    public int Remain_Wood_Count()
+    {
+        return Wood_Object.Count;
+    }
+
+    public int Remain_Rock_Count()
+    {
+        return Rock_Object.Count;
+    }
+
+    public int Remain_SpecialResource_Count()
+    {
+        return SpecialResource_Object.Count;
     }
 }
