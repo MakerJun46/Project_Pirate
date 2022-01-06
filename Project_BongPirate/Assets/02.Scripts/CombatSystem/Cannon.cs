@@ -10,11 +10,12 @@ public class Cannon : MonoBehaviour
     protected Player_Combat_Ship myShip;
 
     public AttackJoyStick tmpJoyStick;
+
     protected Vector2 tmpInput;
 
     protected int attackingState = 0;
 
-    protected Transform cursor;
+    public Transform cursor;
     public float height = 25;
     public float gravity = -18;
     
@@ -23,7 +24,8 @@ public class Cannon : MonoBehaviour
 
     [SerializeField] protected float maxCoolTime = 2f;
     protected float currCoolTime = 0f;
-    [SerializeField] protected Image coolTimeImage;
+
+    [SerializeField] protected ParticleSystem AttackPS;
 
 
     [SerializeField] LayerMask groundLayer;
@@ -42,10 +44,12 @@ public class Cannon : MonoBehaviour
 
         }
     }
-    private void OnDestroy()
+
+    public void UnEquipCannon()
     {
-        if (cursor)
+        if(cursor)
             Destroy(cursor.gameObject);
+        Destroy(this.gameObject);
     }
 
 
@@ -54,11 +58,16 @@ public class Cannon : MonoBehaviour
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
             tmpInput = tmpJoyStick.GetJoyStickInput();
-
+            float inputMag = tmpInput.magnitude;
+            Vector3 calcInput = (Camera.main.transform.forward * tmpInput.y + Camera.main.transform.right * tmpInput.x);
+            print("JoystickInput__Yester : " + tmpInput);
+            calcInput.y = 0;
+            calcInput.Normalize();
+            tmpInput = new Vector2(calcInput.x, calcInput.z)* inputMag;
             print("JoystickInpu : " + tmpInput);
 
             currCoolTime -= Time.deltaTime;
-            coolTimeImage.fillAmount = currCoolTime / maxCoolTime;
+            tmpJoyStick.UpdateCoolTime(currCoolTime / maxCoolTime);
         }
     }
 
@@ -115,5 +124,9 @@ public class Cannon : MonoBehaviour
             this.timeToTarget = timeToTarget;
         }
 
+    }
+
+    public virtual void ChangeCannonType(int _typeIndex, bool _isSet)
+    {
     }
 }

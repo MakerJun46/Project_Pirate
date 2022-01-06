@@ -19,15 +19,13 @@ public class AutoCannon : Cannon
     protected Rigidbody ball;
     FieldOfView fov;
 
-    Transform targetCursor;
-
     public override void Initialize(Player_Combat_Ship _myShip)
     {
         myShip = _myShip;
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
             fov = GetComponent<FieldOfView>();
-            targetCursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
+            cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
         }
         else
         {
@@ -45,25 +43,32 @@ public class AutoCannon : Cannon
             InitializeBullet();
             if (attackingState > 0)
             {
-                cursor = targetCursor;
+                //cursor = targetCursor;
                 launchingBullet();
             }
             else
             {
-                cursor = fov.currTarget;
-                if (cursor != null && currCoolTime <= 0)
+                if (fov.currTarget)
                 {
-                    currCoolTime = maxCoolTime;
-                    LaunchTrajectory();
+                    cursor.transform.position = fov.currTarget.position;
+                    if (currCoolTime <= 0)
+                    {
+                        currCoolTime = maxCoolTime;
+                        LaunchTrajectory();
+                    }
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                myCannonType = (CannonType)((int)(myCannonType + 1) % 5);
             }
         }
     }
+
+    public override void ChangeCannonType(int _typeIndex,bool _isSet)
+    {
+        if(_isSet)
+            myCannonType = (CannonType)(_typeIndex);
+        else
+            myCannonType = (CannonType)(((int)myCannonType + _typeIndex) % 5);
+    }
+
 
     protected override void InitializeBullet()
     {
@@ -116,23 +121,17 @@ public class AutoCannon : Cannon
             case CannonType.Trajectory:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
+                    ChargeCannon();
 
                     currCannonDistance += Time.deltaTime;
                     currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 5f);
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
 
                     lrs[0].enabled = true;
                     DrawPath();
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
                     lrs[0].enabled = false;
-                    attackAreaImage.enabled = false;
 
                     LaunchTrajectory();
                 }
@@ -140,11 +139,7 @@ public class AutoCannon : Cannon
             case CannonType.Straight:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
-                    currCannonDistance = 5;
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
+                    ChargeCannon(5);
                     lrs[0].enabled = true;
                     int resolution = 2;
                     lrs[0].positionCount = resolution;
@@ -153,22 +148,16 @@ public class AutoCannon : Cannon
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
                     lrs[0].enabled = false;
-                    attackAreaImage.enabled = false;
                     LaunchStraight(cursor.transform.position);
                 }
                 break;
             case CannonType.ThreeWay:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
-                    currCannonDistance = 5;
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
+                    ChargeCannon(5);
                     int resolution = 2;
-                    for (int i = 0; i <= 2; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         lrs[i].enabled = true;
                         lrs[i].positionCount = resolution;
@@ -178,9 +167,7 @@ public class AutoCannon : Cannon
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
-                    attackAreaImage.enabled = false;
-                    for (int i = 0; i <= 2; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         lrs[i].enabled = false;
                         LaunchStraight(this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
@@ -190,46 +177,45 @@ public class AutoCannon : Cannon
             case CannonType.Rain:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
-                    attackAreaImage.enabled = true;
-
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * 5f;
-                    attackAreaImage.transform.position = cursor.transform.position;
+                    ChargeCannon(5);
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
-                    attackAreaImage.enabled = false;
-                    attackAreaImage.transform.localPosition = Vector3.zero;
                     LaunchRain();
                 }
                 break;
             case CannonType.Soybean:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
+                    ChargeCannon();
 
                     currCannonDistance += Time.deltaTime;
                     currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 5f);
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
 
                     lrs[0].enabled = true;
                     DrawPath();
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
                     lrs[0].enabled = false;
-                    attackAreaImage.enabled = false;
 
                     LaunchSoybean();
                 }
                 break;
         }
+    }
+    
+    private void ChargeCannon(float _currCannonDistance=-1f)
+    {
+        attackingState = 2;
+
+        if (_currCannonDistance > 0)
+            currCannonDistance = _currCannonDistance;
+
+        attackAreaImage.enabled = true;
+        attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
+
+        cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
     }
 
     protected void LaunchStraight(Vector3 targetPos)
@@ -238,10 +224,8 @@ public class AutoCannon : Cannon
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.zero;
         ball.velocity = (targetPos - this.transform.position).normalized * 300f;
-        attackingState = 0;
-        currCannonDistance = 0;
-
-        currCoolTime = maxCoolTime;
+        AttackPS.Play(true);
+        ResetAttackingState();
     }
     protected void LaunchTrajectory()
     {
@@ -249,25 +233,21 @@ public class AutoCannon : Cannon
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
         ball.velocity = CalculateLaunchData(Vector3.zero).initialVelocity;
-        attackingState = 0;
-        currCannonDistance = 0;
-
-        currCoolTime = maxCoolTime;
+        AttackPS.Play(true);
+        ResetAttackingState();
     }
 
     protected void LaunchRain()
     {
         for (int i = 0; i < 20; i++)
         {
-            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", cursor.transform.position + new Vector3(Random.value * currCannonDistance, Random.Range(500, 1000f), Random.value * currCannonDistance), Quaternion.identity);
-            tmp.transform.localScale *= 0.5f;
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", cursor.transform.position + new Vector3(Random.Range(-1,1f) * currCannonDistance, Random.Range(50, 100f), Random.Range(-1, 1f) * currCannonDistance), Quaternion.identity);
+            tmp.transform.localScale *= 0.75f;
             ball = tmp.GetComponent<Rigidbody>();
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
         }
-        attackingState = 0;
-        currCannonDistance = 0;
-
-        currCoolTime = maxCoolTime;
+        AttackPS.Play(true);
+        ResetAttackingState();
     }
 
     protected void LaunchSoybean()
@@ -280,6 +260,15 @@ public class AutoCannon : Cannon
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
             ball.velocity = CalculateLaunchData(new Vector3(Random.value, Random.value, Random.value) * 20f).initialVelocity;
         }
+        AttackPS.Play(true);
+        ResetAttackingState();
+    }
+
+    private void ResetAttackingState()
+    {
+        attackingState = 3;
+        attackAreaImage.enabled = false;
+
         attackingState = 0;
         currCannonDistance = 0;
         currCoolTime = maxCoolTime;

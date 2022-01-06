@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class FieldOfView : MonoBehaviour
+using Photon.Pun;
+public class FieldOfView : MonoBehaviourPun
 {
     public float viewRadius;
     [Range(0, 360)]
@@ -28,7 +28,6 @@ public class FieldOfView : MonoBehaviour
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
-
     }
     private void OnEnable()
     {
@@ -42,27 +41,31 @@ public class FieldOfView : MonoBehaviour
 
     private void Update()
     {
-        DrawFieldOfView();
-
-        float minDistance = 1000;
-        currTarget = null;
-        for (int i = 0; i < visibleTargets.Count; i++)
+        print(GetComponentInParent<PhotonView>().IsMine || PhotonNetwork.IsConnected==false);
+        if (GetComponentInParent<PhotonView>().IsMine || PhotonNetwork.IsConnected==false)
         {
-            if (visibleTargets[i] == null)
-                continue;
-            float tmpDistance = Vector3.Distance(this.transform.position, visibleTargets[i].transform.position);
-            if (tmpDistance <= minDistance)
-            {
-                minDistance = tmpDistance;
-                currTarget = visibleTargets[i];
-                break;
-            }
-        }
+            DrawFieldOfView();
 
-        if (currTarget==null)
-            viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[0];
-        else
-            viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[1];
+            float minDistance = 1000;
+            currTarget = null;
+            for (int i = 0; i < visibleTargets.Count; i++)
+            {
+                if (visibleTargets[i] == null)
+                    continue;
+                float tmpDistance = Vector3.Distance(this.transform.position, visibleTargets[i].transform.position);
+                if (tmpDistance <= minDistance)
+                {
+                    minDistance = tmpDistance;
+                    currTarget = visibleTargets[i];
+                    break;
+                }
+            }
+
+            if (currTarget == null)
+                viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[0];
+            else
+                viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[1];
+        }
     }
     IEnumerator FindTargetsWithDelay(float delay)
     {

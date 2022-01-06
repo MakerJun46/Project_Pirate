@@ -1,9 +1,6 @@
-using System.Collections;
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
-
-using Photon.Pun;
-using Photon.Realtime;
 public class Player_Combat_Ship : MonoBehaviourPun
 {
     [SerializeField] private float health;
@@ -45,6 +42,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void EquipCannon(int _spotIndex, int _cannonIndex)
     {
+        bool _active = true;
         if (myCannons[_spotIndex] == null)
         {
             GameObject tmpCannon = null;
@@ -61,7 +59,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
         else
         {
-            Destroy(myCannons[_spotIndex].gameObject);
+            print("Destroy");
+            _active = false;
+            myCannons[_spotIndex].UnEquipCannon();
         }
 
         if (photonView.IsMine)
@@ -69,7 +69,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
             CombatManager combatManager = FindObjectOfType<CombatManager>();
             if (_spotIndex <= 0)
             {
-                combatManager.SpecialJoySticks[_spotIndex].gameObject.SetActive(myCannons[_spotIndex] != null);
+                print("special : "+ _active);
+                combatManager.SpecialJoySticks[_spotIndex].gameObject.SetActive(_active);
                 if (myCannons[_spotIndex] != null)
                 {
                     myCannons[_spotIndex].tmpJoyStick = combatManager.SpecialJoySticks[_spotIndex];
@@ -77,12 +78,18 @@ public class Player_Combat_Ship : MonoBehaviourPun
             }
             else
             {
-                combatManager.joySticks[_spotIndex].gameObject.SetActive(myCannons[_spotIndex] != null);
+                print("joystick : " + _active);
+                combatManager.joySticks[_spotIndex].gameObject.SetActive(_active);
                 if (myCannons[_spotIndex] != null)
                 {
                     myCannons[_spotIndex].tmpJoyStick = combatManager.joySticks[_spotIndex];
                 }
             }
         }
+    }
+
+    public void ChangeCannonType(int _spotIndex,int _typeIndex, bool _isSet=true)
+    {
+        myCannons[_spotIndex].ChangeCannonType(_typeIndex, _isSet);
     }
 }
