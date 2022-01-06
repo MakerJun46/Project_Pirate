@@ -15,6 +15,11 @@ public class Player_UI : MonoBehaviour
     public int RockCount;
     // 나의 자원 UI ===============================
 
+    // UI
+    public GameObject Player_UI_Panel;
+    bool player_UI_Open = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,26 +31,20 @@ public class Player_UI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UI_Update();
+        OpenPlayer_Info();
     }
-
-    public void UI_Update()
+    
+    public void OpenPlayer_Info()
     {
-        GameObject[] temp = GameObject.FindGameObjectsWithTag("Sailor");
-        List<GameObject> my_Sailors = new List<GameObject>();
-
-        foreach (GameObject go in temp)
+        if(Input.GetKeyDown(KeyCode.Tab))
         {
-            if (go.GetComponent<PhotonView>().IsMine)
-            {
-                my_Sailors.Add(go);
-            }
+            player_UI_Open = !player_UI_Open;
         }
 
-        Debug.Log(my_Sailors.Count);
-
-        SailorCount_Text.text = "absdfasdf";
-        //WoodCount_Text.text = WoodCount.ToString();
-        //RockCount_Text.text = RockCount.ToString();
+        if (player_UI_Open)
+            Player_UI_Panel.SetActive(true);
+        else
+            Player_UI_Panel.SetActive(false);
     }
 }
+
