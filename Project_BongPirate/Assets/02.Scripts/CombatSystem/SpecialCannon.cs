@@ -9,12 +9,12 @@ public class SpecialCannon : Cannon
     public enum SpecialCannonType
     {
         Hook,
-        Shark,
-        OakBarrel
+        Sniper,
+        OakBarrel,
+        Rain
     }
     public SpecialCannonType mySpecialCannonType;
 
-    [SerializeField] private float ShootVelocity = 100f;
 
     public override void Initialize(Player_Combat_Ship _myShip)
     {
@@ -29,7 +29,6 @@ public class SpecialCannon : Cannon
         {
             InitializeBullet();
 
-
             if (attackingState > 0)
             {
                 launchingBullet();
@@ -42,7 +41,7 @@ public class SpecialCannon : Cannon
         if (_isSet)
             mySpecialCannonType = (SpecialCannonType)(_typeIndex);
         else
-            mySpecialCannonType = (SpecialCannonType)(((int)mySpecialCannonType + _typeIndex) % 3);
+            mySpecialCannonType = (SpecialCannonType)(((int)mySpecialCannonType + _typeIndex) % 4);
     }
 
 
@@ -61,13 +60,19 @@ public class SpecialCannon : Cannon
                         attackingState = 1;
                     }
                     break;
-                case SpecialCannonType.Shark:
+                case SpecialCannonType.Sniper:
                     if (currCoolTime <= 0)
                     {
                         attackingState = 1;
                     }
                     break;
                 case SpecialCannonType.OakBarrel:
+                    if (currCoolTime <= 0)
+                    {
+                        attackingState = 1;
+                    }
+                    break;
+                case SpecialCannonType.Rain:
                     if (currCoolTime <= 0)
                     {
                         attackingState = 1;
@@ -84,11 +89,8 @@ public class SpecialCannon : Cannon
             case SpecialCannonType.Hook:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
-                    currCannonDistance = 5;
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
+                    ChargeCannon(-1,120);
+
                     lrs[0].enabled = true;
                     int resolution = 2;
                     lrs[0].positionCount = resolution;
@@ -97,54 +99,46 @@ public class SpecialCannon : Cannon
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
                     lrs[0].enabled = false;
-                    attackAreaImage.enabled = false;
                     LaunchHook(cursor.transform.position);
                 }
                 break;
-            case SpecialCannonType.Shark:
+            case SpecialCannonType.Rain:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    attackingState = 2;
-                    currCannonDistance = 5;
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
-                    lrs[0].enabled = true;
-                    int resolution = 2;
-                    lrs[0].positionCount = resolution;
-                    lrs[0].SetPosition(0, this.transform.position);
-                    lrs[0].SetPosition(1, cursor.transform.position);
+                    cursor.transform.localScale = Vector3.one *6f;
+                    ChargeCannon(20,100);
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
-                    lrs[0].enabled = false;
-                    attackAreaImage.enabled = false;
-                    LaunchShark(cursor.transform.position);
+                    LaunchRain();
+                    cursor.transform.localScale = Vector3.one;
+                }
+                break;
+            case SpecialCannonType.Sniper:
+                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                {
+                    ChargeCannon(20,80);
+                }
+                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                {
+                    LaunchSniper();
                 }
                 break;
             case SpecialCannonType.OakBarrel:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
-                {
-                    attackingState = 2;
+                { 
+                    ChargeCannon();
 
-                    currCannonDistance += Time.deltaTime;
-                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 5f);
-                    attackAreaImage.enabled = true;
-                    attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-
-                    cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
+                    currCannonDistance += Time.deltaTime*20f;
+                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 20f);
 
                     lrs[0].enabled = true;
                     DrawPath();
                 }
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
-                    attackingState = 3;
                     lrs[0].enabled = false;
-                    attackAreaImage.enabled = false;
 
                     LaunchBarrel();
                 }
@@ -153,38 +147,49 @@ public class SpecialCannon : Cannon
     }
     protected void LaunchHook(Vector3 targetPos)
     {
-        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Hook", this.transform.position, Quaternion.identity);
-        tmp.GetComponent<Rigidbody>().velocity = (targetPos - this.transform.position).normalized * ShootVelocity;
-        tmp.GetComponent<Hook>().myShip = GetComponentInParent<Player_Combat_Ship>();
-        AttackPS.Play(true);
+        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Hook", this.transform.position, Quaternion.identity,0,new object[]{ PhotonNetwork.LocalPlayer.ActorNumber,targetPos,ShootVelocity});
 
-        attackingState = 0;
-        currCannonDistance = 0;
-
-        currCoolTime = maxCoolTime;
+        ResetAttackingState(10f);
     }
-    protected void LaunchShark(Vector3 targetPos)
+    protected void LaunchSniper()
     {
-        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Shark", this.transform.position, Quaternion.identity);
-        tmp.GetComponent<Rigidbody>().velocity = (targetPos - this.transform.position).normalized * ShootVelocity;
-        tmp.GetComponent<Shark>().myShip = GetComponentInParent<Player_Combat_Ship>();
-        AttackPS.Play(true);
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", cursor.transform.position + Vector3.up* Random.Range(50, 100f), Quaternion.identity,
+            0, new object[] { 20.0f, 1.2f });
+        tmp.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
 
-        attackingState = 0;
-        currCannonDistance = 0;
-
-        currCoolTime = maxCoolTime;
+        //AttackPS.Play(true);
+        ResetAttackingState(15f);
     }
 
     protected void LaunchBarrel()
     {
-        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Barrel", this.transform.position, Quaternion.identity);
-        tmp.GetComponent<Barrel>().gravity = Vector3.up * gravity;
-        tmp.GetComponent<Rigidbody>().velocity = CalculateLaunchData(Vector3.zero).initialVelocity;
-        AttackPS.Play(true);
-        attackingState = 0;
-        currCannonDistance = 0;
+        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Barrel", this.transform.position, Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.ActorNumber, CalculateLaunchData(Vector3.zero).initialVelocity, gravity });
 
-        currCoolTime = maxCoolTime;
+        //AttackPS.Play(true);
+        ResetAttackingState(10f);
+    }
+
+
+    protected void LaunchRain()
+    {
+        //AttackPS.Play(true);
+        StartCoroutine("RainCoroutine");
+    }
+    IEnumerator RainCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+
+        for (int i = 0; i < 50; i++)
+        {
+            GameObject tmp = PhotonNetwork.Instantiate(
+                "CannonBall",
+                cursor.transform.position + new Vector3(Random.Range(-1, 1f) * 30f, Random.Range(50f, 80f), Random.Range(-1, 1f) * 30f),
+                Quaternion.identity,
+                0, new object[] { 1.0f, 0.5f });
+            tmp.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        ResetAttackingState(15f);
     }
 }

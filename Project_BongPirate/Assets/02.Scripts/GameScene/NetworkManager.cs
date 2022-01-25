@@ -82,7 +82,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            go = PhotonNetwork.Instantiate("Raft", shipSpawnPos+new Vector3(10,0,10), Quaternion.Euler(0, 90, 0));
+            go = PhotonNetwork.Instantiate("Sailing", shipSpawnPos+new Vector3(10,0,10), Quaternion.Euler(0, 90, 0));
         }
 
         if (FindObjectOfType<CombatManager>() && go.GetComponent<PhotonView>().IsMine)

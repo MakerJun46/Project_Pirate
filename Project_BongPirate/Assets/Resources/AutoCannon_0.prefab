@@ -290,8 +290,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpJoyStick: {fileID: 0}
   cursor: {fileID: 0}
-  height: 25
-  gravity: -18
+  height: 10
+  gravity: -27
+  ShootVelocity: 50
   attackAreaImage: {fileID: 1084434408425269268}
   currCannonDistance: 0
   maxCoolTime: 5
@@ -468,7 +469,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8321101921609778392
 CanvasRenderer:

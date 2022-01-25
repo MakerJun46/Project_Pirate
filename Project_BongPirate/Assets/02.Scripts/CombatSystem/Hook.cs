@@ -1,23 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Hook : MonoBehaviour
+using Photon.Pun;
+using Photon.Realtime;
+public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 {
-    public Player_Combat_Ship myShip;
-    public Player_Combat_Ship enemyShip;
+    public Player_Controller_Ship myShip;
+    public Player_Controller_Ship enemyShip;
 
-    float dragForce = 5;
+    [SerializeField] float dragForce = 1;
+    [SerializeField] float lifeTime = 5f;
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        // sendData | 0: actor number 1:targetPos 2: shootVelocity
+        info.Sender.TagObject = this.gameObject;
+        object[] sendedData = GetComponent<PhotonView>().InstantiationData;
+        GetComponent<Rigidbody>().velocity = ((Vector3)sendedData[1] - this.transform.position).normalized * (float)sendedData[2];
+
+        foreach(Player_Controller_Ship ship in FindObjectsOfType<Player_Controller_Ship>())
+        {
+            if(ship.GetComponent<PhotonView>().Owner.ActorNumber == (int)sendedData[0])
+            {
+                myShip = ship;
+                break;
+            }
+        }
+        //AttackPS.Play(true);
+    }
+
     void Update()
     {
         if(myShip && enemyShip)
         {
             Vector3 distance = (enemyShip.transform.position - myShip.transform.position);
-            if (distance.magnitude < 100f)
-                Destroy(this.gameObject);
             myShip.additionalForce = distance.normalized * dragForce;
             enemyShip.additionalForce = -distance.normalized * dragForce;
         }
+        lifeTime -= Time.deltaTime;
+        if (lifeTime < 0f)
+            Destroy(this.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -27,8 +49,9 @@ public class Hook : MonoBehaviour
             if(other.CompareTag("Player") &&
                 other.transform != myShip.transform)
             {
-                enemyShip = other.GetComponent<Player_Combat_Ship>();
+                enemyShip = other.GetComponent<Player_Controller_Ship>();
             }
         }
     }
+
 }

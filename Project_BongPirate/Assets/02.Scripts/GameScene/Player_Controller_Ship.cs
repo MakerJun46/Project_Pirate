@@ -13,6 +13,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     public float MoveSpeedTmp;
     public float turningSpeed;
 
+    public Vector3 additionalForce;
+
     public bool goOrStop;
     public bool is_Turn_Left;
     public bool is_Turn_Right;
@@ -36,7 +38,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         Reset_Ship_Status();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Move();
     }
@@ -49,7 +51,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
 
         MoveSpeed = 20f;
-        turningSpeed = 0.4f;
+        turningSpeed = 1.0f;
         MoveSpeedTmp = MoveSpeed;
         MaxSpeed = 30f;
 
@@ -70,14 +72,18 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     {
         if (PV.IsMine && !is_Landing)
         {
+            additionalForce = Vector3.Lerp(additionalForce, Vector3.zero, Time.deltaTime);
+
             if (goOrStop)
             {
-                RB.velocity = Vector3.Lerp(RB.velocity, this.transform.forward * MoveSpeed, Time.deltaTime);
+                RB.velocity = Vector3.Lerp(RB.velocity, this.transform.forward * MoveSpeed + additionalForce, Time.deltaTime);
             }
             else
             {
-                RB.velocity = Vector3.Lerp(RB.velocity, Vector3.zero, Time.deltaTime);
+                RB.velocity = Vector3.Lerp(RB.velocity, Vector3.zero + additionalForce, Time.deltaTime);
             }
+
+
             if (is_Turn_Left)
                 Turn_Left();
             if (is_Turn_Right)

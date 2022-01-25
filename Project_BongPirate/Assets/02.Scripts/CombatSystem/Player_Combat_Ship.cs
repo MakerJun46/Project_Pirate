@@ -10,7 +10,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     [SerializeField] private List<Cannon> myCannons;
 
-    public Vector3 additionalForce;
 
     private void Start()
     {
@@ -21,18 +20,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
     }
 
-    private void Update()
-    {
-        if (additionalForce.magnitude > 0.1f)
-        {
-            GetComponent<Rigidbody>().AddForce(additionalForce);
-            additionalForce = Vector3.Lerp(additionalForce, Vector3.zero, Time.deltaTime);
-        }
-    }
     [PunRPC]
-    public void Attacked(float damage)
+    public void Attacked(object[] param)
     {
-        health -= damage;
+        health -= (float)param[0];
+        GetComponent<Player_Controller_Ship>().additionalForce = (Vector3)param[1];
         GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
 
         if (health <= 0)
@@ -91,5 +83,23 @@ public class Player_Combat_Ship : MonoBehaviourPun
     public void ChangeCannonType(int _spotIndex,int _typeIndex, bool _isSet=true)
     {
         myCannons[_spotIndex].ChangeCannonType(_typeIndex, _isSet);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (photonView.IsMine && collision.transform.CompareTag("Player"))
+        {
+            if (collision.transform.GetComponent<Player_Combat_Ship>())
+            {
+                collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
+                    10.0f,
+                    (collision.transform.position-this.transform.position).normalized*50f
+                });
+                this.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
+                    5.0f,
+                    (this.transform.position-collision.transform.position).normalized*50f
+                });
+            }
+        }
     }
 }

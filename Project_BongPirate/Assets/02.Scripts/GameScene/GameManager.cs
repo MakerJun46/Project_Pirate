@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
         {
             if (tmpColls.Contains(AllShip[i]) == false)
             {
-                AllShip[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, 10f);
+                AllShip[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {10f, Vector3.zero });
             }
         }
         StartCoroutine("DeathFieldCoroutine");
