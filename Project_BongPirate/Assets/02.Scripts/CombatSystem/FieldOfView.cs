@@ -41,7 +41,6 @@ public class FieldOfView : MonoBehaviourPun
 
     private void Update()
     {
-        print(GetComponentInParent<PhotonView>().IsMine || PhotonNetwork.IsConnected==false);
         if (GetComponentInParent<PhotonView>().IsMine || PhotonNetwork.IsConnected==false)
         {
             DrawFieldOfView();
@@ -85,7 +84,9 @@ public class FieldOfView : MonoBehaviourPun
         {
             Transform target = targetsInViewRadius[i].transform;
             if (target == GetComponentInParent<Player_Combat_Ship>().transform)
+            {
                 continue;
+            }
 
             Vector3 dirToTarget = (target.position - transform.position).normalized;
             float dstToTarget = Vector3.Distance(transform.position, target.position);

@@ -11,7 +11,6 @@ public class AutoCannon : Cannon
         Trajectory,
         Straight,
         ThreeWay,
-        Rain,
         Soybean
     }
     public CannonType myCannonType;
@@ -27,11 +26,6 @@ public class AutoCannon : Cannon
             fov = GetComponent<FieldOfView>();
             cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
         }
-        else
-        {
-
-        }
-
     }
 
     protected override void Update()
@@ -54,7 +48,25 @@ public class AutoCannon : Cannon
                     if (currCoolTime <= 0)
                     {
                         currCoolTime = maxCoolTime;
-                        LaunchTrajectory();
+                        switch (myCannonType)
+                        {
+                            case CannonType.Trajectory:
+                                LaunchTrajectory();
+                                break;
+                            case CannonType.Straight:
+                                LaunchStraight(1,cursor.transform.position);
+                                break;
+                            case CannonType.ThreeWay:
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    lrs[i].enabled = false;
+                                    LaunchStraight(3,this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
+                                }
+                                break;
+                            case CannonType.Soybean:
+                                LaunchSoybean();
+                                break;
+                        }
                     }
                 }
             }
@@ -66,7 +78,7 @@ public class AutoCannon : Cannon
         if(_isSet)
             myCannonType = (CannonType)(_typeIndex);
         else
-            myCannonType = (CannonType)(((int)myCannonType + _typeIndex) % 5);
+            myCannonType = (CannonType)(((int)myCannonType + _typeIndex) % 4);
     }
 
 
@@ -97,13 +109,6 @@ public class AutoCannon : Cannon
                         attackingState = 1;
                     }
                     break;
-                case CannonType.Rain:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                        currCannonDistance = 100;
-                    }
-                    break;
                 case CannonType.Soybean:
                     if (currCoolTime <= 0)
                     {
@@ -123,8 +128,8 @@ public class AutoCannon : Cannon
                 {
                     ChargeCannon();
 
-                    currCannonDistance += Time.deltaTime;
-                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 5f);
+                    currCannonDistance += Time.deltaTime*20f;
+                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0,100f);
 
                     lrs[0].enabled = true;
                     DrawPath();
@@ -139,7 +144,7 @@ public class AutoCannon : Cannon
             case CannonType.Straight:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    ChargeCannon(5);
+                    ChargeCannon(-1,80);
                     lrs[0].enabled = true;
                     int resolution = 2;
                     lrs[0].positionCount = resolution;
@@ -149,13 +154,13 @@ public class AutoCannon : Cannon
                 else if (Input.GetMouseButtonUp(0) && attackingState == 2)
                 {
                     lrs[0].enabled = false;
-                    LaunchStraight(cursor.transform.position);
+                    LaunchStraight(0,cursor.transform.position);
                 }
                 break;
             case CannonType.ThreeWay:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    ChargeCannon(5);
+                    ChargeCannon(-1,80);
                     int resolution = 2;
                     for (int i = 0; i < 3; i++)
                     {
@@ -170,18 +175,8 @@ public class AutoCannon : Cannon
                     for (int i = 0; i < 3; i++)
                     {
                         lrs[i].enabled = false;
-                        LaunchStraight(this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
+                        LaunchStraight(3,this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
                     }
-                }
-                break;
-            case CannonType.Rain:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
-                {
-                    ChargeCannon(5);
-                }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
-                {
-                    LaunchRain();
                 }
                 break;
             case CannonType.Soybean:
@@ -189,8 +184,8 @@ public class AutoCannon : Cannon
                 {
                     ChargeCannon();
 
-                    currCannonDistance += Time.deltaTime;
-                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 5f);
+                    currCannonDistance += Time.deltaTime*20f;
+                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 100f);
 
                     lrs[0].enabled = true;
                     DrawPath();
@@ -205,72 +200,44 @@ public class AutoCannon : Cannon
         }
     }
     
-    private void ChargeCannon(float _currCannonDistance=-1f)
-    {
-        attackingState = 2;
-
-        if (_currCannonDistance > 0)
-            currCannonDistance = _currCannonDistance;
-
-        attackAreaImage.enabled = true;
-        attackAreaImage.transform.localScale = Vector3.one * currCannonDistance;
-
-        cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
-    }
-
-    protected void LaunchStraight(Vector3 targetPos)
-    {
-        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity);
-        ball = tmp.GetComponent<Rigidbody>();
-        ball.GetComponent<CannonBall>().gravity = Vector3.zero;
-        ball.velocity = (targetPos - this.transform.position).normalized * 300f;
-        AttackPS.Play(true);
-        ResetAttackingState();
-    }
     protected void LaunchTrajectory()
     {
-        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity);
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity,0, new object[] { 10.0f, 1.0f });
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
         ball.velocity = CalculateLaunchData(Vector3.zero).initialVelocity;
         AttackPS.Play(true);
-        ResetAttackingState();
+        ResetAttackingState(5f);
     }
 
-    protected void LaunchRain()
-    {
-        for (int i = 0; i < 20; i++)
-        {
-            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", cursor.transform.position + new Vector3(Random.Range(-1,1f) * currCannonDistance, Random.Range(50, 100f), Random.Range(-1, 1f) * currCannonDistance), Quaternion.identity);
-            tmp.transform.localScale *= 0.75f;
-            ball = tmp.GetComponent<Rigidbody>();
-            ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
-        }
-        AttackPS.Play(true);
-        ResetAttackingState();
-    }
 
     protected void LaunchSoybean()
     {
         for (int i = 0; i < 10; i++)
         {
-            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity);
-            tmp.transform.localScale *= 0.2f;
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] {2.0f ,0.3f });
             ball = tmp.GetComponent<Rigidbody>();
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
-            ball.velocity = CalculateLaunchData(new Vector3(Random.value, Random.value, Random.value) * 20f).initialVelocity;
+            ball.velocity = CalculateLaunchData(new Vector3(Random.Range(-1f, 1f), Random.Range(-0.2f,0.2f), Random.Range(-1f, 1f)) * 10f).initialVelocity;
         }
         AttackPS.Play(true);
-        ResetAttackingState();
+        ResetAttackingState(7.5f);
     }
 
-    private void ResetAttackingState()
+    protected void LaunchStraight(int divided ,Vector3 targetPos)
     {
-        attackingState = 3;
-        attackAreaImage.enabled = false;
-
-        attackingState = 0;
-        currCannonDistance = 0;
-        currCoolTime = maxCoolTime;
+        float damage=8f;
+        float scale=0.8f;
+        if (divided > 1)
+        {
+            damage = 2f;
+            scale = 0.5f;
+        }
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] { damage,scale});
+        ball = tmp.GetComponent<Rigidbody>();
+        ball.GetComponent<CannonBall>().gravity = Vector3.zero;
+        ball.velocity = (targetPos - this.transform.position).normalized * ShootVelocity;
+        AttackPS.Play(true);
+        ResetAttackingState((divided>1)? 6f:4f);
     }
 }

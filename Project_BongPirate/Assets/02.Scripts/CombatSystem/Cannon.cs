@@ -17,12 +17,14 @@ public class Cannon : MonoBehaviour
 
     public Transform cursor;
     public float height = 25;
-    public float gravity = -18;
-    
+    public float gravity = -9.81f;
+
+    [SerializeField] protected float ShootVelocity = 50f;
+
     [SerializeField] protected Image attackAreaImage;
     public float currCannonDistance = 0;
 
-    [SerializeField] protected float maxCoolTime = 2f;
+    protected float maxCoolTime = 2f;
     protected float currCoolTime = 0f;
 
     [SerializeField] protected ParticleSystem AttackPS;
@@ -58,13 +60,11 @@ public class Cannon : MonoBehaviour
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
             tmpInput = tmpJoyStick.GetJoyStickInput();
-            float inputMag = tmpInput.magnitude;
+            //float inputMag = tmpInput.magnitude;
             Vector3 calcInput = (Camera.main.transform.forward * tmpInput.y + Camera.main.transform.right * tmpInput.x);
-            print("JoystickInput__Yester : " + tmpInput);
             calcInput.y = 0;
             calcInput.Normalize();
-            tmpInput = new Vector2(calcInput.x, calcInput.z)* inputMag;
-            print("JoystickInpu : " + tmpInput);
+            tmpInput = new Vector2(calcInput.x, calcInput.z);
 
             currCoolTime -= Time.deltaTime;
             tmpJoyStick.UpdateCoolTime(currCoolTime / maxCoolTime);
@@ -81,9 +81,44 @@ public class Cannon : MonoBehaviour
 
     }
 
+    public virtual void ChangeCannonType(int _typeIndex, bool _isSet)
+    {
+    }
+    Vector3 tmpPos;
+    protected void ChargeCannon(float cursorSpeed = -1f,float _currCannonDistance = -1f)
+    {
+        cursor.gameObject.SetActive(true);
+        attackingState = 2;
+
+        if (_currCannonDistance > 0)
+            currCannonDistance = _currCannonDistance;
+
+        attackAreaImage.enabled = true;
+        attackAreaImage.transform.localScale = Vector3.one * currCannonDistance*0.2f;
+
+        if (cursorSpeed == -1)
+            cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
+        else
+        {
+            tmpPos += new Vector3(tmpInput.x, 0, tmpInput.y) * cursorSpeed * Time.deltaTime;
+            tmpPos = Vector3.ClampMagnitude(tmpPos, currCannonDistance);
+            cursor.transform.position = this.transform.position+ tmpPos;
+        }
+    }
+    protected void ResetAttackingState(float coolTime)
+    {
+        maxCoolTime = coolTime;
+        //attackingState = 3;
+        attackAreaImage.enabled = false;
+
+        attackingState = 0;
+        currCannonDistance = 0;
+        currCoolTime = maxCoolTime;
+        cursor.gameObject.SetActive(false);
+    }
+
     protected LaunchData CalculateLaunchData(Vector3 _offset)
     {
-        print("Caluclate");
         float displacementY = cursor.position.y - transform.position.y;
         Vector3 displacementXZ = new Vector3(cursor.position.x - transform.position.x, 0, cursor.position.z - transform.position.z)+ _offset;
         float time = Mathf.Sqrt(-2 * height / gravity) + Mathf.Sqrt(2 * (displacementY - height) / gravity);
@@ -126,7 +161,4 @@ public class Cannon : MonoBehaviour
 
     }
 
-    public virtual void ChangeCannonType(int _typeIndex, bool _isSet)
-    {
-    }
 }

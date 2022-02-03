@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable
+public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantiateMagicCallback
 {
     public Vector3 gravity;
-    [SerializeField] float damage=10;
+    float damage=10;
     Rigidbody rb;
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        // sendData | 0: damage 1: scale
+        info.Sender.TagObject = this.gameObject;
+        object[] sendedData = GetComponent<PhotonView>().InstantiationData;
+
+        damage = (float)sendedData[0];
+        this.transform.localScale = Vector3.one * (float)sendedData[1];
+    }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -25,7 +36,7 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (other.CompareTag("Player") && photonView.IsMine && other.GetComponent<PhotonView>().IsMine==false)
         {
-            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, damage);
+            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered,new object[]{damage,Vector3.zero});
         }
     }
 

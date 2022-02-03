@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Shark : MonoBehaviour
+public class Shark : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 {
-    public Player_Combat_Ship myShip;
-    public Player_Combat_Ship enemyShip;
+    public Player_Controller_Ship myShip;
+    public Player_Controller_Ship enemyShip;
 
     bool focused;
     [SerializeField] float dragForce = 5;
@@ -15,15 +16,27 @@ public class Shark : MonoBehaviour
     [SerializeField] GameObject WaitingSharkObj;
     GameObject shark;
 
-    void Start()
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        info.Sender.TagObject = this.gameObject;
+        object[] sendedData = GetComponent<PhotonView>().InstantiationData;
+        GetComponent<Rigidbody>().velocity = ((Vector3)sendedData[1] - this.transform.position).normalized * (float)sendedData[2];
 
+        foreach (Player_Controller_Ship ship in FindObjectsOfType<Player_Controller_Ship>())
+        {
+            if (ship.GetComponent<PhotonView>().Owner.ActorNumber == (int)sendedData[0])
+            {
+                myShip = ship;
+                break;
+            }
+        }
+        //AttackPS.Play(true);
     }
 
     void Update()
     {
         waitingTime -= Time.deltaTime;
-        if (enemyShip)
+        if (enemyShip && photonView.IsMine)
         {
             if (waitingTime <= 0)
             {
@@ -55,12 +68,12 @@ public class Shark : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (enemyShip == null)
+        if (enemyShip == null && photonView.IsMine)
         {
             if (other.CompareTag("Player") &&
                 other.transform != myShip.transform)
             {
-                enemyShip = other.GetComponent<Player_Combat_Ship>();
+                enemyShip = other.GetComponent<Player_Controller_Ship>();
                 transform.GetChild(0).gameObject.SetActive(false);
             }
         }
