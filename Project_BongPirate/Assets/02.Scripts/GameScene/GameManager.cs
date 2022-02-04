@@ -64,6 +64,24 @@ public class GameManager : MonoBehaviour
         }
 
         MyShip_On_Landing_Point = false;
+        getStartResource();
+    }
+
+    public void getStartResource()
+    {
+        Item_Inventory _item = Item_Manager.GetInstance().item_list[0];
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+
+        _item = Item_Manager.GetInstance().item_list[1];
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
+        Item_Manager.GetInstance().AddItem(_item);
     }
 
     public void SetMyShip(Player_Controller_Ship _myShip)
@@ -195,6 +213,7 @@ public class GameManager : MonoBehaviour
         if (MyShip_On_Landing_Point && !MyShip.is_Landing)
         {
             Island_Landing_UI.SetActive(true);
+            Island_Landing_UI.GetComponent<Island_Landing_UI>().Load_island_Info(All_Island[MyShip.Landed_island_ID]);
             MyShip.Ship_Stop();
         }
         else if (MyShip.is_Landing)
