@@ -39,6 +39,7 @@ public class Player_UI : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Tab))
         {
             player_UI_Open = !player_UI_Open;
+            Item_Manager.instance.ResetCombineTable();
         }
 
         if (player_UI_Open)
