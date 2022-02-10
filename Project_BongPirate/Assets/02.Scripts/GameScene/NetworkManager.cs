@@ -31,7 +31,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        Connect();
+        if (PhotonNetwork.IsConnected)
+        {
+            DisconnetPanel.SetActive(false);
+            Spawn();
+        }
+        else
+        {
+            Connect();
+        }
+        GameManager.GetIstance().GenerateObstacles();
     }
 
 
@@ -46,7 +55,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.LocalPlayer.NickName = PlayerPrefs.GetString("NickName");
+        //PhotonNetwork.LocalPlayer.NickName = PlayerPrefs.GetString("NickName");
         PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
         Debug.Log("Conneted to Master");
     }
@@ -59,6 +68,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         DisconnetPanel.SetActive(false);
         Spawn();
     }
+    
 
     /// <summary>
     /// photon 네트워크와 연결이 끊어진 시점에 호출
@@ -78,11 +88,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         GameObject go = null;
         if (PhotonNetwork.IsMasterClient) // 생성 지점 구분을 위한 조건
         {
-            go = PhotonNetwork.Instantiate("Raft", shipSpawnPos, Quaternion.Euler(0, 90, 0));
+            go = PhotonNetwork.Instantiate("PlayerShip", shipSpawnPos, Quaternion.Euler(0, 90, 0));
         }
         else
         {
-            go = PhotonNetwork.Instantiate("Sailing", shipSpawnPos+new Vector3(10,0,10), Quaternion.Euler(0, 90, 0));
+            go = PhotonNetwork.Instantiate("PlayerShip", shipSpawnPos+new Vector3(10,0,10), Quaternion.Euler(0, 90, 0));
         }
 
         if (FindObjectOfType<CombatManager>() && go.GetComponent<PhotonView>().IsMine)
@@ -113,5 +123,4 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Disconnect();
         }
     }
-
 }

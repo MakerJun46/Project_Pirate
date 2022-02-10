@@ -53,6 +53,15 @@ public class GameManager : MonoBehaviour
     public bool MyShip_On_Landing_Point;
     public GameObject Landing_Button_Blur;
 
+
+    [SerializeField] GameObject[] ObstaclePrefabs;
+    [SerializeField] LayerMask WaterLayer;
+
+
+    [SerializeField] Material WallMaterial;
+    [SerializeField] LayerMask WallThroughLayer;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +73,25 @@ public class GameManager : MonoBehaviour
         }
 
         MyShip_On_Landing_Point = false;
+    }
+    public void GenerateObstacles()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            for (int i = 0; i < 20;)
+            {
+                Vector3 radomPos = new Vector3(Random.Range(-1f, 1f),0, Random.Range(-1f, 1f)) * 200f;
+                RaycastHit hit;
+                if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
+                {
+                    if (hit.transform.CompareTag("Sea"))
+                    {
+                        i++;
+                        GameObject gameObj= PhotonNetwork.Instantiate("Obstacle_Rock", radomPos, Quaternion.identity);
+                    }
+                }
+            }
+        }
     }
 
     public void SetMyShip(Player_Controller_Ship _myShip)
@@ -101,6 +129,18 @@ public class GameManager : MonoBehaviour
                 steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
             steeringRot = Mathf.Clamp(steeringRot, -720, 720);
             SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+
+            var dir = Camera.main.transform.position - MyShip.transform.position;
+            var ray = new Ray(MyShip.transform.position, dir.normalized);
+            Debug.DrawRay(MyShip.transform.position, dir.normalized * 1000f, Color.blue);
+            //if (Physics.Raycast(ray, 10000f, WallThroughLayer))
+            //{
+            //    WallMaterial.SetFloat(Shader.PropertyToID("_Size"), 1);
+            // }
+            //else
+            //    WallMaterial.SetFloat(Shader.PropertyToID("_Size"), 0);
+            var view = Camera.main.WorldToViewportPoint(MyShip.transform.position);
+            WallMaterial.SetVector(Shader.PropertyToID("_Position"), view);
         }
         deathFieldRadius -= Time.deltaTime;
         deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
@@ -240,4 +280,11 @@ public class GameManager : MonoBehaviour
         MyShip.goOrStop = !MyShip.goOrStop;
     }
 
+    public void TryUpgradeShip()
+    {
+        if (MyShip)
+        {
+            MyShip.UpgradeShip();
+        }
+    }
 }

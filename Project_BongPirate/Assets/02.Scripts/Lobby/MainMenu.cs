@@ -28,9 +28,6 @@ public class MainMenu: MonoBehaviour
     /// </summary>
     public void Button_GameLaunch()
     {
-        PlayerPrefs.SetString("NickName", NickName.text);
-
-        SceneManager.LoadScene("GameScene");
     }
 
 }

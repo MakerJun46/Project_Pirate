@@ -8,6 +8,8 @@ using System;
 
 public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 {
+    public int upgradeIndex;
+
     public float MoveSpeed;
     public float MaxSpeed;
     public float MoveSpeedTmp;
@@ -35,25 +37,11 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        Reset_Ship_Status();
-    }
-
-    private void FixedUpdate()
-    {
-        Move();
-    }
-    public void Reset_Ship_Status()
-    {
         RB = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
 
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
-
-        MoveSpeed = 20f;
-        turningSpeed = 1.0f;
-        MoveSpeedTmp = MoveSpeed;
-        MaxSpeed = 30f;
 
         goOrStop = false;
         is_Turn_Left = false;
@@ -64,8 +52,28 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
         GameManager.GetIstance().AllShip.Add(this);
 
+        Reset_Ship_Status();
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
+    }
+    public void Reset_Ship_Status()
+    {
+        MoveSpeed = 20f + upgradeIndex*5f;
+        turningSpeed = 1.0f;
+        MoveSpeedTmp = MoveSpeed;
+        MaxSpeed = 30f + upgradeIndex*5f;
+
         //motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
         //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
+    }
+    public void UpgradeShip()
+    {
+        upgradeIndex++;
+        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, upgradeIndex);
+        Reset_Ship_Status();
     }
 
     public void Move()
