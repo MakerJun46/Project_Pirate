@@ -8,6 +8,11 @@ public class Island_Landing_UI : MonoBehaviour
     public Text SailorCount;
     public int Count;
 
+    public Text islandName;
+    public Text islandDiscription;
+    public Text WoodCount;
+    public Text RockCount;
+
     private void Start()
     {
         Count = 0;
@@ -16,6 +21,39 @@ public class Island_Landing_UI : MonoBehaviour
     {
         Count = 0;
     }
+
+    public void Load_island_Info(Island_Info island)
+    {
+        switch(island.type)
+        {
+            case Island_Info.Island_Type.normal:
+                islandName.text = "º¸Åë ¼¶";
+                break;
+            case Island_Info.Island_Type.cake:
+                islandName.text = "ÄÉÀÌÅ© ¼¶";
+                break;
+            case Island_Info.Island_Type.ice:
+                islandName.text = "ºùÇÏ ¼¶";
+                break;
+            case Island_Info.Island_Type.mushroom:
+                islandName.text = "¹ö¼¸ ¼¶";
+                break;
+            case Island_Info.Island_Type.ruins:
+                islandName.text = "À¯Àû ¼¶";
+                break;
+            case Island_Info.Island_Type.toy:
+                islandName.text = "Àå³­°¨ ¼¶";
+                break;
+            default:
+                break;
+        }
+
+        WoodCount.text = "¹ú¸ñ °¡´ÉÇÑ ¸ñÀç ¼ö : " + island.Wood_Object.Count.ToString();
+        RockCount.text = "Ã¤¼® °¡´ÉÇÑ ¼®Àç ¼ö : " + island.Rock_Object.Count.ToString();
+        SailorCount.text = "¼±¿ø ¼±ÅÃ : " + Count;
+        countReset();
+    }
+
 
     public void UpButton()
     {

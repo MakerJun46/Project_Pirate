@@ -31,7 +31,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     public Text NickNameText;
     private GameObject anchage_UI;
 
-    public int Laned_island_ID;
+    public int Landed_island_ID;
 
     ParticleSystem.EmissionModule motor, front;
 
@@ -108,7 +108,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     }
 
 
-
     public void Ship_MoveSpeed_Reset()
     {
         MoveSpeed = MoveSpeedTmp;
@@ -121,13 +120,27 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("SeaResource"))
+        {
+            Debug.Log("get Resource on Sea");
+
+            int resourceCode = (int)other.GetComponent<Resource>().type;
+
+            Item_Manager.instance.AddItem(Item_Manager.instance.Resource_item_list[resourceCode]);
+
+            Destroy(other.gameObject);
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
             Debug.Log("On anchoragePoint");
             GameManager.GetIstance().MyShip_On_Landing_Point = true;
-            Laned_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
+            Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
         }
     }
 
