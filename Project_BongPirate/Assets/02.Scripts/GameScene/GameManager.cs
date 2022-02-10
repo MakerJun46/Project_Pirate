@@ -69,14 +69,14 @@ public class GameManager : MonoBehaviour
 
     public void getStartResource()
     {
-        Item_Inventory _item = Item_Manager.GetInstance().item_list[0];
+        Item_Inventory _item = Item_Manager.GetInstance().Resource_item_list[0];
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
 
-        _item = Item_Manager.GetInstance().item_list[1];
+        _item = Item_Manager.GetInstance().Resource_item_list[1];
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
@@ -187,7 +187,10 @@ public class GameManager : MonoBehaviour
     public void UI_Panel_Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
+        {
             PlayerInfo_UI_Opened = !PlayerInfo_UI_Opened;
+            Item_Manager.instance.ResetCombineTable();
+        }
 
         if (PlayerInfo_UI_Opened)
         {

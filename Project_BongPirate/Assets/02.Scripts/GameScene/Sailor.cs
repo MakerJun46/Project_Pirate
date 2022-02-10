@@ -77,7 +77,7 @@ public class Sailor : MonoBehaviour
 
         Debug.Log("itemIndex : " + itemIndex);
 
-        Item_Inventory _item = Item_Manager.GetInstance().item_list[itemIndex];
+        Item_Inventory _item = Item_Manager.GetInstance().Resource_item_list[itemIndex];
         Item_Manager.GetInstance().AddItem(_item);
 
         Landed_island.getResource_Text.text = target.name.Substring(0, 4) + " + 1";

@@ -4,13 +4,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Item_Slot : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
+public class Item_Slot : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler, IPointerDownHandler
 {
     [SerializeField] Image img;
 
     public Vector2 defaultPosition;
     public GameObject itemObject;
     public Item_Inventory _item;
+
+    public bool isCombinedItem;
+
     public Item_Inventory item
     {
         get { return _item; }
@@ -19,11 +22,13 @@ public class Item_Slot : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
             _item = value;
             if(_item != null)
             {
+                img.rectTransform.localPosition = Vector3.zero;
                 img.sprite = item.itemImage;
                 img.color = new Color(1, 1, 1, 1);
             }
             else
             {
+                img.sprite = null;
                 img.color = new Color(1, 1, 1, 0);
             }
         }
@@ -35,22 +40,27 @@ public class Item_Slot : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
         defaultPosition = this.transform.position;
     }
 
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (isCombinedItem && item != null)
+        {
+            Debug.Log("Combine - itemslot");
+            Item_Manager.instance.Combine(item);
+        }
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Drag Start");
-
         if(_item != null && !Item_Manager.instance.onDraging)
         {
             Item_Manager.instance.onDraging = true;
-            Item_Manager.instance.DragItem = itemObject;
+            Item_Manager.instance.DragItem = this.gameObject;
             //itemObject.transform.parent = Item_Manager.instance.OnMouseDragParent.transform;
         }
-
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("Dragingg...");
 
         Vector2 currentPos = Input.mousePosition;
         itemObject.transform.position = currentPos;
@@ -58,24 +68,26 @@ public class Item_Slot : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("Drag End");
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("Drop");
-        CombineTable_Slot target = Item_Manager.instance.NearSlot(itemObject.transform.position);
+        CombineTable_Slot target_combineTable = Item_Manager.instance.NearSlot_CombineTable(itemObject.transform.position);
+        Item_Slot target_inventory = Item_Manager.instance.NearSlot_inventory(itemObject.transform.position);
 
-        if(target != null)
+        if(target_combineTable == null && target_inventory == null)
         {
             itemObject.transform.position = defaultPosition;
-            Item_Manager.instance.Drop(target);
+            img.rectTransform.localPosition = Vector3.zero;
         }
         else
         {
             itemObject.transform.position = defaultPosition;
+            img.rectTransform.localPosition = Vector3.zero;
+            Item_Manager.instance.Drop(target_combineTable, target_inventory);
         }
 
         Item_Manager.instance.onDraging = false;
     }
+
 }

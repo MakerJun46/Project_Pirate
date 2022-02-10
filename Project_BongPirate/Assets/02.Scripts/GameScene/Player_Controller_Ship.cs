@@ -112,6 +112,20 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("SeaResource"))
+        {
+            Debug.Log("get Resource on Sea");
+
+            int resourceCode = (int)other.GetComponent<Resource>().type;
+
+            Item_Manager.instance.AddItem(Item_Manager.instance.Resource_item_list[resourceCode]);
+
+            Destroy(other.gameObject);
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("anchoragePoint"))

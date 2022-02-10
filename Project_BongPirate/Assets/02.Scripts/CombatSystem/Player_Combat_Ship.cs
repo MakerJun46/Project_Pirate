@@ -28,7 +28,15 @@ public class Player_Combat_Ship : MonoBehaviourPun
         GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
 
         if (health <= 0)
+        {
             Destroy(this.gameObject);
+            GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
+            
+            for(int i = 0; i <Item_Manager.instance.Player_items.Count; i++)
+            {
+                go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
+            }
+        }
     }
 
     [PunRPC]
