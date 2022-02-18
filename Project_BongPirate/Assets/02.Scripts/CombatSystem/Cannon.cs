@@ -24,8 +24,11 @@ public class Cannon : MonoBehaviour
     [SerializeField] protected Image attackAreaImage;
     public float currCannonDistance = 0;
 
-    protected float maxCoolTime = 2f;
-    protected float currCoolTime = 0f;
+    public float maxChargetAmount = 2f;
+    public float currChargeAmount;
+
+    public float maxCoolTime = 2f;
+    public float currCoolTime;
 
     [SerializeField] protected ParticleSystem AttackPS;
 
@@ -107,13 +110,13 @@ public class Cannon : MonoBehaviour
     }
     protected void ResetAttackingState(float coolTime)
     {
-        maxCoolTime = coolTime;
+        maxChargetAmount = coolTime;
         //attackingState = 3;
         attackAreaImage.enabled = false;
 
         attackingState = 0;
         currCannonDistance = 0;
-        currCoolTime = maxCoolTime;
+        currChargeAmount = 0;
         cursor.gameObject.SetActive(false);
     }
 

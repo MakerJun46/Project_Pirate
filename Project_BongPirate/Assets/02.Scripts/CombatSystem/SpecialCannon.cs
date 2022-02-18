@@ -55,7 +55,7 @@ public class SpecialCannon : Cannon
             switch (mySpecialCannonType)
             {
                 case SpecialCannonType.Hook:
-                    if (currCoolTime <= 0)
+                    if (currCoolTime <=0)
                     {
                         attackingState = 1;
                     }

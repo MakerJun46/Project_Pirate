@@ -61,7 +61,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] Material WallMaterial;
     [SerializeField] LayerMask WallThroughLayer;
 
-    // Start is called before the first frame update
+    [SerializeField] int obstacleCount=50;
+
     void Start()
     {
         instance = this;
@@ -95,9 +96,9 @@ public class GameManager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            for (int i = 0; i < 20;)
+            for (int i = 0; i < obstacleCount;)
             {
-                Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)) * 200f;
+                Vector3 radomPos = new Vector3(Random.Range(-1f, 1f),-0.02f, Random.Range(-1f, 1f)) * 200f;
                 RaycastHit hit;
                 if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
                 {
@@ -105,6 +106,7 @@ public class GameManager : MonoBehaviour
                     {
                         i++;
                         GameObject gameObj = PhotonNetwork.Instantiate("Obstacle_Rock", radomPos, Quaternion.identity);
+                        gameObj.GetComponent<Obstacle>().Initialize();
                     }
                 }
             }
@@ -119,9 +121,9 @@ public class GameManager : MonoBehaviour
         VC_TPS.m_Follow = _myShip.transform;
         VC_TPS.m_LookAt = _myShip.transform;
     }
-    public void ToggleGameView(bool _topView)
+    public void ToggleGameView()
     {
-        topView = _topView;
+        topView = !topView;
         VC_TPS.m_Priority = topView ? 9 : 11;
     }
 
@@ -131,11 +133,6 @@ public class GameManager : MonoBehaviour
         UI_Resources_Text_Update();
         UI_Panel_Update();
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            topView = !topView;
-            ToggleGameView(topView);
-        }
 
         if (MyShip) {
             if (MyShip.is_Turn_Left)

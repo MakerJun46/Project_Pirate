@@ -20,14 +20,24 @@ public class FieldOfView : MonoBehaviourPun
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
 
+    public MeshFilter coolTimeMeshFilter;
+    Mesh coolTimeMesh;
+
     [SerializeField] Material[] fov_mats;
 
+    Cannon myCannon;
 
     private void Start()
     {
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
+
+        coolTimeMesh = new Mesh();
+        coolTimeMesh.name = "CoolTime Mesh";
+        coolTimeMeshFilter.mesh = coolTimeMesh;
+
+        myCannon = GetComponent<Cannon>();
     }
     private void OnEnable()
     {
@@ -43,7 +53,8 @@ public class FieldOfView : MonoBehaviourPun
     {
         if (GetComponentInParent<PhotonView>().IsMine || PhotonNetwork.IsConnected==false)
         {
-            DrawFieldOfView();
+            DrawFieldOfView(viewMesh, viewRadius);
+            DrawFieldOfView(coolTimeMesh,viewRadius * myCannon.currChargeAmount/ myCannon.maxChargetAmount);
 
             float minDistance = 1000;
             currTarget = null;
@@ -61,9 +72,28 @@ public class FieldOfView : MonoBehaviourPun
             }
 
             if (currTarget == null)
-                viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[0];
+            {
+                myCannon.currChargeAmount -= Time.deltaTime;
+                viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+                coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+            }
             else
-                viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[1];
+            {
+                if (myCannon.currCoolTime<=0)
+                {
+                    viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[0];
+                    coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                    myCannon.currChargeAmount += Time.deltaTime * 3f;
+                }
+                else
+                {
+                    viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[1];
+                    coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+                }
+
+                viewMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+            }
+            myCannon.currChargeAmount = Mathf.Clamp(myCannon.currChargeAmount, 0, myCannon.maxChargetAmount);
         }
     }
     IEnumerator FindTargetsWithDelay(float delay)
@@ -79,7 +109,7 @@ public class FieldOfView : MonoBehaviourPun
     void FindVisibleTargets()
     {
         visibleTargets.Clear();
-        Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
+        Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius , targetMask);
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
             Transform target = targetsInViewRadius[i].transform;
@@ -100,7 +130,7 @@ public class FieldOfView : MonoBehaviourPun
         }
     }
 
-    void DrawFieldOfView()
+    void DrawFieldOfView(Mesh _viewMesh, float _viewRadius)
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
@@ -109,13 +139,13 @@ public class FieldOfView : MonoBehaviourPun
         for (int i = 0; i <= stepCount; i++)
         {
             float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
-            ViewCastInfo newViewCast = ViewCast(angle, viewRadius);
+            ViewCastInfo newViewCast = ViewCast(angle, _viewRadius);
             if (i > 0)
             {
                 bool edgeDstThresholdExceeded = Mathf.Abs(oldViewCast.dst - newViewCast.dst) > edgeDistanceThreshold;
                 if (oldViewCast.hit != newViewCast.hit || (oldViewCast.hit && newViewCast.hit && edgeDstThresholdExceeded))
                 {
-                    EdgeInfo edge = FindEdge(oldViewCast, newViewCast, viewRadius);
+                    EdgeInfo edge = FindEdge(oldViewCast, newViewCast, _viewRadius);
                     if (edge.pointA != Vector3.zero)
                     {
                         viewPoints.Add(edge.pointA);
@@ -145,10 +175,10 @@ public class FieldOfView : MonoBehaviourPun
                 triangles[i * 3 + 2] = i + 2;
             }
         }
-        viewMesh.Clear();
-        viewMesh.vertices = verticies;
-        viewMesh.triangles = triangles;
-        viewMesh.RecalculateNormals();
+        _viewMesh.Clear();
+        _viewMesh.vertices = verticies;
+        _viewMesh.triangles = triangles;
+        _viewMesh.RecalculateNormals();
     }
     
 

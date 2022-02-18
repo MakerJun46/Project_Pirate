@@ -45,8 +45,9 @@ public class AutoCannon : Cannon
                 if (fov.currTarget)
                 {
                     cursor.transform.position = fov.currTarget.position;
-                    if (currCoolTime <= 0)
+                    if (currCoolTime<=0 &&Vector3.Distance(fov.currTarget.position,this.transform.position) <= fov.viewRadius * currChargeAmount / maxChargetAmount)
                     {
+                        currChargeAmount = 0;
                         currCoolTime = maxCoolTime;
                         switch (myCannonType)
                         {

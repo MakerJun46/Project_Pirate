@@ -10,42 +10,19 @@ public class CombatManager : MonoBehaviour
     public List<AttackJoyStick> joySticks = new List<AttackJoyStick>();
     public List<AttackJoyStick> SpecialJoySticks = new List<AttackJoyStick>();
 
-    private void Update()
+    
+
+    public void EquipDefaultCannonUI(int _spotIndex)
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            EquipCannon(0, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            EquipCannon(1, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            EquipCannon(2, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            EquipCannon(3, 0);
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            EquipSail(0, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.O))
-        {
-            EquipSail(0, 1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            EquipSpecialCannon(0, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            EquipSpecialCannon(1, 0);
-        }
+        EquipCannon(_spotIndex, 0);
+    }
+    public void EquipSpecialCannonUI(int _spotIndex)
+    {
+        EquipSpecialCannon(_spotIndex, 0);
+    }
+    public void EquipSailUI(int _sailIndex)
+    {
+        EquipSail(0, _sailIndex);
     }
 
     public void SetMyShip(Player_Combat_Ship _ship)
