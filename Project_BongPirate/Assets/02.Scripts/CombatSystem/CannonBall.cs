@@ -26,6 +26,11 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     void Update()
     {
         transform.GetChild(0).Rotate(new Vector3(rb.velocity.z, 0, -rb.velocity.x) * Time.deltaTime * 60f, Space.World);
+
+        if(this.transform.position.y < -10)
+        {
+            Destroy(this.gameObject);
+        }
     }
     private void FixedUpdate()
     {

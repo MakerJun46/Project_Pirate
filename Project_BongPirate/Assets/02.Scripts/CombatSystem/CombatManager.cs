@@ -5,10 +5,19 @@ using UnityEngine.UI;
 
 public class CombatManager : MonoBehaviour
 {
+    public static CombatManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
     Player_Combat_Ship myShip;
 
     public List<AttackJoyStick> joySticks = new List<AttackJoyStick>();
     public List<AttackJoyStick> SpecialJoySticks = new List<AttackJoyStick>();
+
 
     private void Update()
     {
@@ -57,7 +66,7 @@ public class CombatManager : MonoBehaviour
     {
         myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipSail", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _sailIndex });
     }
-    private void EquipCannon(int _spotIndex, int _cannonIndex)
+    public void EquipCannon(int _spotIndex, int _cannonIndex)
     {
         //Cannon tmpCannon = myShip.EquipCannon(_spotIndex, _cannonIndex);
         myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipCannon", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _cannonIndex });

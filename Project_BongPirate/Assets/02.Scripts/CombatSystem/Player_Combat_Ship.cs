@@ -118,7 +118,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
         if (health <= 0)
         {
-            Destroy(this.gameObject);
             GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
             
             for(int i = 0; i <Item_Manager.instance.Player_items.Count; i++)
@@ -129,6 +128,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(0, UnityEngine.SceneManagement.LoadSceneMode.Single);
             }
+
+            Destroy(this.gameObject);
         }
     }
 
