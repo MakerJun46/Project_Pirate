@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
         return instance;
     }
 
+    PhotonView PV;
+
     public Text UI_Wood_Count;
     public Text UI_Rock_Count;
     public Text UI_Sailor_Count;
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject Island_Landing_UI;
     public GameObject PlayerInfo_UI_Panel;
+    public GameObject TreasureChest_UI_Panel;
     bool PlayerInfo_UI_Opened = false;
 
     public List<Island_Info> All_Island;
@@ -53,16 +56,16 @@ public class GameManager : MonoBehaviour
     public bool MyShip_On_Landing_Point;
     public GameObject Landing_Button_Blur;
 
-
     [SerializeField] GameObject[] ObstaclePrefabs;
     [SerializeField] LayerMask WaterLayer;
-
 
     [SerializeField] Material WallMaterial;
     [SerializeField] LayerMask WallThroughLayer;
 
-    [SerializeField] int obstacleCount=50;
+    [SerializeField] MinimapCamera minimapCam;
+    [SerializeField] Material MyshipColor;
 
+    // Start is called before the first frame update
     void Start()
     {
         instance = this;
@@ -74,6 +77,7 @@ public class GameManager : MonoBehaviour
 
         MyShip_On_Landing_Point = false;
         getStartResource();
+        PV = GetComponent<PhotonView>();
     }
 
     public void getStartResource()
@@ -96,9 +100,9 @@ public class GameManager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            for (int i = 0; i < obstacleCount;)
+            for (int i = 0; i < 20;)
             {
-                Vector3 radomPos = new Vector3(Random.Range(-1f, 1f),-0.02f, Random.Range(-1f, 1f)) * 200f;
+                Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)) * 200f;
                 RaycastHit hit;
                 if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
                 {
@@ -106,7 +110,6 @@ public class GameManager : MonoBehaviour
                     {
                         i++;
                         GameObject gameObj = PhotonNetwork.Instantiate("Obstacle_Rock", radomPos, Quaternion.identity);
-                        gameObj.GetComponent<Obstacle>().Initialize();
                     }
                 }
             }
@@ -120,10 +123,14 @@ public class GameManager : MonoBehaviour
         VC_Top.m_LookAt = _myShip.transform;
         VC_TPS.m_Follow = _myShip.transform;
         VC_TPS.m_LookAt = _myShip.transform;
+
+        minimapCam.Player = _myShip.gameObject;
+        MyShip.transform.Find("MinimapCircle").GetComponent<Renderer>().sharedMaterial = MyshipColor;
     }
-    public void ToggleGameView()
+
+    public void ToggleGameView(bool _topView)
     {
-        topView = !topView;
+        topView = _topView;
         VC_TPS.m_Priority = topView ? 9 : 11;
     }
 
@@ -133,6 +140,11 @@ public class GameManager : MonoBehaviour
         UI_Resources_Text_Update();
         UI_Panel_Update();
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            topView = !topView;
+            ToggleGameView(topView);
+        }
 
         if (MyShip) {
             if (MyShip.is_Turn_Left)
@@ -223,7 +235,7 @@ public class GameManager : MonoBehaviour
     }
     public void UI_Panel_Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && !TreasureChest_UI_Panel.activeInHierarchy)
         {
             PlayerInfo_UI_Opened = !PlayerInfo_UI_Opened;
             Item_Manager.instance.ResetCombineTable();

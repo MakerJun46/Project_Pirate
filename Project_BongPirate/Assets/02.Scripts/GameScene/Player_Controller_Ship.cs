@@ -58,7 +58,13 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks
     private void FixedUpdate()
     {
         Move();
+        GetInput();
     }
+
+    public void GetInput()
+    {
+    }
+
     public void Reset_Ship_Status()
     {
         MoveSpeed = 20f;

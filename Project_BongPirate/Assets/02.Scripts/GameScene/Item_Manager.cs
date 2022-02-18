@@ -11,7 +11,7 @@ public class Item_Manager : MonoBehaviour
 
     public static Item_Manager GetInstance()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = FindObjectOfType<Item_Manager>();
         }
@@ -21,6 +21,7 @@ public class Item_Manager : MonoBehaviour
     public List<Item_Inventory> Resource_item_list;
     public List<Item_Inventory> Player_items;
     public List<Item_Inventory> CombineTable_items;
+    public List<Item_Inventory> equip_items;
 
     public Image dragImage;
     public GameObject DragItem;
@@ -33,15 +34,27 @@ public class Item_Manager : MonoBehaviour
     [SerializeField] Transform CombineSlotParent;
     [SerializeField] CombineTable_Slot[] CombineSlots;
 
+    [SerializeField] Transform TreasureChestSlotParent;
+    [SerializeField] Item_Slot[] TreasureChestSlots;
+
+    [SerializeField] Transform MyInventorySlotParent;
+    [SerializeField] Item_Slot[] MyInventorySlots;
+
+    [SerializeField] Transform ShipSlotParent;
+    [SerializeField] Item_Slot[] ShipSlots;
+
     private void OnValidate()
     {
         inventorySlots = InventorySlotParent.GetComponentsInChildren<Item_Slot>();
         CombineSlots = CombineSlotParent.GetComponentsInChildren<CombineTable_Slot>();
+        TreasureChestSlots = TreasureChestSlotParent.GetComponentsInChildren<Item_Slot>();
+        MyInventorySlots = MyInventorySlotParent.GetComponentsInChildren<Item_Slot>();
+        ShipSlots = ShipSlotParent.GetComponentsInChildren<Item_Slot>();
     }
 
     private void Update()
     {
-        
+
     }
 
     private void Awake()
@@ -53,11 +66,11 @@ public class Item_Manager : MonoBehaviour
     public void FreshSlots()
     {
         int i = 0;
-        for(; i < Player_items.Count && i < inventorySlots.Length; i++)
+        for (; i < Player_items.Count && i < inventorySlots.Length; i++)
         {
             inventorySlots[i].item = Player_items[i];
         }
-        for(; i < inventorySlots.Length; i++)
+        for (; i < inventorySlots.Length; i++)
         {
             inventorySlots[i].item = null;
         }
@@ -73,9 +86,34 @@ public class Item_Manager : MonoBehaviour
         //}
     }
 
+    public void FreshSlots_TreasureChest(TreasureChest TC)
+    {
+        Debug.Log("Fresh TresureChest");
+
+        int i = 0;
+        for (; i < TC.items.Count; i++)
+        {
+            TreasureChestSlots[i].item = TC.items[i];
+        }
+        for (; i < TreasureChestSlots.Length; i++)
+        {
+            TreasureChestSlots[i].item = null;
+        }
+
+        i = 0;
+        for (; i < Player_items.Count && i < MyInventorySlots.Length; i++)
+        {
+            MyInventorySlots[i].item = Player_items[i];
+        }
+        for (; i < inventorySlots.Length; i++)
+        {
+            MyInventorySlots[i].item = null;
+        }
+    }
+
     public void AddItem(Item_Inventory _item)
     {
-        if(Player_items.Count < inventorySlots.Length)
+        if (Player_items.Count < inventorySlots.Length)
         {
             Player_items.Add(_item);
             FreshSlots();
@@ -88,7 +126,7 @@ public class Item_Manager : MonoBehaviour
 
     public void AddItem_CombineTable(Item_Inventory _item)
     {
-        if(CombineTable_items.Count < CombineSlots.Length)
+        if (CombineTable_items.Count < CombineSlots.Length)
         {
             CombineTable_items.Add(_item);
             FreshSlots();
@@ -102,7 +140,7 @@ public class Item_Manager : MonoBehaviour
     {
         Debug.Log("combine - itemmanager");
         Debug.Log("combinedItem Count : " + CombineTable_items.Count);
-        for(int i = 0; i < CombineTable_items.Count; i++)
+        for (int i = 0; i < CombineTable_items.Count; i++)
         {
             var target = Player_items.Find(x => x.itemCode == CombineTable_items[i].itemCode);
             Debug.Log("target : " + target);
@@ -132,12 +170,12 @@ public class Item_Manager : MonoBehaviour
         float Min = 10000f;
         int index = -1;
 
-        for(int i = 0; i < CombineSlots.Length; i++)
+        for (int i = 0; i < CombineSlots.Length; i++)
         {
             Vector2 slotPos = CombineSlots[i].gameObject.transform.position;
             float Dis = Vector2.Distance(slotPos, Pos);
 
-            if(Dis < Min)
+            if (Dis < Min)
             {
                 Min = Dis;
                 index = i;
@@ -153,9 +191,49 @@ public class Item_Manager : MonoBehaviour
         float Min = 10000f;
         int index = -1;
 
-        for (int i = 0; i < inventorySlots.Length; i++)
+        if(GameManager.GetIstance().TreasureChest_UI_Panel.activeInHierarchy)
         {
-            Vector2 slotPos = inventorySlots[i].gameObject.transform.position;
+            for (int i = 0; i < MyInventorySlots.Length; i++)
+            {
+                Vector2 slotPos = MyInventorySlots[i].gameObject.transform.position;
+                float Dis = Vector2.Distance(slotPos, Pos);
+
+                if (Dis < Min)
+                {
+                    Min = Dis;
+                    index = i;
+                }
+            }
+
+            return Min < min_dis ? MyInventorySlots[index] : null;
+        }
+        else
+        {
+            for (int i = 0; i < inventorySlots.Length; i++)
+            {
+                Vector2 slotPos = inventorySlots[i].gameObject.transform.position;
+                float Dis = Vector2.Distance(slotPos, Pos);
+
+                if (Dis < Min)
+                {
+                    Min = Dis;
+                    index = i;
+                }
+            }
+
+            return Min < min_dis ? inventorySlots[index] : null;
+        }
+    }
+
+    public Item_Slot NearSlot_ShipSlot(Vector3 Pos)
+    {
+        float min_dis = 40f;
+        float Min = 10000f;
+        int index = -1;
+
+        for (int i = 0; i < ShipSlots.Length; i++)
+        {
+            Vector2 slotPos = ShipSlots[i].gameObject.transform.position;
             float Dis = Vector2.Distance(slotPos, Pos);
 
             if (Dis < Min)
@@ -165,7 +243,7 @@ public class Item_Manager : MonoBehaviour
             }
         }
 
-        return Min < min_dis ? inventorySlots[index] : null;
+        return Min < min_dis ? ShipSlots[index] : null;
     }
 
     public void SwapPosition(Item_Slot target_inventory)
@@ -179,6 +257,12 @@ public class Item_Manager : MonoBehaviour
     public void init_Inventory(Item_Slot slot)
     {
         slot.item = DragItem.GetComponent<Item_Slot>().item;
+
+        if(GameManager.GetIstance().TreasureChest_UI_Panel.activeInHierarchy)
+        {
+            Player_items.Add(DragItem.GetComponent<Item_Slot>().item);
+        }
+
         DragItem.GetComponent<Item_Slot>().item = null;
     }
 
@@ -187,23 +271,49 @@ public class Item_Manager : MonoBehaviour
         slot.item = DragItem.GetComponent<Item_Slot>().item;
     }
 
-    public void Drop(CombineTable_Slot target_CombineTable, Item_Slot target_Inevntory, bool isCombineTableItem = false)
+    public void equip_Item(Item_Slot slot)
     {
-        if(target_CombineTable != null && !isCombineTableItem)
+        slot.item = DragItem.GetComponent<Item_Slot>().item;
+        slot.ImgPositiontoZero();
+        equip_items.Add(DragItem.GetComponent<Item_Slot>().item);
+
+        var tmp = Player_items.Find(x => x == DragItem.GetComponent<Item_Slot>().item);
+        Debug.Log("DragItem : " + DragItem.GetComponent<Item_Slot>().item);
+        Debug.Log("Finded" + tmp);
+
+        Player_items.Remove(Player_items.Find(x => x == DragItem.GetComponent<Item_Slot>().item));
+
+        FreshSlots();
+    }
+
+    public void Drop(CombineTable_Slot target_CombineTable, Item_Slot target_Inevntory, Item_Slot target_ShipSlot = null, bool isCombineTableItem = false)
+    {
+        if (target_CombineTable != null && !isCombineTableItem)
         {
             AddItem_CombineTable(DragItem.GetComponentInParent<Item_Slot>()._item);
             init_CombineTable(target_CombineTable);
             Combine_Item.instance.DetectCombine();
         }
-        else
+        else if(target_Inevntory != null)
         {
-            if(target_Inevntory._item != null)
+            if (target_Inevntory._item != null)
             {
                 SwapPosition(target_Inevntory);
             }
             else
             {
                 init_Inventory(target_Inevntory);
+            }
+        }
+        else if(target_ShipSlot != null)
+        {
+            if(target_ShipSlot._item != null)
+            {
+                // 장착한 아이템과 위치 바꾸는 코드 작성
+            }
+            else
+            {
+                equip_Item(target_ShipSlot);
             }
         }
     }
