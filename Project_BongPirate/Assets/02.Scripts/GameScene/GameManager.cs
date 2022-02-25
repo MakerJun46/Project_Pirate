@@ -65,6 +65,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] MinimapCamera minimapCam;
     [SerializeField] Material MyshipColor;
 
+    [SerializeField] GameObject WorldMap;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -144,6 +146,18 @@ public class GameManager : MonoBehaviour
         {
             topView = !topView;
             ToggleGameView(topView);
+        }
+
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            if(WorldMap.activeInHierarchy)
+            {
+                WorldMap.SetActive(false);
+            }
+            else
+            {
+                WorldMap.SetActive(true);
+            }
         }
 
         if (MyShip) {
