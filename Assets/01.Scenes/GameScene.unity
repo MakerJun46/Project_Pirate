@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465791, g: 0.49641317, b: 0.57481784, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1086,7 +1086,7 @@ Transform:
   m_LocalScale: {x: 500, y: 1, z: 500}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &108373457
 GameObject:
@@ -1717,7 +1717,6 @@ MonoBehaviour:
   VC_TPS: {fileID: 1384850262}
   deathFieldRadius: 300
   DeathFieldPS: {fileID: 0}
-  DeathField: {fileID: 1331888138}
   deathFieldLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1737,8 +1736,8 @@ MonoBehaviour:
     m_Bits: 0
   minimapCam: {fileID: 166897967}
   MyshipColor: {fileID: 2100000, guid: d8f4e76ed706c77429142d84a396b7ee, type: 2}
-  GameEndPanel: {fileID: 791085565}
-  GameWinPanel: {fileID: 1624817796}
+  miniMap: {fileID: 0}
+  WorldMap: {fileID: 0}
 --- !u!4 &161101652
 Transform:
   m_ObjectHideFlags: 0
@@ -4220,7 +4219,7 @@ Transform:
   - {fileID: 472749716}
   - {fileID: 290077424}
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &466870951
 GameObject:
@@ -5773,7 +5772,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5423200357827568224, guid: 8a0210d5f9adcca46a352cd94fdd3791, type: 3}
       propertyPath: m_RootOrder
-      value: 23
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 5423200357827568224, guid: 8a0210d5f9adcca46a352cd94fdd3791, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7347,6 +7346,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624bf97fb21693f45906a79069b31a0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &717303842
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 483576997207186298, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_Name
+      value: UnderSea_Terrain
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -356
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -363
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.92387956
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.38268343
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
 --- !u!1 &721094745
 GameObject:
   m_ObjectHideFlags: 0
@@ -8262,7 +8326,7 @@ Transform:
   m_Children:
   - {fileID: 1331888139}
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &789912945
 GameObject:
@@ -10585,7 +10649,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 255
+    m_Bits: 767
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -13313,7 +13377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5423200357827568224, guid: 8a0210d5f9adcca46a352cd94fdd3791, type: 3}
       propertyPath: m_RootOrder
-      value: 22
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 5423200357827568224, guid: 8a0210d5f9adcca46a352cd94fdd3791, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13555,7 +13619,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2307668009691512341, guid: 4922af83259c89e4ab38b36f5c2cf6a1, type: 3}
       propertyPath: m_RootOrder
-      value: 20
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 2307668009691512341, guid: 4922af83259c89e4ab38b36f5c2cf6a1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14277,7 +14341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5423200357827568224, guid: 8a0210d5f9adcca46a352cd94fdd3791, type: 3}
       propertyPath: m_RootOrder
-      value: 21
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 5423200357827568224, guid: 8a0210d5f9adcca46a352cd94fdd3791, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18004,7 +18068,7 @@ MonoBehaviour:
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.7725491, b: 0.62352943, a: 0.5176471}
   deepColor: {r: 0.01176471, g: 0.28624168, b: 0.50980073, a: 1}
-  colorDepth: 0.8
+  colorDepth: 3.31
   horizonColor: {r: 0, g: 0.22741818, b: 0.8, a: 0.7647059}
   horizonDistance: 20
   shoreFade: 1

@@ -167,7 +167,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 {
                     go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
                 }
-                GameManager.GetIstance().EndGame(false);
+
+                //GameManager.GetIstance().EndGame(false);
+                
                 Destroy(this.gameObject);
             }
         }
