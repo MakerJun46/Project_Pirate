@@ -1,6 +1,18 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+
+public class AttackInfo
+{
+    public int id;
+    public float lifetime;
+    public AttackInfo(int _id, float _lifeTime = 1f)
+    {
+        id = _id;
+        lifetime = _lifeTime;
+    }
+}
+
 public class Player_Combat_Ship : MonoBehaviourPun
 {
     public float health;
@@ -125,15 +137,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
     }
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
-    public class AttackInfo {
-        public int id;
-        public float lifetime;
-        public AttackInfo(int _id, float _lifeTime=1f)
-        {
-            id = _id;
-            lifetime = _lifeTime;
-        }
-    }
 
 
     [PunRPC]
@@ -167,13 +170,17 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 {
                     go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
                 }
+                GetComponent<Player_Controller_Ship>().deadTime = Time.time;
 
-                //GameManager.GetIstance().EndGame(false);
-                
+                GameManager.GetInstance().Observe(0);
+
                 Destroy(this.gameObject);
             }
         }
     }
+
+
+
 
     [PunRPC]
     public void EquipSail(int _spotIndex, int _sailIndex)
@@ -243,7 +250,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localScale = Vector3.one;
             tmpCannon.transform.localRotation = Quaternion.identity;
             myAutoCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
-            tmpCannon.GetComponent<Cannon>().Initialize(this,_spotIndex);
+            tmpCannon.GetComponent<AutoCannon>().Initialize(this,_spotIndex, int.Parse((string)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
         }
 
         ChangeCannonType(_spotIndex, _cannonIndex, true);
@@ -286,7 +293,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localScale = Vector3.one;
             tmpCannon.transform.localRotation = Quaternion.identity;
             mySpecialCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
-            tmpCannon.GetComponent<Cannon>().Initialize(this, _spotIndex);
+            tmpCannon.GetComponent<SpecialCannon>().Initialize(this, _spotIndex, (int)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]);
         }
         ChangeSpecialCannonType(_spotIndex, _cannonIndex, true);
 
@@ -341,7 +348,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     ,-1*impulse*3f,photonView.ViewID
                 });
                 this.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
-                    2.5f
+                    5.0f
                     ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
                 });
             }

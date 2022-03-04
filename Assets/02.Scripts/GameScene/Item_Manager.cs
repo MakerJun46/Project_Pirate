@@ -191,7 +191,7 @@ public class Item_Manager : MonoBehaviour
         float Min = 10000f;
         int index = -1;
 
-        if(GameManager.GetIstance().TreasureChest_UI_Panel.activeInHierarchy)
+        if(GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().TreasureChest_UI_Panel.activeInHierarchy)
         {
             for (int i = 0; i < MyInventorySlots.Length; i++)
             {
@@ -258,7 +258,7 @@ public class Item_Manager : MonoBehaviour
     {
         slot.item = DragItem.GetComponent<Item_Slot>().item;
 
-        if(GameManager.GetIstance().TreasureChest_UI_Panel.activeInHierarchy)
+        if(GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().TreasureChest_UI_Panel.activeInHierarchy)
         {
             Player_items.Add(DragItem.GetComponent<Item_Slot>().item);
         }

@@ -57,7 +57,7 @@ public class Island_Landing_UI : MonoBehaviour
 
     public void UpButton()
     {
-        if(GameManager.GetIstance().My_Sailor_Count > Count)
+        if(GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().My_Sailor_Count > Count)
         {
             Count++;
             SailorCount.text = "선원 선택 : " + Count;
@@ -77,7 +77,7 @@ public class Island_Landing_UI : MonoBehaviour
     {
         for(int i = 0; i < Count; i++)
         {
-            GameManager.GetIstance().MySailors[i].GetComponent<Sailor>().status = Sailor.Sailor_Status.Landing;
+            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MySailors[i].GetComponent<Sailor>().status = Sailor.Sailor_Status.Landing;
         }
     }
 }

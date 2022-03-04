@@ -16,9 +16,9 @@ public class SpecialCannon : Cannon
     public SpecialCannonType mySpecialCannonType;
 
 
-    public override void Initialize(Player_Combat_Ship _myShip,int _spotIndex)
+    public override void Initialize(Player_Combat_Ship _myShip,int _spotIndex,int _gameModeIndex)
     {
-        base.Initialize(_myShip,_spotIndex);
+        base.Initialize(_myShip, _spotIndex, _gameModeIndex);
     }
 
     protected override void Update()

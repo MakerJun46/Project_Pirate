@@ -41,7 +41,10 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     {
         if (other.CompareTag("Player") && photonView.IsMine && other.GetComponent<PhotonView>().IsMine==false)
         {
-            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered,new object[]{damage,Vector3.zero});
+            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered,new object[]{damage,Vector3.zero, GetComponent<PhotonView>().ViewID});
+        }else if(other.CompareTag("Enemy") && photonView.IsMine)
+        {
+            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
         }
     }
 
