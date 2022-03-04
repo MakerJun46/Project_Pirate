@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
 
     public bool MyShip_On_Landing_Point;
     public GameObject Landing_Button_Blur;
+    public int PlayerCount;
 
     [SerializeField] GameObject[] ObstaclePrefabs;
     [SerializeField] LayerMask WaterLayer;
@@ -188,7 +189,7 @@ public class GameManager : MonoBehaviour
         }
         deathFieldRadius -= Time.deltaTime;
         deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
-        DeathFieldPS.gameObject.transform.localScale = Vector3.one * deathFieldRadius/250f;
+        //DeathFieldPS.gameObject.transform.localScale = Vector3.one * deathFieldRadius/250f;
     }
 
     void OnDrawGizmos()

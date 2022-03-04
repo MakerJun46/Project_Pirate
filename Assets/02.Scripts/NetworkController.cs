@@ -476,8 +476,10 @@ public class NetworkController : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
             PhotonNetwork.CurrentRoom.IsOpen = false;
             //PhotonNetwork.CurrentRoom.IsVisible = false;
+            RoomPlayerCount.playerCount = PhotonNetwork.CountOfPlayers;
 
-            SceneManager.LoadScene("GameScene");
+            //SceneManager.LoadScene("GameScene"); πË∆≤∑Œæ‚ ∞‘¿” æ¿
+            SceneManager.LoadScene("PassTheBomb");
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" } });
         }
