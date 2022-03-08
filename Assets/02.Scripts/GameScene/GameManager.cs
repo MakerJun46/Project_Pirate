@@ -86,9 +86,6 @@ public class GameManager : MonoBehaviour
         {
             ObserveIndex = index;
         }
-        deathFieldRadius -= Time.deltaTime;
-        deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
-        //DeathFieldPS.gameObject.transform.localScale = Vector3.one * deathFieldRadius/250f;
 
         ObserveIndex = Mathf.Clamp(ObserveIndex, 0, AllShip.Count);
         int foundedIndex = -1;

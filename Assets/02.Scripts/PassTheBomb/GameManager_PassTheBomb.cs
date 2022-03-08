@@ -31,8 +31,8 @@ public class GameManager_PassTheBomb : MonoBehaviour
     }
     private void Update()
     {
-        if(!isSetting && GameManager.GetIstance().MyShip != null && PhotonNetwork.IsMasterClient 
-            && GameManager.GetIstance().AllShip.Count >= RoomPlayerCount.playerCount)
+        if(!isSetting && GameManager.GetInstance().MyShip != null && PhotonNetwork.IsMasterClient 
+            && GameManager.GetInstance().AllShip.Count >= RoomPlayerCount.playerCount)
         {
             PV.RPC("setting", RpcTarget.AllBuffered);
             isSetting = true;
@@ -63,13 +63,13 @@ public class GameManager_PassTheBomb : MonoBehaviour
 
         hasBomb = false;
         random = new System.Random();
-        bomb_Second = GameManager.GetIstance().MyShip.transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>();
+        bomb_Second = GameManager.GetInstance().MyShip.transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>();
 
-        for (int i = 0; i < GameManager.GetIstance().AllShip.Count; i++)
+        for (int i = 0; i < GameManager.GetInstance().AllShip.Count; i++)
         {
-            GameManager.GetIstance().AllShip[i].gameObject.transform.Find("Canvas").transform.Find("HealthArea").gameObject.SetActive(false);
-            GameManager.GetIstance().AllShip[i].gameObject.transform.Find("Canvas").transform.Find("Health").gameObject.SetActive(false);
-            GameManager.GetIstance().AllShip[i].gameObject.transform.Find("Canvas").transform.Find("Bomb_Second").gameObject.SetActive(false);
+            GameManager.GetInstance().AllShip[i].gameObject.transform.Find("Canvas").transform.Find("HealthArea").gameObject.SetActive(false);
+            GameManager.GetInstance().AllShip[i].gameObject.transform.Find("Canvas").transform.Find("Health").gameObject.SetActive(false);
+            GameManager.GetInstance().AllShip[i].gameObject.transform.Find("Canvas").transform.Find("Bomb_Second").gameObject.SetActive(false);
         }
 
         Count_Sec = 60;
@@ -86,11 +86,11 @@ public class GameManager_PassTheBomb : MonoBehaviour
 
         StartCoroutine(CountSecond());
 
-        GameManager.GetIstance().TryUpgradeShip();
+        GameManager.GetInstance().TryUpgradeShip();
         CombatManager.instance.EquipSail(0, 1);
         CombatManager.instance.EquipSpecialCannon(0, 0);
 
-        GameManager.GetIstance().MyShip.MoveSpeed = 20;
+        GameManager.GetInstance().MyShip.MoveSpeed = 20;
 
         LoadingPanel.SetActive(false);
     }
@@ -103,7 +103,7 @@ public class GameManager_PassTheBomb : MonoBehaviour
             Count_Sec--;
             
             if(hasBomb)
-                PV.RPC("update_Bomb_Sec", RpcTarget.AllBuffered, GameManager.GetIstance().MyShip.photonView.ViewID);
+                PV.RPC("update_Bomb_Sec", RpcTarget.AllBuffered, GameManager.GetInstance().MyShip.photonView.ViewID);
             
             yield return new WaitForSecondsRealtime(1.0f);
         }
@@ -121,7 +121,7 @@ public class GameManager_PassTheBomb : MonoBehaviour
         if(PhotonNetwork.PlayerList[PlayerIndex].UserId == PhotonNetwork.LocalPlayer.UserId)
         {
             hasBomb = true;
-            PV.RPC("On_Second", RpcTarget.AllBuffered, GameManager.GetIstance().MyShip.photonView.ViewID);
+            PV.RPC("On_Second", RpcTarget.AllBuffered, GameManager.GetInstance().MyShip.photonView.ViewID);
         }
     }
 
@@ -146,7 +146,7 @@ public class GameManager_PassTheBomb : MonoBehaviour
     public void CrashOtherShip(GameObject CrashedShip)
     {
         if (this.hasBomb)
-            PV.RPC("change_has_bomb", RpcTarget.AllBuffered, new object[] { GameManager.GetIstance().MyShip.photonView.ViewID, CrashedShip.GetPhotonView().ViewID });
+            PV.RPC("change_has_bomb", RpcTarget.AllBuffered, new object[] { GameManager.GetInstance().MyShip.photonView.ViewID, CrashedShip.GetPhotonView().ViewID });
     }
 
     [PunRPC]
