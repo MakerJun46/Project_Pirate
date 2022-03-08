@@ -8,6 +8,11 @@ using System;
 
 public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 {
+    public int myIndex;
+    public string myName;
+    public float deadTime;
+    public static int characterIndex;
+
     public int upgradeIndex;
 
     public float MoveSpeed;
@@ -29,8 +34,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     private Rigidbody RB;
     private PhotonView PV;
     public Text NickNameText;
-    private GameObject anchage_UI;
-
     public int Landed_island_ID;
 
     ParticleSystem.EmissionModule motor, front;
@@ -50,12 +53,13 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         is_Turn_Right = false;
         is_Landing = false;
 
-        anchage_UI = GameManager.GetIstance().Island_Landing_UI;
-
-        GameManager.GetIstance().AllShip.Add(this);
-
+    }
+    private void Start()
+    {
+        GameManager.GetInstance().AllShip.Add(this);
         Reset_Ship_Status();
     }
+
 
     private void FixedUpdate()
     {
@@ -79,7 +83,22 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, upgradeIndex);
         Reset_Ship_Status();
     }
-
+    [PunRPC]
+    public void InitializePlayer()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            myIndex = GetComponent<PhotonView>().Owner.ActorNumber - 1;
+        }
+        else
+        {
+            myIndex = characterIndex;
+        }
+        myName = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+        characterIndex++;
+        deadTime = 0;
+        GameManager.GetInstance().RefreshBestPlayer(this.gameObject);
+    }
 
     public void Move()
     {
@@ -143,7 +162,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
             Debug.Log("On anchoragePoint");
-            GameManager.GetIstance().MyShip_On_Landing_Point = true;
+            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = true;
             Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
         }
     }
@@ -152,7 +171,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
-            GameManager.GetIstance().MyShip_On_Landing_Point = false;
+            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = false;
         }
     }
 

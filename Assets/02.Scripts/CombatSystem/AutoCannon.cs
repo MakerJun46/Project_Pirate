@@ -18,15 +18,33 @@ public class AutoCannon : Cannon
     protected Rigidbody ball;
     FieldOfView fov;
 
-    public override void Initialize(Player_Combat_Ship _myShip, int _spotIndex)
+    [SerializeField] LayerMask BattleRoyaleLayer;
+    [SerializeField] LayerMask SurvivorLayer;
+    public override void Initialize(Player_Combat_Ship _myShip, int _spotIndex, int _gameModeIndex)
     {
+        print("AutoCannon : 1");
         myShip = _myShip;
+        print("AutoCannon : 2");
         spotIndex = _spotIndex;
+        print("AutoCannon : 3");
+        gameMode = (GameMode)_gameModeIndex;
+        print("AutoCannon : 4");
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
+            print("AutoCannon : 5");
             fov = GetComponent<FieldOfView>();
             cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
             cursor.gameObject.SetActive(false);
+        }
+        print("AutoCannon : 6");
+        switch (gameMode)
+        {
+            case GameMode.BattleRoyale:
+                fov.targetMask = BattleRoyaleLayer;
+                break;
+            case GameMode.Survivor:
+                fov.targetMask = SurvivorLayer;
+                break;
         }
     }
 
@@ -44,6 +62,7 @@ public class AutoCannon : Cannon
             }
             else
             {
+                print("FOV : " + fov.currTarget?.name);
                 if (fov.currTarget)
                 {
                     cursor.transform.position = fov.currTarget.position;
@@ -215,6 +234,7 @@ public class AutoCannon : Cannon
             targetPos = fov.currTarget.GetComponent<Rigidbody>().velocity;
         }
         ball.velocity = CalculateLaunchData(targetPos).initialVelocity;
+        OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS",RpcTarget.AllBuffered,spotIndex, false);
         ResetAttackingState(5f);
     }
@@ -236,6 +256,7 @@ public class AutoCannon : Cannon
             ball.velocity = CalculateLaunchData(targetPos).initialVelocity;
             // 
         }
+        OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, false);
         ResetAttackingState(7.5f);
     }
@@ -258,7 +279,10 @@ public class AutoCannon : Cannon
         {
             targetPos = fov.currTarget.GetComponent<Rigidbody>().velocity;
         }
-        ball.velocity = (_targetPos + targetPos - this.transform.position).normalized * ShootVelocity;
+        Vector3 dist = (_targetPos + targetPos - this.transform.position);
+        dist.y = 0;
+        ball.velocity = dist.normalized * ShootVelocity;
+        OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, false);
         ResetAttackingState((divided>1)? 6f:4f);
     }

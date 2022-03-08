@@ -27,6 +27,8 @@ public class FieldOfView : MonoBehaviourPun
 
     Cannon myCannon;
 
+    GameMode gameMode;
+
     private void Start()
     {
         viewMesh = new Mesh();
@@ -57,7 +59,7 @@ public class FieldOfView : MonoBehaviourPun
             DrawFieldOfView(coolTimeMesh,viewRadius * myCannon.currChargeAmount/ myCannon.maxChargetAmount);
 
             float minDistance = 1000;
-            currTarget = null;
+            int index = -1;
             for (int i = 0; i < visibleTargets.Count; i++)
             {
                 if (visibleTargets[i] == null)
@@ -66,9 +68,17 @@ public class FieldOfView : MonoBehaviourPun
                 if (tmpDistance <= minDistance)
                 {
                     minDistance = tmpDistance;
-                    currTarget = visibleTargets[i];
-                    break;
+                    index = i;
                 }
+            }
+            print("index : " + index);
+            if (0 <= index && index < visibleTargets.Count)
+            {
+                currTarget = visibleTargets[index];
+            }
+            else
+            {
+                currTarget = null;
             }
 
             if (currTarget == null)

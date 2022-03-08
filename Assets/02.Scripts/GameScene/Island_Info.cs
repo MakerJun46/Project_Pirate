@@ -34,8 +34,8 @@ public class Island_Info : MonoBehaviour
     {
         ResourceCreate = false;
         isPlayerLanding = false;
-        Island_ID = GameManager.GetIstance().All_Island.Count;
-        GameManager.GetIstance().All_Island.Add(this);
+        Island_ID = GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().All_Island.Count;
+        GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().All_Island.Add(this);
 
         myCanvas = transform.Find("Canvas").GetComponent<Canvas>();
         getResource_Text = transform.Find("Canvas").GetChild(0).GetComponent<Text>();

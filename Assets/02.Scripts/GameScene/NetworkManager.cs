@@ -10,17 +10,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public NetworkManager instance;
 
-
     public GameObject DisconnetPanel;
     public GameObject RespawnPanel;
     public PhotonView PV;
-    System.Random random = new System.Random();
 
-
-    public GameObject test_Island;
-
-    [SerializeField] private Vector2 SpawnIsland_X_MinMax = new Vector2(-300, -28);
-    [SerializeField] private Vector2 SpawnIsland_Y_MinMax = new Vector2(-80, 180);
+    public float StartTime = 3f;
     private void Awake()
     {
         instance = this;
@@ -31,16 +25,37 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        PV = GetComponent<PhotonView>();
         if (PhotonNetwork.IsConnected)
         {
             DisconnetPanel.SetActive(false);
-            Spawn();
+            Invoke("Spawn",1f);
         }
         else
         {
             Connect();
         }
-        //GameManager.GetIstance().GenerateObstacles();
+    }
+
+    private void Update()
+    {
+        if (StartTime >= 0 && GameManager.GetInstance().GameStart==false)
+        {
+            StartTime -= Time.deltaTime;
+        }
+        else
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PV.RPC("GameStartRPC",RpcTarget.AllBuffered,true);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void GameStartRPC(bool _start)
+    {
+        GameManager.GetInstance().GameStart = _start;
     }
 
 
@@ -49,6 +64,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
 
+    public void GoToLobby()
+    {
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
+    }
 
     /// <summary>
     /// 플레이어가 네트워크에 접속한 시점에 호출
@@ -78,28 +97,40 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         DisconnetPanel.SetActive(true);
         RespawnPanel.SetActive(false);
     }
+    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                GameManager.GetInstance().MasterChanged(true);
+            }
+            else
+            {
+                GameManager.GetInstance().MasterChanged(false);
+            }
+        }
+    }
 
     /// <summary>
     /// 플레이어 배 생성
     /// </summary>
     public void Spawn()
     {
-        GameObject go = null;
-        if (PhotonNetwork.IsMasterClient) // 생성 지점 구분을 위한 조건
-        {
-            go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
-        }
-        else
-        {
-            go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
-        }
+        GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 
-        if (FindObjectOfType<CombatManager>() && go.GetComponent<PhotonView>().IsMine)
+        if (go.GetComponent<PhotonView>().IsMine)
         {
-            GameManager.GetIstance().SetMyShip(go.GetComponent<Player_Controller_Ship>());
-            SpawnSailor(1, go.transform);
-            SpawnSailor(1, go.transform);
-            FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
+            GameManager.GetInstance().SetMyShip(go.GetComponent<Player_Controller_Ship>());
+            if (GameManager.GetInstance().GetComponent<BattleRoyalGameManager>())
+            {
+                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
+                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
+            }
+            if (FindObjectOfType<CombatManager>())
+                FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
+
+            go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
 
         RespawnPanel.SetActive(false);
@@ -121,20 +152,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
         return new Vector3(10, 0, 10);
-    }
-
-    public void SpawnSailor(int count, Transform _ship)
-    {
-        if(PhotonNetwork.IsMasterClient)
-        {
-            GameObject go = PhotonNetwork.Instantiate("Sailor", Vector3.zero, Quaternion.identity);
-            go.transform.parent = _ship.transform.Find("SailorSpawnPos");
-            go.transform.localPosition = Vector3.zero;
-        }
-    }
-
-    public void GoToLobby()
-    {
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 }

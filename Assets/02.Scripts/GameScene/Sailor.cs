@@ -17,7 +17,7 @@ public class Sailor : MonoBehaviour
 
     public void Start()
     {
-        MyShip = GameManager.GetIstance().MyShip.gameObject;
+        MyShip = GameManager.GetInstance().MyShip.gameObject;
         status = Sailor_Status.Sailing;
     }
 
@@ -30,7 +30,7 @@ public class Sailor : MonoBehaviour
     {
         if (status == Sailor_Status.Landing)
         {
-            Landed_island = GameManager.GetIstance().All_Island[GameManager.GetIstance().MyShip.Landed_island_ID];
+            Landed_island = GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().All_Island[GameManager.GetInstance().MyShip.Landed_island_ID];
 
             if(Landed_island.Wood_Object.Count > 0 || Landed_island.Rock_Object.Count > 0)
             {
@@ -54,7 +54,8 @@ public class Sailor : MonoBehaviour
             else
             {
                 status = Sailor_Status.Escaping;    // 채집할 자원이 더 없으면 바로 escape
-                GameManager.GetIstance().island_LandingEscape_Button();
+                if(GameManager.GetInstance().GetComponent<BattleRoyalGameManager>())
+                    GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().island_LandingEscape_Button();
             }
         }
         else if(status == Sailor_Status.Gathering)

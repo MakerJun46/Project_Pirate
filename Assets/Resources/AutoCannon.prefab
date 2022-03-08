@@ -345,10 +345,10 @@ MonoBehaviour:
   viewAngle: 90
   targetMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 520
   visibleTargets: []
   currTarget: {fileID: 0}
   meshResolution: 10
@@ -393,6 +393,12 @@ MonoBehaviour:
   - {fileID: 4197256909732631045}
   - {fileID: 5498525502404228787}
   myCannonType: 0
+  BattleRoyaleLayer:
+    serializedVersion: 2
+    m_Bits: 1088
+  SurvivorLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1 &5489865075867599674
 GameObject:
   m_ObjectHideFlags: 0

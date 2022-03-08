@@ -8,7 +8,6 @@ public class TreasureChest : MonoBehaviour
     public List<Item_Inventory> items;
     PhotonView PV;
 
-
     bool isOpen;
 
     private void Awake()
@@ -24,7 +23,7 @@ public class TreasureChest : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.S))
             {
-                if (!GameManager.GetIstance().TreasureChest_UI_Panel.activeInHierarchy)
+                if (GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().TreasureChest_UI_Panel.activeInHierarchy==false)
                     OpenTreasureChest();
                 else
                     CloseTreasureChest();
@@ -42,15 +41,15 @@ public class TreasureChest : MonoBehaviour
 
     public void OpenTreasureChest()
     {
-        GameManager.GetIstance().TreasureChest_UI_Panel.SetActive(true);
+        GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().TreasureChest_UI_Panel.SetActive(true);
         Item_Manager.instance.FreshSlots_TreasureChest(this);
         PV.RPC("Open", RpcTarget.AllBuffered);
     }
 
     public void CloseTreasureChest()
     {
-        if(GameManager.GetIstance().TreasureChest_UI_Panel.activeInHierarchy)
-            GameManager.GetIstance().TreasureChest_UI_Panel.SetActive(false);
+        if(GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().TreasureChest_UI_Panel.activeInHierarchy)
+            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().TreasureChest_UI_Panel.SetActive(false);
         PV.RPC("Close", RpcTarget.AllBuffered);
     }
 
