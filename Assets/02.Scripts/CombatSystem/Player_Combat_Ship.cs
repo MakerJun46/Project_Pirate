@@ -232,8 +232,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
         Debug.Log("EquipCannon1: " + _spotIndex + "/" + _cannonIndex);
         if (_cannonIndex == -1)
         {
-            if(myAutoCannons[_spotIndex]!=null)
+            print("UnEquip");
+            if (myAutoCannons[_spotIndex] != null)
+            {
                 myAutoCannons[_spotIndex].UnEquipCannon();
+            }
             return;
         }
         Debug.Log("EquipCannon2: " + _spotIndex + "/" + _cannonIndex);
@@ -250,7 +253,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localScale = Vector3.one;
             tmpCannon.transform.localRotation = Quaternion.identity;
             myAutoCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
-            tmpCannon.GetComponent<AutoCannon>().Initialize(this,_spotIndex, int.Parse((string)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
+
+            if(PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("GameModeIndex"))
+                tmpCannon.GetComponent<AutoCannon>().Initialize(this,_spotIndex, int.Parse((string)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
+            else
+                tmpCannon.GetComponent<AutoCannon>().Initialize(this, _spotIndex, -1);
         }
 
         ChangeCannonType(_spotIndex, _cannonIndex, true);

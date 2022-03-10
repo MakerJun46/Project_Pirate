@@ -6,15 +6,29 @@ using UnityEngine;
 public class WaveData : ScriptableObject
 {
     [System.Serializable]
-    public struct WaveInfo
+    public class WaveInfo
     {
+        [HideInInspector]
         public string wave_name;
 
         public List<EnemyInfo> enemies;
         public float waitTime;
 
         public float spawnRange;
+
     }
 
     public List<WaveInfo> waves = new List<WaveInfo>();
+
+    private void OnValidate()
+    {
+        for(int i = 0; i < waves.Count; i++)
+        {
+            waves[i].wave_name = "";
+            for (int j = 0; j < waves[i].enemies.Count; j++)
+            {
+                waves[i].wave_name += "[" + waves[i].enemies[j].EnemyPrefab.name + "*" + waves[i].enemies[j].count + "]";
+            }
+        }
+    }
 }

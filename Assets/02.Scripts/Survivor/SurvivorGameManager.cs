@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 [System.Serializable]
 public struct EnemyInfo
@@ -12,7 +13,6 @@ public struct EnemyInfo
     public float additionalDamage;
     public float additionalVel;
     public float additionalHealth;
-    public bool dontFollowTarget;
 
     public bool IsElite;
 }
@@ -37,7 +37,7 @@ public class SurvivorGameManager : GameManager
             Invoke("WaveStart", 5f);
         }
 
-        StartCoroutine("PickupGenerateCoroutine");
+        //StartCoroutine("PickupGenerateCoroutine");
 
     }
     IEnumerator PickupGenerateCoroutine()
@@ -58,7 +58,8 @@ public class SurvivorGameManager : GameManager
         float pickUpIndex = Random.Range(0, 100f);
         string tmpPickUpString = "Pickup_Treasure";
 
-        GameObject tmpObj = ObjectPoolManager.GetObject(tmpPickUpString);
+        GameObject tmpObj = PhotonNetwork.Instantiate(tmpPickUpString, Vector3.zero, Quaternion.identity);
+
         tmpObj.transform.position = new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * 20f;
         //tmpObj.GetComponent<Pickup>().InitializePickup();
 
@@ -85,26 +86,27 @@ public class SurvivorGameManager : GameManager
         {
             for (int k = 0; k < waveData.waves[waveIndex].enemies[j].count; k++)
             {
-                GameObject tmpEnemy = ObjectPoolManager.GetObject(waveData.waves[waveIndex].enemies[j].EnemyPrefab.name);
-                tmpEnemy.transform.position = new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * 15f;
+                GameObject tmpEnemy = PhotonNetwork.Instantiate(waveData.waves[waveIndex].enemies[j].EnemyPrefab.name, Vector3.zero, Quaternion.identity);
+                tmpEnemy.transform.position = new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * waveData.waves[waveIndex].spawnRange;
 
                 tmpEnemy.GetComponent<SurvivorMonster>().ResetEnemy(waveData.waves[waveIndex].enemies[j].EnemyPrefab.GetComponent<SurvivorMonster>());
                 tmpEnemy.GetComponent<SurvivorMonster>().InitializeEnemy(
                     waveData.waves[waveIndex].enemies[j].additionalDamage,
                     waveData.waves[waveIndex].enemies[j].additionalVel,
                     waveData.waves[waveIndex].enemies[j].additionalHealth,
-                    !waveData.waves[waveIndex].enemies[j].dontFollowTarget,
                     waveData.waves[waveIndex].enemies[j].IsElite);
                 yield return new WaitForSeconds(0.1f);
+
+                yield return new WaitUntil(()=>FindObjectsOfType<SurvivorMonster>().Length <= 10);
             }
         }
         yield return new WaitForSeconds(waveData.waves[waveIndex].waitTime);
 
         waveIndex++;
-        if (waveData.waves.Count <= waveIndex)
-        {
-            waveIndex = waveData.waves.Count - 1;
-        }
+        //if (waveData.waves.Count <= waveIndex)
+        //{
+        //    waveIndex = waveData.waves.Count - 1;
+        //}
 
         if(GameStart)
             StartCoroutine("WaveSpawnCoroutine");

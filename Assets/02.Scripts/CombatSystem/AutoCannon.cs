@@ -16,27 +16,21 @@ public class AutoCannon : Cannon
     public CannonType myCannonType;
 
     protected Rigidbody ball;
-    FieldOfView fov;
+    [SerializeField] FieldOfView fov;
 
     [SerializeField] LayerMask BattleRoyaleLayer;
     [SerializeField] LayerMask SurvivorLayer;
     public override void Initialize(Player_Combat_Ship _myShip, int _spotIndex, int _gameModeIndex)
     {
-        print("AutoCannon : 1");
         myShip = _myShip;
-        print("AutoCannon : 2");
         spotIndex = _spotIndex;
-        print("AutoCannon : 3");
         gameMode = (GameMode)_gameModeIndex;
-        print("AutoCannon : 4");
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
-            print("AutoCannon : 5");
             fov = GetComponent<FieldOfView>();
             cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
             cursor.gameObject.SetActive(false);
         }
-        print("AutoCannon : 6");
         switch (gameMode)
         {
             case GameMode.BattleRoyale:
@@ -44,6 +38,8 @@ public class AutoCannon : Cannon
                 break;
             case GameMode.Survivor:
                 fov.targetMask = SurvivorLayer;
+                break;
+            default:
                 break;
         }
     }
@@ -231,7 +227,10 @@ public class AutoCannon : Cannon
         Vector3 targetPos = Vector3.zero;
         if (fov.currTarget)
         {
-            targetPos = fov.currTarget.GetComponent<Rigidbody>().velocity;
+            if(fov.currTarget.GetComponent<Rigidbody>())
+                targetPos = fov.currTarget.GetComponent<Rigidbody>().velocity;
+            else
+                targetPos = Vector3.zero;
         }
         ball.velocity = CalculateLaunchData(targetPos).initialVelocity;
         OptionSettingManager.GetInstance().Play("FireCannon", true);

@@ -328,10 +328,10 @@ GameObject:
   - component: {fileID: 3433671627736073804}
   - component: {fileID: 6770132877759959346}
   - component: {fileID: 3073172608852465319}
-  - component: {fileID: 2616785687261034473}
   - component: {fileID: -8333245995007593276}
   - component: {fileID: -2406257447604646091}
   - component: {fileID: -9014573942241425512}
+  - component: {fileID: -2435333863657373093}
   m_Layer: 6
   m_Name: PlayerShip
   m_TagString: Player
@@ -409,27 +409,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 2616785687261034473}
   - {fileID: -8333245995007593276}
+  - {fileID: -2435333863657373093}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2616785687261034473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3567507026925108279}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!114 &-8333245995007593276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,6 +445,8 @@ MonoBehaviour:
   NickNameText: {fileID: 5665631415054730532}
   Landed_island_ID: 0
   currVel: {x: 0, y: 0, z: 0}
+  currPos: {x: 0, y: 0, z: 0}
+  currRot: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &-2406257447604646091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +485,22 @@ MonoBehaviour:
   myAutoCannons: []
   mySails: []
   AttackedPS: {fileID: 7730359801054668681}
+--- !u!114 &-2435333863657373093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3567507026925108279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &3982889890840852788
 GameObject:
   m_ObjectHideFlags: 0

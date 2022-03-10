@@ -3,32 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class SurvivorMonster : MonoBehaviour
+public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
 {
     public float damage = 5f;
 
-    Rigidbody rb;
+    protected Rigidbody rb;
 
-    bool followTarget;
     bool isElite;
-    Vector3 originTargetPos;
-    Transform target;
-    [SerializeField] float speed = 3f;
+    protected Vector3 toTargetDir;
+    protected Transform target;
+    [SerializeField] protected float viewRadius = 20;
+    [SerializeField] protected float attackRadius = 20;
+    [SerializeField] protected LayerMask targetLayer;
+
+    [SerializeField] protected float speed = 3f;
 
     Vector3 Impact;
     [SerializeField] float ImpactMultiplier = 1f;
-    bool attacked;
+    protected bool attacked;
 
     float health;
     [SerializeField] float maxHealth = 100f;
 
     private List<AttackInfo> attackedList = new List<AttackInfo>();
+    protected Collider[] colls;
 
-    [SerializeField] LayerMask targetLayer;
     [SerializeField] Vector2 EXPPercent;
 
-    public string prefabName;
-    void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
 
@@ -36,32 +38,28 @@ public class SurvivorMonster : MonoBehaviour
         health = maxHealth;
     }
 
-    public void ResetEnemy(SurvivorMonster _data)
+    public virtual void ResetEnemy(SurvivorMonster _data)
     {
-        prefabName = _data.name;
         damage = _data.damage;
         speed = _data.speed;
         maxHealth = _data.maxHealth;
         health = maxHealth;
 
         this.transform.localScale = _data.transform.localScale;
-        GetComponentInChildren<MeshRenderer>().material.color = Color.white;
-        this.transform.GetComponent<SphereCollider>().radius = _data.transform.GetComponent<SphereCollider>().radius;
     }
 
-    public void InitializeEnemy(float _damage, float _vel, float _health, bool _followTarget, bool _isElite)
+    public void InitializeEnemy(float _damage, float _vel, float _health,  bool _isElite)
     {
         damage += _damage;
         speed += _vel;
         maxHealth += _health;
-        followTarget = _followTarget;
         isElite = _isElite;
 
         attacked = false;
         if (target)
         {
             target = FindObjectOfType<Player_Controller_Ship>().transform;
-            originTargetPos = (target.position - this.transform.position).normalized;
+            toTargetDir = (target.position - this.transform.position).normalized;
         }
         health = maxHealth;
 
@@ -74,69 +72,39 @@ public class SurvivorMonster : MonoBehaviour
         }
     }
 
-    float targetFollowTime = 3;
-    Collider[] colls;
-    void Update()
+    protected virtual void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (GetComponent<PhotonView>().IsMine)
         {
-            if (target == null)
-            {
-                Player_Controller_Ship[] players = FindObjectsOfType<Player_Controller_Ship>();
-                float minDist = 100000;
-                foreach(Player_Controller_Ship player in players)
-                {
-                    float tmpDist = Vector3.Distance(player.transform.position, this.transform.position);
-                    if (tmpDist <= minDist)
-                    {
-                        minDist = tmpDist;
-                        target = player.transform;
-                    }
-                }
-            }
-            else
-            {
-                targetFollowTime -= Time.deltaTime;
-                if (targetFollowTime <= 0)
-                {
-                    targetFollowTime = 3f;
-                    target = null;
-                }
-            }
+            colls = Physics.OverlapSphere(this.transform.position, viewRadius, targetLayer);
 
-            colls = Physics.OverlapSphere(this.transform.position, GetComponent<SphereCollider>().radius*2f+1f, targetLayer);
-          
-            for(int i = 0; i < colls.Length; i++)
+            float minDist = 100000;
+            for (int i = 0; i < colls.Length; i++)
             {
-                colls[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
+                float tmpDist = Vector3.Distance(colls[i].transform.position, this.transform.position);
+                if (tmpDist <= minDist)
+                {
+                    minDist = tmpDist;
+                    target = colls[i].transform;
+                }
             }
 
             if (attacked)
             {
                 rb.velocity = Impact * ImpactMultiplier;
             }
-            else
-            {
-                if (followTarget && target)
-                {
-                    originTargetPos = (target.position - this.transform.position).normalized;
-                }
-                rb.velocity = originTargetPos * speed;
-                this.transform.LookAt(target);
-            }
-            Impact = Vector3.Lerp(Impact, Vector3.zero, Time.deltaTime);
 
-            for (int i = 0; i < attackedList.Count; i++)
+            Impact = Vector3.Lerp(Impact, Vector3.zero, Time.deltaTime);
+        }
+        for (int i = 0; i < attackedList.Count; i++)
+        {
+            attackedList[i].lifetime -= Time.deltaTime;
+            if (attackedList[i].lifetime <= 0)
             {
-                attackedList[i].lifetime -= Time.deltaTime;
-                if (attackedList[i].lifetime <= 0)
-                {
-                    attackedList.RemoveAt(i);
-                    break;
-                }
+                attackedList.RemoveAt(i);
+                break;
             }
         }
-        //GetComponentInChildren<Animator>().SetFloat("Vel", rb2D.velocity.magnitude);
     }
 
 
@@ -157,36 +125,27 @@ public class SurvivorMonster : MonoBehaviour
 
         if (canAttack)
         {
-            //AttackedPS.Play();
-
             health -= (float)param[0];
             //additionalForce = (Vector3)param[1];
 
-            StartCoroutine("AttackedCoroutine",1f);
+            print("Attacked : " + health);
+            AttackedFunc(1f);
 
             if (health <= 0)
             {
-                /*
-                GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
-
-                for (int i = 0; i < Item_Manager.instance.Player_items.Count; i++)
-                {
-                    go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
-                }
-                */
-                //GameManager.GetIstance().EndGame(false);
-
+                print("Destroy");
                 Destroy(this.gameObject);
             }
         }
     }
 
-    IEnumerator AttackedCoroutine(float stunTime)
+    protected virtual void AttackedFunc(float _stunTime)
     {
-        attacked = true;
-        GetComponentInChildren<MeshRenderer>().material.color = Color.red;
-        yield return new WaitForSeconds(stunTime);
-        GetComponentInChildren<MeshRenderer>().material.color = Color.white;
-        attacked = false;
+        //StartCoroutine("AttackedCoroutine", _stunTime);
+    }
+
+    public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        throw new System.NotImplementedException();
     }
 }

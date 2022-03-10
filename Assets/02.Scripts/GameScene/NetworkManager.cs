@@ -66,7 +66,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void GoToLobby()
     {
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     /// <summary>

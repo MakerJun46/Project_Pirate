@@ -39,6 +39,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     ParticleSystem.EmissionModule motor, front;
 
     public Vector3 currVel;
+    public Vector3 currPos;
+    public Quaternion currRot;
 
     private void Awake()
     {
@@ -114,7 +116,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
                 inputVel = Vector3.Lerp(inputVel, Vector3.zero, Time.deltaTime);
             }
             RB.velocity = inputVel + additionalForce;
-
+            currVel = RB.velocity;
 
             if (is_Turn_Left)
                 Turn_Left();
@@ -194,7 +196,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(GetComponent<Rigidbody>().velocity);
+            stream.SendNext(RB.velocity);
         }
         else
         {
