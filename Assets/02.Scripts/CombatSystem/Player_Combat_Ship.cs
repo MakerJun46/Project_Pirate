@@ -358,6 +358,13 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     5.0f
                     ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
                 });
+
+
+
+                if (SceneManagerHelper.ActiveSceneName == "PassTheBomb") // pass the bomb 게임인 경우 부딪히면 폭탄 전이
+                {
+                    GameManager_PassTheBomb.instance.CrashOtherShip(collision.gameObject);
+                }
             }
         }
     }

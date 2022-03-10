@@ -41,6 +41,9 @@ public class GameManager : MonoBehaviour
     public Text bestPlayerSortText;
     public int bestPlayerSortIndex = 0; // 0:most money
 
+    public bool MyShip_On_Landing_Point;
+    public GameObject Landing_Button_Blur;
+    public int PlayerCount;
     protected float playTime;
     [SerializeField]protected Text TimeText;
 

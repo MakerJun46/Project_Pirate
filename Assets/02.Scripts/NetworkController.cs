@@ -558,6 +558,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
             PhotonNetwork.CurrentRoom.IsOpen = false;
             //PhotonNetwork.CurrentRoom.IsVisible = false;
+            RoomPlayerCount.playerCount = PhotonNetwork.CountOfPlayers;
 
             SceneManager.LoadScene("GameScene_"+ gameMode.ToString());
 
