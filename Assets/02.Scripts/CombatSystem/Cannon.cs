@@ -63,6 +63,7 @@ public class Cannon : MonoBehaviourPun
 
     public void UnEquipCannon()
     {
+        print("UnEquipCannon");
         if(cursor)
             Destroy(cursor.gameObject);
         Destroy(this.gameObject);
