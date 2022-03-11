@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 public enum GameMode
 {
     BattleRoyale,
-    HotPotato,
+    PassTheBomb,
     Survivor,
     BossRaid,
 }
@@ -543,7 +543,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
         {
             case GameMode.BattleRoyale:
                 break;
-            case GameMode.HotPotato:
+            case GameMode.PassTheBomb:
                 break;
         }
     }

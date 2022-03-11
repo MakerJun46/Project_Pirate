@@ -164,11 +164,11 @@ public class BattleRoyalGameManager : GameManager
                 {
                     if(index >= 0 && index < AllShip.Count && AllShip[index] == MyShip)
                     {
-                        EndGame(true);
+                        //EndGame(true);
                     }
                     else
                     {
-                        EndGame(false);
+                        //EndGame(false);
                     }
                 }
             }

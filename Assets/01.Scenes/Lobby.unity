@@ -1249,7 +1249,7 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 1247238385}
+  m_LookAt: {fileID: 0}
   m_Follow: {fileID: 133426682}
   m_Lens:
     FieldOfView: 60
@@ -1497,6 +1497,7 @@ RectTransform:
   m_Children:
   - {fileID: 1093348006}
   - {fileID: 48998178}
+  - {fileID: 2052153250}
   - {fileID: 908659985}
   - {fileID: 533184003}
   - {fileID: 1770673017}
@@ -1583,7 +1584,7 @@ RectTransform:
   m_Children:
   - {fileID: 1737614391}
   m_Father: {fileID: 452547160}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -2163,6 +2164,10 @@ PrefabInstance:
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: deepColor.r
       value: 0.072668225
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: foamMovement
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: horizonColor.a
@@ -3024,7 +3029,7 @@ RectTransform:
   m_Children:
   - {fileID: 883618308}
   m_Father: {fileID: 452547160}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -3603,13 +3608,12 @@ RectTransform:
   m_Children:
   - {fileID: 103092937}
   - {fileID: 847880478}
-  - {fileID: 2052153250}
   m_Father: {fileID: 452547160}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.1}
   m_AnchorMax: {x: 0.5, y: 0.6}
-  m_AnchoredPosition: {x: 0, y: -15}
+  m_AnchoredPosition: {x: 0, y: -14.999985}
   m_SizeDelta: {x: 250, y: -30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1093348007
@@ -3987,11 +3991,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230540190}
   m_CullTransparentMesh: 1
---- !u!4 &1247238385 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4932635881881874188, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
-  m_PrefabInstance: {fileID: 1265065231}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1265065231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4047,6 +4046,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sailing
       objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
 --- !u!1001 &1305920148
@@ -4056,6 +4059,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8438683582821908691, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
       propertyPath: m_Name
       value: Raft
@@ -5650,7 +5657,7 @@ RectTransform:
   m_Children:
   - {fileID: 963757857}
   m_Father: {fileID: 452547160}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6497,12 +6504,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1093348006}
+  m_Father: {fileID: 452547160}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 62.119602}
+  m_AnchoredPosition: {x: 0, y: 35.1}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2052153251
