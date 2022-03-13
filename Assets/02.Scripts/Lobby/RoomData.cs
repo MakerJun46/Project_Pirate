@@ -40,19 +40,8 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     public string GetCurrSceneString()
     {
-        string nextSceneString="";
-        switch (gameMode)
-        {
-            case GameMode.BattleRoyale:
-                nextSceneString = "GameScene_" + "BattleRoyale";
-                break;
-            case GameMode.PassTheBomb:
-                nextSceneString = "PassTheBomb";
-                break;
-            case GameMode.Survivor:
-                nextSceneString = "GameScene_" + "Survivor";
-                break;
-        }
+        string nextSceneString= "GameScene_";
+        nextSceneString+=gameMode.ToString();
 
         return nextSceneString;
     }
