@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: WaveData
   m_EditorClassIdentifier: 
   waves:
+  - wave_name: '[SnakeParent*1]'
+    enemies:
+    - EnemyPrefab: {fileID: 3316100769746149003, guid: edb7f74ca8be02b48b69f3175337caf0, type: 3}
+      count: 1
+      additionalDamage: 0
+      additionalVel: 0
+      additionalHealth: 0
+    waitTime: 2
+    spawnRange: 50
   - wave_name: '[Octopus*2]'
     enemies:
     - EnemyPrefab: {fileID: 6385021690248313246, guid: 2130874b6be0a2040a771196e100ecde, type: 3}
@@ -20,7 +29,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 50
   - wave_name: '[Piranha*2]'
@@ -30,7 +38,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 50
   - wave_name: '[Octopus*2]'
@@ -40,7 +47,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 100
   - wave_name: '[Octopus*2]'
@@ -50,7 +56,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 50
   - wave_name: '[Octopus*2]'
@@ -60,7 +65,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 50
   - wave_name: '[Octopus*2]'
@@ -70,7 +74,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 100
   - wave_name: '[Piranha*2]'
@@ -80,7 +83,6 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 50
   - wave_name: '[Piranha*2]'
@@ -90,16 +92,5 @@ MonoBehaviour:
       additionalDamage: 0
       additionalVel: 0
       additionalHealth: 0
-      IsElite: 0
-    waitTime: 5
-    spawnRange: 50
-  - wave_name: '[Piranha*2]'
-    enemies:
-    - EnemyPrefab: {fileID: 471102402296280341, guid: 4dcde5cf6f42c4c458255af1a9712c2a, type: 3}
-      count: 2
-      additionalDamage: 0
-      additionalVel: 0
-      additionalHealth: 0
-      IsElite: 0
     waitTime: 5
     spawnRange: 50

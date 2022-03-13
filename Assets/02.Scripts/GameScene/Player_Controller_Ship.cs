@@ -90,7 +90,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (PhotonNetwork.IsConnected)
         {
-            myIndex = GetComponent<PhotonView>().Owner.ActorNumber - 1;
+            myIndex = GetComponent<PhotonView>().Owner.ActorNumber;
         }
         else
         {

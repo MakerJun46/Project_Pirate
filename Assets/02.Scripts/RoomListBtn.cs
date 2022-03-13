@@ -7,7 +7,6 @@ public class RoomListBtn : MonoBehaviour
 {
     public Text titleTxt;
     public Text memberCountTxt;
-    public Text GameModeTxt;
     public string roomName;
 
     public int playerCount;

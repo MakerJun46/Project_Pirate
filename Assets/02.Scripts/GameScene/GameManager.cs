@@ -20,8 +20,9 @@ public class GameManager : MonoBehaviour
     }
 
     public bool GameStart;
+    // Don't Judge Win or Lose
+    [SerializeField] protected bool DebugMode;
 
-    PhotonView PV;
     private float steeringRot;
     [SerializeField]private Image SteeringImg;
 
@@ -41,23 +42,28 @@ public class GameManager : MonoBehaviour
     public Text bestPlayerSortText;
     public int bestPlayerSortIndex = 0; // 0:most money
 
-    public bool MyShip_On_Landing_Point;
-    public GameObject Landing_Button_Blur;
     public int PlayerCount;
     protected float playTime;
     [SerializeField]protected Text TimeText;
+
+    [SerializeField] protected GameObject WinPanel;
+    [SerializeField] protected GameObject LosePanel;
 
     protected virtual void Start()
     {
         instance = this;
         MainCamera = Camera.main;
-        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected==false)
-        {
-            StartCoroutine("DeathFieldCoroutine");
-        }
-        PV = GetComponent<PhotonView>();
     }
 
+    public virtual void StartGame()
+    {
+        GameStart = true;
+    }
+    public virtual void EndGame()
+    {
+        GameStart = false;
+        FindObjectOfType<NetworkManager>().GoToLobby();
+    }
 
     public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip=true)
     {
@@ -101,16 +107,15 @@ public class GameManager : MonoBehaviour
             SetMyShip(AllShip[foundedIndex], false);
     }
 
-    [SerializeField] GameObject WinPanel;
-    [SerializeField] GameObject LosePanel;
 
 
-    public virtual void EndGame(bool _win)
+    public virtual void JudgeWinLose(bool _win)
     {
         if (_win)
         {
             WinPanel.SetActive(true);
             LosePanel.SetActive(false);
+            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
         }
         else
         {
@@ -124,17 +129,24 @@ public class GameManager : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (MyShip) {
+        if (MyShip)
+        {
             if (MyShip.is_Turn_Left)
                 steeringRot += 180 * Time.deltaTime;
-            else if (MyShip.is_Turn_Right) 
+            else if (MyShip.is_Turn_Right)
                 steeringRot += -180 * Time.deltaTime;
             else
                 steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
             steeringRot = Mathf.Clamp(steeringRot, -720, 720);
             SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
         }
+
+        if (GameStart==true && (playTime >= 60 || FindObjectsOfType<Player_Controller_Ship>().Length<=1 ) && DebugMode==false)
+        {
+            FindObjectOfType<NetworkManager>().StartEndGame(false);
+        }
     }
+
 
     public void Turn_Left_Button_Down()
     {
@@ -188,34 +200,18 @@ public class GameManager : MonoBehaviour
             Player_Controller_Ship A = _A.GetComponent<Player_Controller_Ship>();
             Player_Controller_Ship B = _B.GetComponent<Player_Controller_Ship>();
 
-            if (bestPlayerSortIndex <= 1)
+            int aScore = RoomData.GetInstance().Scores[A.GetComponent<PhotonView>().Owner.ActorNumber];
+            int bScore = RoomData.GetInstance().Scores[B.GetComponent<PhotonView>().Owner.ActorNumber];
+            if (aScore > bScore)
             {
-                //Money로 정렬
-                if (A.myIndex > B.myIndex)
-                {
-                    return -1;
-                }
-                else if (A.myIndex < B.myIndex)
-                {
-                    return 1;
-                }
-                else
-                {
-                    if (A.deadTime > B.deadTime)
-                    {
-                        return -1;
-                    }
-                    else if (A.deadTime < B.deadTime)
-                    {
-                        return 1;
-                    }
-                    else
-                        return 0;
-                }
+                return -1;
+            }
+            else if (aScore < bScore)
+            {
+                return 1;
             }
             else
             {
-                //나중에 이름순으로 정렬?
                 if (A.myIndex > B.myIndex)
                 {
                     return -1;
@@ -254,44 +250,13 @@ public class GameManager : MonoBehaviour
                     Player_Controller_Ship tmpA = BestPlayerLists[i].GetComponent<Player_Controller_Ship>();
                     Player_Controller_Ship tmpB = BestPlayerLists[j].GetComponent<Player_Controller_Ship>();
 
-                    if (bestPlayerSortIndex == 1)
-                    {
+                    if (tmpA.myIndex < 0 || !tmpB.gameObject.activeInHierarchy)
+                        texts[i].color = Color.red;
+                    else
                         texts[i].color = Color.black;
 
-                        if (BestPlayerLists.Count > j)
-                        {
-                            while (tmpB.myIndex < 0 || !tmpB.gameObject.activeSelf)
-                            {
-                                j++;
-                                if (BestPlayerLists.Count <= j)
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (tmpA.myIndex < 0 || !tmpB.gameObject.activeInHierarchy)
-                            texts[i].color = Color.red;
-                        else
-                            texts[i].color = Color.black;
-                    }
-
-
-                    if (bestPlayerSortIndex == 0)
-                    {
-                        texts[i].text = (i + 1) + " : " + tmpA.myName + "||  Index :" + tmpA.myIndex;
-                    }
-                    else if (bestPlayerSortIndex == 1)
-                    {
-                        if (BestPlayerLists.Count > j)
-                            texts[i].text = (i + 1) + " : " + tmpB.myName + "||  Index :" + tmpB.myIndex;
-                        else
-                            texts[i].text = "";
-                    }
-                    else
-                    {
-                        texts[i].text = (i + 1) + " : " + tmpA.myName + "||  Index :" + tmpA.myIndex;
-                    }
+                    if (RoomData.GetInstance().Scores != null)
+                        texts[i].text = (i + 1) + " : " + tmpA.myName + "||  Score :" + RoomData.GetInstance().Scores[tmpA.GetComponent<PhotonView>().Owner.ActorNumber];
                 }
             }
             else

@@ -77,6 +77,7 @@ public class AutoCannon : Cannon
                             case CannonType.ThreeWay:
                                 for (int i = 0; i < 3; i++)
                                 {
+                                    print("ysey");
                                     lrs[i].enabled = false;
                                     LaunchStraight(3,this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
                                 }
@@ -281,7 +282,7 @@ public class AutoCannon : Cannon
         Vector3 dist = (_targetPos + targetPos - this.transform.position);
         dist.y = 0;
         ball.velocity = dist.normalized * ShootVelocity;
-        OptionSettingManager.GetInstance().Play("FireCannon", true);
+        //OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, false);
         ResetAttackingState((divided>1)? 6f:4f);
     }

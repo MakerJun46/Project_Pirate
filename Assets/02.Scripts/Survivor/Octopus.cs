@@ -32,6 +32,8 @@ public class Octopus : SurvivorMonster
     {
         base.Start();
         anim = GetComponent<Animator>();
+        anim.speed = Random.Range(0.8f, 1.2f);
+        attackCooltime = Random.Range(1, 5f);
         StartCoroutine("ChangeOffsetCoroutine");
     }
     IEnumerator ChangeOffsetCoroutine()
@@ -52,7 +54,10 @@ public class Octopus : SurvivorMonster
                 if (index >= 0 && !attacking && target && Vector3.Distance(target.position, transform.position) <= viewRadius)
                 {
                     TargetPos = target.transform.position;
-                    GetComponent<PhotonView>().RPC("AttackFunc", RpcTarget.AllBuffered);
+                    if (Photon.Pun.PhotonNetwork.IsConnected)
+                        GetComponent<PhotonView>().RPC("AttackFunc", RpcTarget.AllBuffered);
+                    else
+                        AttackFunc();
                 }
 
                 if (attacking)
@@ -60,7 +65,8 @@ public class Octopus : SurvivorMonster
                     Collider[] tmpColl = Physics.OverlapSphere(IKHandler.position, attackRadius, targetLayer);
                     for (int i = 0; i < tmpColl.Length; i++)
                     {
-                        tmpColl[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
+                        if (tmpColl[i].transform.GetComponent<PhotonView>())
+                            tmpColl[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
                     }
                     //IKHandler.transform.position = Vector3.Slerp(IKHandler.transform.position, TargetPos, Time.deltaTime * 5f);
                     //IKHandler.transform.rotation = Quaternion.Euler(Mathf.Lerp(IKHandler.transform.rotation.eulerAngles.x,90, Time.deltaTime * 5f),0,0);
@@ -92,7 +98,7 @@ public class Octopus : SurvivorMonster
     {
         attacking = true;
         yield return new WaitForSeconds(4f);
-        attackCooltime = 8;
+        attackCooltime = Random.Range(7f,9f);
         attacking = false;
     }
 
@@ -105,6 +111,7 @@ public class Octopus : SurvivorMonster
     IEnumerator AttackedCoroutine(float stunTime)
     {
         attacked = true;
+        anim.SetTrigger("Attacked");
         GetComponentInChildren<SkinnedMeshRenderer>().materials[0].color = Color.red;
         yield return new WaitForSeconds(stunTime);
         GetComponentInChildren<SkinnedMeshRenderer>().materials[1].color = Color.white;

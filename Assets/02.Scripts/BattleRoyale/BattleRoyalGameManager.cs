@@ -47,6 +47,10 @@ public class BattleRoyalGameManager : GameManager
     protected override void Start()
     {
         base.Start();
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
+        {
+            StartCoroutine("DeathFieldCoroutine");
+        }
         MyShip_On_Landing_Point = false;
 
         getStartResource();
@@ -79,11 +83,10 @@ public class BattleRoyalGameManager : GameManager
         }
     }
 
-    public override void EndGame(bool _win)
+    public override void JudgeWinLose(bool _win)
     {
-        base.EndGame(_win);
+        base.JudgeWinLose(_win);
         print("End : " + _win);
-        GameStart = false;
     }
 
     protected override void Update()
@@ -139,11 +142,11 @@ public class BattleRoyalGameManager : GameManager
             {
                 if (MyShip == null || MyShip.GetComponent<Player_Combat_Ship>().health <= 0)
                 {
-                    EndGame(false);
+                    JudgeWinLose(false);
                 }
                 else
                 {
-                    EndGame(true);
+                    JudgeWinLose(true);
                 }
             }
             else
@@ -164,11 +167,11 @@ public class BattleRoyalGameManager : GameManager
                 {
                     if(index >= 0 && index < AllShip.Count && AllShip[index] == MyShip)
                     {
-                        EndGame(true);
+                        JudgeWinLose(true);
                     }
                     else
                     {
-                        EndGame(false);
+                        JudgeWinLose(false);
                     }
                 }
             }

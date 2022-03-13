@@ -159,10 +159,10 @@ MonoBehaviour:
     m_NumColorKeys: 7
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
-  shallowColor: {r: 0, g: 0.7725491, b: 0.62352943, a: 0.5019608}
-  deepColor: {r: 0.01176471, g: 0.28624168, b: 0.50980073, a: 1}
-  colorDepth: 0.8
-  horizonColor: {r: 0, g: 0.22741818, b: 0.8, a: 1}
+  shallowColor: {r: 0.13861692, g: 0.8396226, b: 0.70440316, a: 0.5176471}
+  deepColor: {r: 0.072668225, g: 0.40258166, b: 0.6698113, a: 1}
+  colorDepth: 3.31
+  horizonColor: {r: 0.07413671, g: 0.9245283, b: 0.7924441, a: 0.7647059}
   horizonDistance: 20
   shoreFade: 1
   shoreColor: {r: 0, g: 0.98039216, b: 0.30192798, a: 0}
@@ -174,12 +174,12 @@ MonoBehaviour:
   underwaterColorStrength: 1
   underwaterRefractionStrength: 14.83
   surfaceFoamTexture: {fileID: 2800000, guid: d3b0d77dfe711a04c8ff18ecc260aa66, type: 3}
-  surfaceFoamSampling: {x: 0.62, y: 0}
-  surfaceFoamCutoff: 0.62
-  surfaceFoamDistortion: 0
+  surfaceFoamSampling: {x: 0.048, y: 0.62}
+  surfaceFoamCutoff: 0.048
+  surfaceFoamDistortion: 0.62
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 1, g: 1, b: 1, a: 0.3215686}
-  surfaceFoamColor2: {r: 1, g: 1, b: 1, a: 0.7294118}
+  surfaceFoamColor1: {r: 1, g: 1, b: 1, a: 0.078431375}
+  surfaceFoamColor2: {r: 1, g: 1, b: 1, a: 0.36862746}
   surfaceFoamMovement: {x: 0.7, y: 0, z: 0.47, w: 0.01}
   surfaceFoamDirection1: 0.7
   surfaceFoamDirection2: 0.47
@@ -218,20 +218,20 @@ MonoBehaviour:
   shoreFoamBreakupStrength: 0
   shoreFoamBreakupScale: 0
   lighting: 0
-  lightingSmoothness: 0.71
-  lightingSpecularColor: {r: 1, g: 1, b: 1, a: 0}
+  lightingSmoothness: 0.549
+  lightingSpecularColor: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 0}
   lightingDiffuseColor: {r: 0, g: 0, b: 0, a: 0}
-  lightingHardness: 0
+  lightingHardness: 0.389
   normalsTexture: {fileID: 2800000, guid: a41da5f5671718b47bbc71e9ef691103, type: 3}
   normalsMovement: {x: 0.04, y: 0.36}
   normalsStrength: 0.42
   normalsScale: 0.36
   normalsSpeed: 0.04
-  refractionStrength: 0.022
-  waveVisuals: {x: 0.132, y: 7.9, z: 1.38}
+  refractionStrength: 0
+  waveVisuals: {x: 0.132, y: 12, z: 3}
   waveSteepness: 0.132
-  waveLength: 7.9
-  waveSpeed: 1.38
+  waveLength: 12
+  waveSpeed: 3
   waveDirections: {x: 0, y: 0.64, z: 1, w: 0.33}
   waveDirection1: 0
   waveDirection2: 0.64

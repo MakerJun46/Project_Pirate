@@ -9,7 +9,6 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
 
     protected Rigidbody rb;
 
-    bool isElite;
     protected Vector3 toTargetDir;
     protected Transform target;
     [SerializeField] protected float viewRadius = 20;
@@ -32,7 +31,7 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
 
     protected virtual void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponentInChildren<Rigidbody>();
 
 
         health = maxHealth;
@@ -48,12 +47,11 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
         this.transform.localScale = _data.transform.localScale;
     }
 
-    public void InitializeEnemy(float _damage, float _vel, float _health,  bool _isElite)
+    public void InitializeEnemy(float _damage, float _vel, float _health)
     {
         damage += _damage;
         speed += _vel;
         maxHealth += _health;
-        isElite = _isElite;
 
         attacked = false;
         if (target)
@@ -62,19 +60,11 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
             toTargetDir = (target.position - this.transform.position).normalized;
         }
         health = maxHealth;
-
-        if (isElite)
-        {
-            this.transform.localScale *= 2f;
-            this.transform.GetComponent<SphereCollider>().radius *= 0.5f;
-            //if (FindObjectOfType<Player_Controller_Ship>())
-            //    health *= (FindObjectOfType<Player_Controller_Ship>().level / 5f + 1);
-        }
     }
 
     protected virtual void Update()
     {
-        if (GetComponent<PhotonView>().IsMine)
+        if (GetComponentInChildren<PhotonView>().IsMine)
         {
             colls = Physics.OverlapSphere(this.transform.position, viewRadius, targetLayer);
 
@@ -91,7 +81,8 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
 
             if (attacked)
             {
-                rb.velocity = Impact * ImpactMultiplier;
+                if(rb)
+                    rb.velocity = Impact * ImpactMultiplier;
             }
 
             Impact = Vector3.Lerp(Impact, Vector3.zero, Time.deltaTime);
@@ -128,12 +119,10 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
             health -= (float)param[0];
             //additionalForce = (Vector3)param[1];
 
-            print("Attacked : " + health);
             AttackedFunc(1f);
 
             if (health <= 0)
             {
-                print("Destroy");
                 Destroy(this.gameObject);
             }
         }
@@ -141,7 +130,6 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
 
     protected virtual void AttackedFunc(float _stunTime)
     {
-        //StartCoroutine("AttackedCoroutine", _stunTime);
     }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

@@ -13,8 +13,6 @@ public struct EnemyInfo
     public float additionalDamage;
     public float additionalVel;
     public float additionalHealth;
-
-    public bool IsElite;
 }
 
 
@@ -28,18 +26,18 @@ public class SurvivorGameManager : GameManager
 
 
     [SerializeField] WaveData waveData;
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         DeathCount = 0;
 
-        if (Photon.Pun.PhotonNetwork.IsMasterClient || Photon.Pun.PhotonNetwork.IsConnected==false)
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected==false)
         {
             Invoke("WaveStart", 5f);
         }
-
         //StartCoroutine("PickupGenerateCoroutine");
-
     }
+
     IEnumerator PickupGenerateCoroutine()
     {
         yield return new WaitForSeconds(Random.Range(15f, 30f));
@@ -56,7 +54,7 @@ public class SurvivorGameManager : GameManager
         }
 
         float pickUpIndex = Random.Range(0, 100f);
-        string tmpPickUpString = "Pickup_Treasure";
+        string tmpPickUpString = "Pickup_SurvivorTreasure";
 
         GameObject tmpObj = PhotonNetwork.Instantiate(tmpPickUpString, Vector3.zero, Quaternion.identity);
 
@@ -93,8 +91,7 @@ public class SurvivorGameManager : GameManager
                 tmpEnemy.GetComponent<SurvivorMonster>().InitializeEnemy(
                     waveData.waves[waveIndex].enemies[j].additionalDamage,
                     waveData.waves[waveIndex].enemies[j].additionalVel,
-                    waveData.waves[waveIndex].enemies[j].additionalHealth,
-                    waveData.waves[waveIndex].enemies[j].IsElite);
+                    waveData.waves[waveIndex].enemies[j].additionalHealth);
                 yield return new WaitForSeconds(0.1f);
 
                 yield return new WaitUntil(()=>FindObjectsOfType<SurvivorMonster>().Length <= 10);
@@ -111,11 +108,10 @@ public class SurvivorGameManager : GameManager
         if(GameStart)
             StartCoroutine("WaveSpawnCoroutine");
     }
-    public override void EndGame(bool _win)
+    public override void JudgeWinLose(bool _win)
     {
-        base.EndGame(_win);
+        base.JudgeWinLose(_win);
         print("End : " + _win);
-        GameStart = false;
     }
 
 
@@ -123,17 +119,17 @@ public class SurvivorGameManager : GameManager
     {
         base.Update();
         
-        if (GameStart)
+        if (GameStart && DebugMode == false)
         {
             if (playTime >= 60)
             {
                 if (MyShip == null || MyShip.GetComponent<Player_Combat_Ship>().health <= 0)
                 {
-                    EndGame(false);
+                    JudgeWinLose(false);
                 }
                 else
                 {
-                    EndGame(true);
+                    JudgeWinLose(true);
                 }
             }
             else
@@ -154,11 +150,11 @@ public class SurvivorGameManager : GameManager
                 {
                     if (index >= 0 && index < AllShip.Count && AllShip[index] == MyShip)
                     {
-                        EndGame(true);
+                        JudgeWinLose(true);
                     }
                     else
                     {
-                        EndGame(false);
+                        JudgeWinLose(false);
                     }
                 }
             }

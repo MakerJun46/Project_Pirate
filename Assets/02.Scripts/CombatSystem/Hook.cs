@@ -11,6 +11,9 @@ public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
     [SerializeField] float dragForce = 1;
     [SerializeField] float lifeTime = 5f;
 
+    [SerializeField] GameObject ChainEffect;
+    [SerializeField] LineRenderer ChainLine;
+
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         // sendData | 0: actor number 1:targetPos 2: shootVelocity
@@ -38,6 +41,10 @@ public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             this.transform.position = enemyShip.transform.position;
         if (myShip && enemyShip)
         {
+            ChainEffect.transform.position = enemyShip.transform.position+Vector3.up*2;
+            ChainLine.SetPosition(0, myShip.transform.position-this.transform.position + Vector3.up * 2f);
+            ChainLine.SetPosition(1, enemyShip.transform.position - this.transform.position+Vector3.up*2f);
+
             Vector3 distance = (enemyShip.transform.position - myShip.transform.position);
             myShip.additionalForce += distance.normalized * dragForce;
             enemyShip.additionalForce += -distance.normalized * dragForce;
@@ -58,6 +65,7 @@ public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                 other.transform != myShip.transform)
             {
                 enemyShip = other.GetComponent<Player_Controller_Ship>();
+                ChainEffect.GetComponentInChildren<ParticleSystem>().Play();
             }
         }
     }

@@ -164,14 +164,17 @@ public class Player_Combat_Ship : MonoBehaviourPun
             GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
             if (health <= 0)
             {
+
+                // ItemManager가 없는 경우 에러떠서 일시적으로 주석처리
+                /*
                 GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
 
                 for (int i = 0; i < Item_Manager.instance.Player_items.Count; i++)
                 {
                     go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
                 }
+                */
                 GetComponent<Player_Controller_Ship>().deadTime = Time.time;
-
                 GameManager.GetInstance().Observe(0);
 
                 Destroy(this.gameObject);
@@ -300,7 +303,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localScale = Vector3.one;
             tmpCannon.transform.localRotation = Quaternion.identity;
             mySpecialCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
-            tmpCannon.GetComponent<SpecialCannon>().Initialize(this, _spotIndex, (int)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]);
+            tmpCannon.GetComponent<SpecialCannon>().Initialize(this, _spotIndex, (int)RoomData.GetInstance().gameMode);
         }
         ChangeSpecialCannonType(_spotIndex, _cannonIndex, true);
 

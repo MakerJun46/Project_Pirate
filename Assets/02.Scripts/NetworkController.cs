@@ -7,13 +7,6 @@ using Photon.Realtime;
 using ExitGames.Client.Photon;
 using UnityEngine.SceneManagement;
 
-public enum GameMode
-{
-    BattleRoyale,
-    HotPotato,
-    Survivor,
-    BossRaid,
-}
 
 public class NetworkController : MonoBehaviourPunCallbacks
 {
@@ -59,7 +52,6 @@ public class NetworkController : MonoBehaviourPunCallbacks
     [SerializeField] Text GameModeText;
     [SerializeField] GameModeInfo[] GameModeInfos;
 
-    public GameMode gameMode = 0; //0:배틀로얄 1:폭탄돌리기 2: 몬스터피하기
 
     private void Awake()
     {
@@ -119,6 +111,37 @@ public class NetworkController : MonoBehaviourPunCallbacks
     }
 
 
+    [PunRPC]
+    public void StartGame()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties;
+            cp["IsGameStarted"] = true;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            //PhotonNetwork.CurrentRoom.IsVisible = false;
+            RoomPlayerCount.playerCount = PhotonNetwork.CountOfPlayers;
+
+            SceneManager.LoadScene("GameScene_Room");
+
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" } });
+        }
+    }
+
+    [PunRPC]
+    public void StopGameRPC()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties;
+            cp["IsGameStarted"] = false;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
+            PhotonNetwork.CurrentRoom.IsOpen = true;
+            //PhotonNetwork.CurrentRoom.IsVisible = true;
+        }
+    }
+
     public void SetRoomName(string name)
     {
         if (name != null && name != "")
@@ -133,20 +156,6 @@ public class NetworkController : MonoBehaviourPunCallbacks
         IsOpen = open;
     }
 
-    [System.Obsolete]
-    public void AddMaxPlayers(int _add)
-    {
-        if (PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add >= (byte)1 && PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add <= (byte)4)
-        {
-            PhotonNetwork.CurrentRoom.MaxPlayers += (byte)_add;
-        }
-    }
-
-    public void ConnectOfflineMode()
-    {
-        RoomPanel.SetActive(true);
-    }
-
     public void Connect()
     {
         contractText.text = "연결 시도";
@@ -158,10 +167,8 @@ public class NetworkController : MonoBehaviourPunCallbacks
 
         contractText.text = "연결 됨";
 
-
         SetNickName();
         MainPanel.SetActive(false);
-
     }
 
     public void Disconnect()
@@ -216,8 +223,8 @@ public class NetworkController : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
         roomOptions.MaxPlayers = (byte)4;
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }, { "GameModeIndex", 0 } };
-        roomOptions.CustomRoomPropertiesForLobby = new string[] { "IsGameStarted" , "GameModeIndex" };
+        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
+        roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         SetRoomName(PhotonNetwork.LocalPlayer.NickName + "'s Room");
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
@@ -231,8 +238,8 @@ public class NetworkController : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
         roomOptions.MaxPlayers = (byte)4;
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }, { "GameModeIndex", 0 } };
-        roomOptions.CustomRoomPropertiesForLobby = new string[] { "IsGameStarted", "GameModeIndex" };
+        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
+        roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, null);
     }
     public void JoinRandomRoom()
@@ -250,12 +257,14 @@ public class NetworkController : MonoBehaviourPunCallbacks
     {
         base.OnCreatedRoom();
         contractText.text = "방 만들기 성공";
+
+        PhotonNetwork.Instantiate("RoomData",  Vector3.zero, Quaternion.identity);
         AddGameModeIndex(0);
     }
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        //GameManager.GetInstance().SetGameModeRPC(System.Convert.ToInt16(PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
+
         PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" }, { "IsKicked", false } });
         contractText.text = "방 입장 성공";
 
@@ -323,6 +332,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
         {
             Destroy(player.gameObject);
         }
+        RoomData.GetInstance().DestroyRoomData();
     }
 
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
@@ -337,10 +347,6 @@ public class NetworkController : MonoBehaviourPunCallbacks
                 ActiveOptionBlind(false);
             }
         }
-    }
-    public void ActiveOptionBlind(bool active)
-    {
-        OptionBlindForClient.SetActive(active);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -410,26 +416,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
                         tmpBtn.GetComponent<Button>().interactable = true;
                     }
                 }
-                if ((bool)info.CustomProperties.ContainsKey("GameModeIndex"))
-                {
-                    if(int.Parse((string)info.CustomProperties["GameModeIndex"]) >=0 && int.Parse((string)info.CustomProperties["GameModeIndex"]) < GameModeInfos.Length)
-                        tmpBtn.GameModeTxt.text = "[" + (GameMode)(int.Parse((string)info.CustomProperties["GameModeIndex"])) + "]";
-                }
             }
-        }
-    }
-
-    public void SetNickName()
-    {
-        string name = SetNickNameInputField.text;
-        if (PhotonNetwork.IsConnected)
-        {
-            myNickName = name;
-            PhotonNetwork.NickName = name;
-        }
-        else
-        {
-            myNickName = name;
         }
     }
 
@@ -474,42 +461,34 @@ public class NetworkController : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SetGameMode(int index)
-    {
-        if (PhotonNetwork.IsConnected == false)
-        {
-            gameMode = (GameMode)index;
 
-            SetGameModeRPC((int)gameMode);
+    public void ActiveOptionBlind(bool active)
+    {
+        OptionBlindForClient.SetActive(active);
+    }
+    public void SetNickName()
+    {
+        string name = SetNickNameInputField.text;
+        if (PhotonNetwork.IsConnected)
+        {
+            myNickName = name;
+            PhotonNetwork.NickName = name;
         }
         else
         {
-            if (PhotonNetwork.InRoom)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    gameMode = (GameMode)index;
-                    ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties;
-                    cp["GameModeIndex"] = ((int)gameMode).ToString();
-                    PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
-
-                    GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, (int)gameMode);
-                }
-            }
-            else
-            {
-                gameMode = (GameMode)index;
-
-                SetGameModeRPC((int)gameMode);
-            }
+            myNickName = name;
         }
     }
+
+
+    #region GameMode
     public void AddGameModeIndex(int addAmount)
     {
+        int resultIndex = (addAmount + (int)RoomData.GetInstance().gameMode)% GameModeInfos.Length;
         if (PhotonNetwork.IsConnected == false)
         {
-            gameMode = (GameMode)(addAmount+(int)gameMode);
-            SetGameModeRPC((int)gameMode);
+            RoomData.GetInstance().SetGameModeRPC(resultIndex);
+            SetGameModeRPC();
         }
         else
         {
@@ -517,76 +496,27 @@ public class NetworkController : MonoBehaviourPunCallbacks
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    gameMode = (GameMode)(addAmount + (int)gameMode);
-                    ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties;
-                    cp["GameModeIndex"] = ((int)gameMode).ToString();
-                    PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
-
-                    GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, (int)gameMode);
+                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, resultIndex);
+                    GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered);
                 }
-            }
-            else
-            {
-                gameMode = (GameMode)(addAmount + (int)gameMode);
-                SetGameModeRPC((int)gameMode);
             }
         }
     }
-    [PunRPC]
-    public void SetGameModeRPC(int gameModeIndex)
-    {
-        gameMode = (GameMode)Mathf.Clamp(gameModeIndex, 0, GameModeInfos.Length - 1);
 
-        GameModeImage.sprite = GameModeInfos[(int)gameMode].sprite;
-        GameModeText.text = gameMode.ToString();
-        switch (gameMode)
+    [PunRPC]
+    public void SetGameModeRPC()
+    {
+        GameModeImage.sprite = GameModeInfos[(int)RoomData.GetInstance().gameMode].sprite;
+        GameModeText.text = RoomData.GetInstance().gameMode.ToString();
+        switch (RoomData.GetInstance().gameMode)
         {
             case GameMode.BattleRoyale:
                 break;
-            case GameMode.HotPotato:
+            case GameMode.PassTheBomb:
                 break;
         }
     }
-
-    [PunRPC]
-    public void StartGame()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties;
-            cp["IsGameStarted"] = true;
-            PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-            //PhotonNetwork.CurrentRoom.IsVisible = false;
-            RoomPlayerCount.playerCount = PhotonNetwork.CountOfPlayers;
-
-            SceneManager.LoadScene("GameScene_"+ gameMode.ToString());
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" } });
-        }
-    }
-    [PunRPC]
-    public void StopGameRPC()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties;
-            cp["IsGameStarted"] = false;
-            PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
-            PhotonNetwork.CurrentRoom.IsOpen = true;
-            //PhotonNetwork.CurrentRoom.IsVisible = true;
-        }
-
-        //GameStarted = false;
-        //GenerationIndex = 0;
-        //currGenerationTime = 0;
-
-        //if (myPlayer != null)
-        //    myPlayer.gameObject.SetActive(false);
-
-        //currGameModeManager.StopGame();
-    }
-
+    #endregion
 
     #region Chat
     public void ChattedByPlayer()
@@ -633,6 +563,16 @@ public class NetworkController : MonoBehaviourPunCallbacks
         }
     }
     #endregion
+
+
+    [System.Obsolete]
+    public void AddMaxPlayers(int _add)
+    {
+        if (PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add >= (byte)1 && PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add <= (byte)4)
+        {
+            PhotonNetwork.CurrentRoom.MaxPlayers += (byte)_add;
+        }
+    }
 
     void OnGUI() { GUILayout.Label(debugLog); }
 

@@ -4,21 +4,24 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public NetworkManager instance;
 
-    public GameObject DisconnetPanel;
-    public GameObject RespawnPanel;
-    public PhotonView PV;
+    [SerializeField]private GameObject DisconnetPanel;
+    private PhotonView PV;
 
-    public float StartTime = 3f;
+    [SerializeField] GameObject LoadingPanel;
+    [SerializeField]private int loading_sec=3;
+
+
     private void Awake()
     {
         instance = this;
-        Screen.SetResolution(960, 540, false);
+        //Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
     }
@@ -35,29 +38,62 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             Connect();
         }
+
+        // RoomData.GetInstance() == null Debug를 위함
+        if (RoomData.GetInstance() == null ||  RoomData.GetInstance().PlayedGameCount < 3 || (RoomData.GetInstance().PlayedGameCount >= 3 &&  SceneManager.GetActiveScene().name!= "GameScene_Room"))
+            StartEndGame(true);
     }
 
-    private void Update()
+    public void StartEndGame(bool _start)
     {
-        if (StartTime >= 0 && GameManager.GetInstance().GameStart==false)
+        StartCoroutine(StartEndGameCoroutine(_start));
+    }
+
+    public IEnumerator StartEndGameCoroutine(bool _start)
+    {
+        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
-            StartTime -= Time.deltaTime;
-        }
-        else
-        {
-            if (PhotonNetwork.IsMasterClient)
+            if (RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0)
+                if(Random.Range(0,1f)>0.5f)
+                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC",RpcTarget.AllBuffered,0);
+                else
+                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered,2);
+            while (_start)
             {
-                PV.RPC("GameStartRPC",RpcTarget.AllBuffered,true);
+                yield return new WaitForEndOfFrame();
+                if (GameManager.GetInstance().BestPlayerLists.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                    break;
             }
+            RoomData.GetInstance().GetComponent<PhotonView>().RPC("StartLoading", RpcTarget.AllBuffered,_start);
         }
     }
 
-    [PunRPC]
-    public void GameStartRPC(bool _start)
+    public void setting(bool _start)
     {
-        GameManager.GetInstance().GameStart = _start;
+        StartCoroutine(Loading(_start));
     }
+    IEnumerator Loading(bool _start)
+    {
+        LoadingPanel.SetActive(true);
+        yield return new WaitForEndOfFrame();
 
+        if (_start == false)
+            GameManager.GetInstance().GameStart = false;
+
+        for (int i = loading_sec; i > 0; i--)
+        {
+            LoadingPanel.transform.Find("Loading_Second").GetComponent<TextMeshProUGUI>().text = i.ToString();
+            yield return new WaitForSecondsRealtime(1.0f);
+        }
+
+        LoadingPanel.SetActive(false);
+
+        print("LOADING END");
+        if(_start)
+            GameManager.GetInstance().StartGame();
+        else
+            GameManager.GetInstance().EndGame();
+    }
 
     /// <summary>
     /// 네트워크 정보로 연결 시도
@@ -66,7 +102,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void GoToLobby()
     {
-        SceneManager.LoadScene(1, LoadSceneMode.Single);
+        SceneManager.LoadScene("GameScene_Room", LoadSceneMode.Single);
+    }
+    public void ExitRoom()
+    {
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     /// <summary>
@@ -85,7 +125,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         DisconnetPanel.SetActive(false);
+        if (RoomData.GetInstance() == null)
+            PhotonNetwork.Instantiate("RoomData", Vector3.zero, Quaternion.identity);
+
         Spawn();
+    }
+
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        RoomData.GetInstance().DestroyRoomData();
     }
 
     /// <summary>
@@ -95,20 +144,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         DisconnetPanel.SetActive(true);
-        RespawnPanel.SetActive(false);
     }
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
         if (PhotonNetwork.IsConnected)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                GameManager.GetInstance().MasterChanged(true);
-            }
-            else
-            {
-                GameManager.GetInstance().MasterChanged(false);
-            }
+            GameManager.GetInstance().MasterChanged(PhotonNetwork.IsMasterClient ? true : false);
         }
     }
 
@@ -132,8 +173,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
-
-        RespawnPanel.SetActive(false);
     }
 
     [SerializeField] float PlayerSpawnRadius=100f;

@@ -46,7 +46,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 7.5
+  m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2105191019440615444
 Rigidbody:
@@ -81,6 +81,7 @@ MonoBehaviour:
   floorLayer:
     serializedVersion: 2
     m_Bits: 16
+  ExplodePrefab: {fileID: 2152421049228498813, guid: faaf2f2db3178e741809773f8e305530, type: 3}
 --- !u!114 &-2205192246891424471
 MonoBehaviour:
   m_ObjectHideFlags: 0

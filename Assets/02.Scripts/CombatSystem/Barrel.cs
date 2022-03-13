@@ -12,6 +12,10 @@ public class Barrel : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 
     public float power=100;
     [SerializeField] LayerMask floorLayer;
+
+    [SerializeField] GameObject ExplodePrefab;
+
+    bool destroyed = false;
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         rb = GetComponent<Rigidbody>();
@@ -45,7 +49,7 @@ public class Barrel : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && canAttack && GetComponent<PhotonView>().IsMine)
+        if (other.CompareTag("Player") && canAttack && GetComponent<PhotonView>().IsMine && destroyed==false)
         {
             if (other.transform.GetComponent<Player_Combat_Ship>())
             {
@@ -53,7 +57,20 @@ public class Barrel : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                     , new object[] {30.0f,(other.transform.position-this.transform.position).normalized*power}
                 );
             }
-            PhotonNetwork.Destroy(this.gameObject);
+            GetComponent<PhotonView>().RPC("DestroyObjRPC", RpcTarget.AllBuffered, 1.5f);
         }
+    }
+
+    [PunRPC]
+    public void DestroyObjRPC(float _time)
+    {
+        destroyed = true;
+        StartCoroutine("DestroyObjCoroutine",_time);
+    }
+    IEnumerator DestroyObjCoroutine(float _time)
+    {
+        Instantiate(ExplodePrefab, this.transform.position, Quaternion.identity);
+        yield return new WaitForSeconds(_time);
+        Destroy(this.gameObject);
     }
 }
