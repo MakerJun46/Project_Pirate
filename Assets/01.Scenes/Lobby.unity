@@ -2210,7 +2210,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsStrength
-      value: 0.297
+      value: 0.334
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingHardness
@@ -2221,8 +2221,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: enableFoamShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: enableSurfaceFoam
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsMovement.x
@@ -2234,7 +2238,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: surfaceFoamCutoff
-      value: 0.107
+      value: 0.076
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: surfaceFoamScale1
@@ -2255,7 +2259,7 @@ PrefabInstance:
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: surfaceFoamTexture
       value: 
-      objectReference: {fileID: 2800000, guid: d3b0d77dfe711a04c8ff18ecc260aa66, type: 3}
+      objectReference: {fileID: 2800000, guid: 59322d9235e3b2a44a08574ae149f003, type: 3}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: colorGradientTexture
       value: 
@@ -2265,8 +2269,16 @@ PrefabInstance:
       value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamDistortion
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: surfaceFoamSampling.x
-      value: 0.107
+      value: 0.076
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamSampling.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingSpecularColor.b
