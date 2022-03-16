@@ -6,29 +6,7 @@ using UnityEngine.UI;
 
 public class BattleRoyalGameManager : GameManager
 {
-    public Text UI_Wood_Count;
-    public Text UI_Rock_Count;
-    public Text UI_Sailor_Count;
-
-    public Text LandingEscape_Button_Text;
-
-    public GameObject PlayerInfo_UI_Panel;
-    public GameObject Island_Landing_UI;
-    public GameObject TreasureChest_UI_Panel;
-    bool PlayerInfo_UI_Opened = false;
-
-    [SerializeField] private float deathFieldRadius = 100;
-    [SerializeField] private GameObject DeathFieldObj;
-    [SerializeField] private LayerMask deathFieldLayer;
-
-    /*
-    [SerializeField] Material WallMaterial;
-    [SerializeField] LayerMask WallThroughLayer;
-    */
-
-    [SerializeField] GameObject miniMap;
-    [SerializeField] protected GameObject WorldMap;
-
+    #region Variables & Initializer
     public List<Island_Info> All_Island;
     public List<GameObject> MySailors;
 
@@ -36,13 +14,35 @@ public class BattleRoyalGameManager : GameManager
     public int Resource_Rock_Count;
     public int My_Sailor_Count;
 
+    [Header("[DeathField]")]
+    [SerializeField] private float deathFieldRadius = 100;
+    [SerializeField] private GameObject DeathFieldObj;
+    [SerializeField] private LayerMask deathFieldLayer;
+
+    [Header("[Info UI]")]
+    bool PlayerInfo_UI_Opened = false;
+    public GameObject PlayerInfo_UI_Panel;
+    public GameObject Island_Landing_UI;
+    public GameObject TreasureChest_UI_Panel;
+
+    public Text UI_Wood_Count;
+    public Text UI_Rock_Count;
+    public Text UI_Sailor_Count;
+
     public bool MyShip_On_Landing_Point;
     public GameObject Landing_Button_Blur;
+    public Text LandingEscape_Button_Text;
 
-    [SerializeField] LayerMask WaterLayer;
-
+    [Header("[MiniMap]")]
+    [SerializeField] GameObject miniMap;
+    [SerializeField] protected GameObject WorldMap;
     [SerializeField] MinimapCamera minimapCam;
     [SerializeField] Material MyshipColor;
+
+    /* 벽 투명하게 보이도록
+    [SerializeField] Material WallMaterial;
+    [SerializeField] LayerMask WallThroughLayer;
+    */
 
     protected override void Start()
     {
@@ -51,7 +51,11 @@ public class BattleRoyalGameManager : GameManager
         {
             StartCoroutine("DeathFieldCoroutine");
         }
+
         MyShip_On_Landing_Point = false;
+        Resource_Wood_Count = 0;
+        Resource_Rock_Count = 0;
+        My_Sailor_Count = 0;
 
         getStartResource();
     }
@@ -82,20 +86,88 @@ public class BattleRoyalGameManager : GameManager
             MyShip.transform.Find("MinimapCircle").GetComponent<Renderer>().sharedMaterial = MyshipColor;
         }
     }
-
-    public override void JudgeWinLose(bool _win)
+    IEnumerator DeathFieldCoroutine()
     {
-        base.JudgeWinLose(_win);
-        print("End : " + _win);
+        yield return new WaitForSeconds(1f);
+
+        // 범위 내 존재하지 않는 플레이어를 찾아서 Attack
+        Collider[] innerFieldShips = Physics.OverlapSphere(Vector3.zero, deathFieldRadius, deathFieldLayer);
+        List<Player_Controller_Ship> tmpColls = new List<Player_Controller_Ship>();
+        foreach (Collider c in innerFieldShips)
+        {
+            tmpColls.Add(c.GetComponent<Player_Controller_Ship>());
+        }
+        for (int i = 0; i < AllShip.Count; i++)
+        {
+            if (tmpColls.Contains(AllShip[i]) == false)
+            {
+                AllShip[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 5f, Vector3.zero });
+            }
+        }
+        StartCoroutine("DeathFieldCoroutine");
     }
+
+    #endregion
 
     protected override void Update()
     {
         base.Update();
 
+
         UI_Resources_Text_Update();
         UI_Panel_Update();
 
+
+        deathFieldRadius -= Time.deltaTime;
+        deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
+        DeathFieldObj.gameObject.transform.localScale = Vector3.one * deathFieldRadius / 250f;
+
+        if (GameStart)
+        {
+            if (playTime >= 60)
+            {
+                // 시간이 끝났을 때,
+                // 내 배가 없거나 health가 0이라면 패배, 아니라면 승리
+                bool Win = !(MyShip == null || MyShip.GetComponent<Player_Combat_Ship>().health <= 0);
+                JudgeWinLose(Win);
+            }
+            else
+            {
+                // 시간이 아직 끝나지 않았으면
+                playTime += Time.deltaTime;
+
+                // 남아있는 player와 그 index를 확인
+                List<Player_Controller_Ship> survivedShips = new List<Player_Controller_Ship>();
+                for(int i = 0; i < AllShip.Count; i++)
+                {
+                    if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
+                    {
+                        survivedShips.Add(AllShip[i]);
+                    }
+                }
+
+                // 남아있는 플레이어가 1명 이하일 때, 그 플레이어가 내 플레이어라면 승리, 아니라면 패배
+                if (survivedShips.Count <= 1)
+                {
+                    bool Win = false;
+                    for (int i=0;i< survivedShips.Count; i++)
+                    {
+                        if (survivedShips[i] == MyShip)
+                        {
+                            Win = true;
+                            break;
+                        }
+                    }
+                    JudgeWinLose(Win);
+                    if (IsWinner)
+                    {
+                        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
+                            PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
+                    }
+                    FindObjectOfType<NetworkManager>().StartEndGame(false);
+                }
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -104,21 +176,13 @@ public class BattleRoyalGameManager : GameManager
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            if (WorldMap.activeInHierarchy)
-            {
-                WorldMap.SetActive(false);
-                miniMap.SetActive(true);
-            }
-            else
-            {
-                WorldMap.SetActive(true);
-                miniMap.SetActive(false);
-            }
+            miniMap.SetActive(WorldMap.activeInHierarchy);
+            WorldMap.SetActive(!WorldMap.activeInHierarchy);
         }
 
+        /* See Through Wall  
         if (MyShip)
         {
-            /* See Through Wall  
             var dir = Camera.main.transform.position - MyShip.transform.position;
             var ray = new Ray(MyShip.transform.position, dir.normalized);
             Debug.DrawRay(MyShip.transform.position, dir.normalized * 1000f, Color.blue);
@@ -130,77 +194,14 @@ public class BattleRoyalGameManager : GameManager
             //    WallMaterial.SetFloat(Shader.PropertyToID("_Size"), 0);
             var view = Camera.main.WorldToViewportPoint(MyShip.transform.position);
             WallMaterial.SetVector(Shader.PropertyToID("_Position"), view);
-            */
-        }
-        deathFieldRadius -= Time.deltaTime;
-        deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
-        DeathFieldObj.gameObject.transform.localScale = Vector3.one * deathFieldRadius / 250f;
+        }*/
 
-        if (GameStart)
-        {
-            if (playTime >= 60)
-            {
-                if (MyShip == null || MyShip.GetComponent<Player_Combat_Ship>().health <= 0)
-                {
-                    JudgeWinLose(false);
-                }
-                else
-                {
-                    JudgeWinLose(true);
-                }
-            }
-            else
-            {
-                playTime += Time.deltaTime;
-
-                int count = 0;
-                int index = -1;
-                for(int i = 0; i < AllShip.Count; i++)
-                {
-                    if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
-                    {
-                        count++;
-                        index = i;
-                    }
-                }
-                if (count <= 1)
-                {
-                    if(index >= 0 && index < AllShip.Count && AllShip[index] == MyShip)
-                    {
-                        JudgeWinLose(true);
-                    }
-                    else
-                    {
-                        JudgeWinLose(false);
-                    }
-                }
-            }
-        }
-        TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
     }
 
-    void OnDrawGizmos()
+    public override void JudgeWinLose(bool _win)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(Vector3.zero, deathFieldRadius);
-    }
-    IEnumerator DeathFieldCoroutine()
-    {
-        yield return new WaitForSeconds(1f);
-        Collider[] innerFieldShips = Physics.OverlapSphere(Vector3.zero, deathFieldRadius, deathFieldLayer);
-        List<Player_Controller_Ship> tmpColls = new List<Player_Controller_Ship>();
-        foreach (Collider c in innerFieldShips)
-        {
-            tmpColls.Add(c.GetComponent<Player_Controller_Ship>());
-        }
-        for (int i = 0; i < AllShip.Count; i++)
-        {
-            if (tmpColls.Contains(AllShip[i]) == false)
-            {
-                AllShip[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 10f, Vector3.zero });
-            }
-        }
-        StartCoroutine("DeathFieldCoroutine");
+        base.JudgeWinLose(_win);
+        print("Judge This Game : " + _win);
     }
 
     public void SpawnSailor(int count, Transform _ship)
@@ -213,7 +214,7 @@ public class BattleRoyalGameManager : GameManager
         }
     }
 
-
+    #region UI
     /// <summary>
     /// 플레이어 자원 표시 업데이트
     /// </summary>
@@ -256,25 +257,12 @@ public class BattleRoyalGameManager : GameManager
             Item_Manager.instance.ResetCombineTable();
         }
 
-        if (PlayerInfo_UI_Opened)
-        {
-            PlayerInfo_UI_Panel.SetActive(true);
-        }
-        else
-        {
-            PlayerInfo_UI_Panel.SetActive(false);
-        }
-
-        if (MyShip_On_Landing_Point)
-        {
-            Landing_Button_Blur.SetActive(false);
-        }
-        else
-        {
-            Landing_Button_Blur.SetActive(true);
-        }
+        PlayerInfo_UI_Panel.SetActive(PlayerInfo_UI_Opened);
+        Landing_Button_Blur.SetActive(!MyShip_On_Landing_Point);
     }
+    #endregion
 
+    #region Island Landing
     public void island_LandingEscape_Button()
     {
         if (MyShip_On_Landing_Point && !MyShip.is_Landing)
@@ -301,5 +289,13 @@ public class BattleRoyalGameManager : GameManager
         Island_Landing_UI.SetActive(false);
         MyShip.is_Landing = true;
         LandingEscape_Button_Text.text = "Escape";
+    }
+    #endregion
+
+    void OnDrawGizmos()
+    {
+        // Death Field Sphere
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(Vector3.zero, deathFieldRadius);
     }
 }

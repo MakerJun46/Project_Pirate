@@ -40,7 +40,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         // RoomData.GetInstance() == null Debug를 위함
-        if (RoomData.GetInstance() == null ||  RoomData.GetInstance().PlayedGameCount < 3 || (RoomData.GetInstance().PlayedGameCount >= 3 &&  SceneManager.GetActiveScene().name!= "GameScene_Room"))
+        // 플레이 한 게임모드가 3개가 되면 진짜 게임 종료
+        //
+        if (RoomData.GetInstance() == null ||  RoomData.GetInstance().PlayedGameCount < 3 || (RoomData.GetInstance().PlayedGameCount >= 3 && SceneManager.GetActiveScene().name != "GameScene_Room"))
             StartEndGame(true);
     }
 
@@ -53,29 +55,39 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
-            if (RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0)
-                if(Random.Range(0,1f)>0.5f)
-                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC",RpcTarget.AllBuffered,0);
-                else
-                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered,2);
+            // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
+            if (RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0 && _start)
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
+
+
             while (_start)
             {
                 yield return new WaitForEndOfFrame();
+                // 모든 플레이어가 씬에 로드되어야지만 while문 멋어나서 게임 시작
                 if (GameManager.GetInstance().BestPlayerLists.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
                     break;
             }
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("StartLoading", RpcTarget.AllBuffered,_start);
+
+            if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
+            {
+                // 플레이어 혼자만 남으면 Loading하지 않음 -> RoomGameManager에서 RoomExit하는 Panel Active
+            }
+            else
+            {
+                // 플레이어가 남아있을 경우 정상적으로 작동
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("StartLoading", RpcTarget.AllBuffered, _start);
+            }
+            
         }
     }
 
-    public void setting(bool _start)
+    public void LoadingFunc(bool _start)
     {
-        StartCoroutine(Loading(_start));
+        StartCoroutine(LoadingCoroutine(_start));
     }
-    IEnumerator Loading(bool _start)
+    IEnumerator LoadingCoroutine(bool _start)
     {
         LoadingPanel.SetActive(true);
-        yield return new WaitForEndOfFrame();
 
         if (_start == false)
             GameManager.GetInstance().GameStart = false;
@@ -95,6 +107,49 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GameManager.GetInstance().EndGame();
     }
 
+
+    /// <summary>
+    /// 플레이어 배 생성
+    /// </summary>
+    public void Spawn()
+    {
+        GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
+
+        if (go.GetComponent<PhotonView>().IsMine)
+        {
+            GameManager.GetInstance().SetMyShip(go.GetComponent<Player_Controller_Ship>());
+            if (GameManager.GetInstance().GetComponent<BattleRoyalGameManager>())
+            {
+                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
+                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
+            }
+            if (FindObjectOfType<CombatManager>())
+                FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
+
+            go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
+        }
+    }
+
+    [SerializeField] float PlayerSpawnRadius = 100f;
+    public Vector3 CalculateSpawnPos()
+    {
+        for (int i = 0; i < 50; i++)
+        {
+            Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)) * PlayerSpawnRadius;
+            RaycastHit hit;
+            if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
+            {
+                if (hit.transform.CompareTag("Sea"))
+                {
+                    return radomPos;
+                }
+            }
+        }
+        return new Vector3(10, 0, 10);
+    }
+
+
+    #region Networking
     /// <summary>
     /// 네트워크 정보로 연결 시도
     /// </summary>
@@ -130,7 +185,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         Spawn();
     }
-
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
@@ -153,43 +207,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    /// <summary>
-    /// 플레이어 배 생성
-    /// </summary>
-    public void Spawn()
-    {
-        GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
-
-        if (go.GetComponent<PhotonView>().IsMine)
-        {
-            GameManager.GetInstance().SetMyShip(go.GetComponent<Player_Controller_Ship>());
-            if (GameManager.GetInstance().GetComponent<BattleRoyalGameManager>())
-            {
-                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
-                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
-            }
-            if (FindObjectOfType<CombatManager>())
-                FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
-
-            go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
-        }
-    }
-
-    [SerializeField] float PlayerSpawnRadius=100f;
-    public Vector3 CalculateSpawnPos()
-    {
-        for (int i = 0; i < 50;i++)
-        {
-            Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)) * PlayerSpawnRadius;
-            RaycastHit hit;
-            if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
-            {
-                if (hit.transform.CompareTag("Sea"))
-                {
-                    return radomPos;
-                }
-            }
-        }
-        return new Vector3(10, 0, 10);
-    }
+    #endregion
 }

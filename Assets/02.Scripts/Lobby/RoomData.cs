@@ -91,6 +91,6 @@ public class RoomData : MonoBehaviourPunCallbacks
     [PunRPC]
     public void StartLoading(bool _start)
     {
-        FindObjectOfType<NetworkManager>().setting(_start);
+        FindObjectOfType<NetworkManager>().LoadingFunc(_start);
     }
 }

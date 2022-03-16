@@ -35,6 +35,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<GameObject> mySails;
 
     [SerializeField] private ParticleSystem AttackedPS;
+
+    List<AttackInfo> AttackIDs = new List<AttackInfo>();
+
     private void Start()
     {
         health = maxHealth;
@@ -136,8 +139,19 @@ public class Player_Combat_Ship : MonoBehaviourPun
         return tmp;
     }
 
-    List<AttackInfo> AttackIDs = new List<AttackInfo>();
 
+    [PunRPC]
+    public void PlayAttackPS(int _spotIndex, bool _isSpecial = false)
+    {
+        if (_isSpecial)
+        {
+            mySpecialCannons[_spotIndex].PlayAttackPS();
+        }
+        else
+        {
+            myAutoCannons[_spotIndex].PlayAttackPS();
+        }
+    }
 
     [PunRPC]
     public void Attacked(object[] param)
@@ -154,30 +168,34 @@ public class Player_Combat_Ship : MonoBehaviourPun
         else
             canAttack = true;
 
+
+
         if (canAttack)
         {
             AttackedPS.Play();
-
-
-            health -= (float)param[0];
             GetComponent<Player_Controller_Ship>().additionalForce = (Vector3)param[1];
-            GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
-            if (health <= 0)
+
+            if (GameManager.GetInstance().GameStart)
             {
-
-                // ItemManager가 없는 경우 에러떠서 일시적으로 주석처리
-                /*
-                GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
-
-                for (int i = 0; i < Item_Manager.instance.Player_items.Count; i++)
+                health -= (float)param[0];
+                GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
+                if (health <= 0)
                 {
-                    go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
-                }
-                */
-                GetComponent<Player_Controller_Ship>().deadTime = Time.time;
-                GameManager.GetInstance().Observe(0);
 
-                Destroy(this.gameObject);
+                    // ItemManager가 없는 경우 에러떠서 일시적으로 주석처리
+                    /*
+                    GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
+
+                    for (int i = 0; i < Item_Manager.instance.Player_items.Count; i++)
+                    {
+                        go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
+                    }
+                    */
+                    GetComponent<Player_Controller_Ship>().deadTime = Time.time;
+                    GameManager.GetInstance().Observe(0);
+
+                    PhotonNetwork.Destroy(GetComponent<PhotonView>());
+                }
             }
         }
     }
@@ -188,11 +206,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void EquipSail(int _spotIndex, int _sailIndex)
     {
-        print("EquipSail0 : " + _spotIndex + "/" + _sailIndex);
+        //print("EquipSail0 : " + _spotIndex + "/" + _sailIndex);
         if (_spotIndex >= mySails.Count)
             return;
 
-        print("EquipSail1 : " + _spotIndex + "/" + _sailIndex);
+        //print("EquipSail1 : " + _spotIndex + "/" + _sailIndex);
         if (_sailIndex == -1)
         {
             if (mySails[_spotIndex] != null)
@@ -204,7 +222,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             return;
         }
 
-        print("EquipSail2 : " + _spotIndex + "/" + _sailIndex);
+        //print("EquipSail2 : " + _spotIndex + "/" + _sailIndex);
         if (mySails[_spotIndex] != null)
         {
             GetComponent<Player_Controller_Ship>().MaxSpeed -= 5f;
@@ -228,11 +246,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void EquipCannon(int _spotIndex, int _cannonIndex)
     {
-        Debug.Log("EquipCannon0 : "+_spotIndex+ "/"+_cannonIndex );
+        //Debug.Log("EquipCannon0 : "+_spotIndex+ "/"+_cannonIndex );
         if (_spotIndex >= AutoCannonSpots.Count)
             return;
 
-        Debug.Log("EquipCannon1: " + _spotIndex + "/" + _cannonIndex);
+        //Debug.Log("EquipCannon1: " + _spotIndex + "/" + _cannonIndex);
         if (_cannonIndex == -1)
         {
             print("UnEquip");
@@ -242,7 +260,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             }
             return;
         }
-        Debug.Log("EquipCannon2: " + _spotIndex + "/" + _cannonIndex);
+        //Debug.Log("EquipCannon2: " + _spotIndex + "/" + _cannonIndex);
 
         bool _active = true;
         if (myAutoCannons[_spotIndex] == null)
@@ -250,7 +268,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             GameObject tmpCannon = null;
             tmpCannon = Instantiate(Resources.Load("AutoCannon") as GameObject, Vector3.zero, Quaternion.identity);
 
-            Debug.Log("EquipCannon3: " + _spotIndex + "/" + _cannonIndex);
+            //Debug.Log("EquipCannon3: " + _spotIndex + "/" + _cannonIndex);
             tmpCannon.transform.SetParent(AutoCannonSpots[_spotIndex]);
             tmpCannon.transform.localPosition = Vector3.zero;
             tmpCannon.transform.localScale = Vector3.one;
@@ -264,7 +282,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
 
         ChangeCannonType(_spotIndex, _cannonIndex, true);
-        Debug.Log("EquipCannon4");
 
         if (photonView.IsMine)
         {
@@ -280,18 +297,18 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void EquipSpecialCannon(int _spotIndex, int _cannonIndex)
     {
-        print("EquipSpecialCannon0 : " + _spotIndex + "/" + _cannonIndex);
+        //print("EquipSpecialCannon0 : " + _spotIndex + "/" + _cannonIndex);
         if (_spotIndex >= SpecialCannonSpots.Count)
             return;
 
-        print("EquipSpecialCannon1 : " + _spotIndex + "/" + _cannonIndex);
+        //print("EquipSpecialCannon1 : " + _spotIndex + "/" + _cannonIndex);
         if (_cannonIndex == -1)
         {
             if (mySpecialCannons[_spotIndex] != null)
                 mySpecialCannons[_spotIndex].UnEquipCannon();
             return;
         }
-        print("EquipSpecialCannon2 : " + _spotIndex + "/" + _cannonIndex);
+        //print("EquipSpecialCannon2 : " + _spotIndex + "/" + _cannonIndex);
 
         bool _active = true;
         if (mySpecialCannons[_spotIndex] == null)
@@ -307,7 +324,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
         ChangeSpecialCannonType(_spotIndex, _cannonIndex, true);
 
-        print("EquipSpecialCannon3 : " + _spotIndex + "/" + _cannonIndex);
+        //print("EquipSpecialCannon3 : " + _spotIndex + "/" + _cannonIndex);
         if (photonView.IsMine)
         {
             CombatManager combatManager = FindObjectOfType<CombatManager>();
@@ -319,18 +336,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
-    public void PlayAttackPS(int _spotIndex, bool _isSpecial = false)
-    {
-        if (_isSpecial)
-        {
-            mySpecialCannons[_spotIndex].PlayAttackPS();
-        }
-        else
-        {
-            myAutoCannons[_spotIndex].PlayAttackPS();
-        }
-    }
 
     public void ChangeCannonType(int _spotIndex, int _typeIndex, bool _isSet = true)
     {
@@ -352,7 +357,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 if (Vector3.Dot(collision.GetContact(0).normal, impulse) < 0f)
                     impulse *= -1f;
 
-                print(impulse.magnitude);
                 collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
                     5.0f
                     ,-1*impulse*3f,photonView.ViewID
@@ -363,10 +367,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 });
 
 
-
-                if (SceneManagerHelper.ActiveSceneName == "PassTheBomb") // pass the bomb 게임인 경우 부딪히면 폭탄 전이
+                if (FindObjectOfType<PassTheBombGameManager>()) // pass the bomb 게임인 경우 부딪히면 폭탄 전이
                 {
-                    GameManager_PassTheBomb.instance.CrashOtherShip(collision.gameObject);
+                    FindObjectOfType<PassTheBombGameManager>().CrashOtherShip(collision.gameObject);
                 }
             }
         }

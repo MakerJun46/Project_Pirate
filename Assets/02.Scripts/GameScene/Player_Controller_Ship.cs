@@ -62,44 +62,22 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         Reset_Ship_Status();
     }
 
+    [PunRPC]
+    public void InitializePlayer()
+    {
+        myIndex = (PhotonNetwork.IsConnected) ? GetComponent<PhotonView>().Owner.ActorNumber : characterIndex;
+        myName = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+        characterIndex++;
+        deadTime = 0;
+        GameManager.GetInstance().RefreshBestPlayer(this.gameObject);
+    }
+
+
 
     private void FixedUpdate()
     {
         Move();
         GetInput();
-    }
-
-    public void GetInput()
-    {
-    }
-
-    public void Reset_Ship_Status()
-    {
-
-        //motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
-        //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
-    }
-    public void UpgradeShip()
-    {
-        upgradeIndex++;
-        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, upgradeIndex);
-        Reset_Ship_Status();
-    }
-    [PunRPC]
-    public void InitializePlayer()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            myIndex = GetComponent<PhotonView>().Owner.ActorNumber;
-        }
-        else
-        {
-            myIndex = characterIndex;
-        }
-        myName = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
-        characterIndex++;
-        deadTime = 0;
-        GameManager.GetInstance().RefreshBestPlayer(this.gameObject);
     }
 
     public void Move()
@@ -138,42 +116,9 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
     }
 
-    public void Ship_Stop()
+
+    public void GetInput()
     {
-        RB.velocity = Vector3.zero;
-        goOrStop = false;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.CompareTag("SeaResource"))
-        {
-            Debug.Log("get Resource on Sea");
-
-            int resourceCode = (int)other.GetComponent<Resource>().type;
-
-            Item_Manager.instance.AddItem(Item_Manager.instance.Resource_item_list[resourceCode]);
-
-            Destroy(other.gameObject);
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("anchoragePoint"))
-        {
-            Debug.Log("On anchoragePoint");
-            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = true;
-            Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("anchoragePoint"))
-        {
-            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = false;
-        }
     }
 
     public void Turn_Left()
@@ -191,6 +136,56 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         goOrStop = !goOrStop;
     }
 
+
+    public void Ship_Stop()
+    {
+        RB.velocity = Vector3.zero;
+        goOrStop = false;
+    }
+
+
+    public void Reset_Ship_Status()
+    {
+        //motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
+        //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
+    }
+    public void UpgradeShip()
+    {
+        upgradeIndex++;
+        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, upgradeIndex);
+        Reset_Ship_Status();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("SeaResource"))
+        {
+            Debug.Log("get Resource on Sea");
+
+            int resourceCode = (int)other.GetComponent<Resource>().type;
+
+            Item_Manager.instance.AddItem(Item_Manager.instance.Resource_item_list[resourceCode]);
+
+            Destroy(other.gameObject);
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("anchoragePoint"))
+        {
+            Debug.Log("On anchoragePoint");
+            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = true;
+            Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("anchoragePoint"))
+        {
+            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = false;
+        }
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
