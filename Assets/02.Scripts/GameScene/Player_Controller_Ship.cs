@@ -142,7 +142,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         RB.velocity = Vector3.zero;
         goOrStop = false;
-
     }
 
     private void OnTriggerEnter(Collider other)

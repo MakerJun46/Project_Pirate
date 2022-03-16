@@ -23,6 +23,8 @@ public class GameManager_PassTheBomb : MonoBehaviour
 
     public GameObject LoadingPanel;
 
+    public Cinemachine.CinemachineVirtualCamera VC_Bomb;
+
     bool isSetting;
 
     private void Start()
@@ -41,8 +43,25 @@ public class GameManager_PassTheBomb : MonoBehaviour
         if (Count_Sec < 1 && hasBomb)
         {
             Debug.LogError(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
+            PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, GameManager.GetInstance().MyShip.photonView.ViewID);
             hasBomb = false;
         }
+    }
+
+    [PunRPC]
+    public void Bomb_Explode(int ViewID)
+    {
+        GameManager.GetInstance().MyShip.GetComponent<Player_Controller_Ship>().Ship_Stop();
+        StartCoroutine(Explosion(ViewID));
+    }
+
+    IEnumerator Explosion(int ViewID)
+    {
+        VC_Bomb.Priority = 15;
+        yield return new WaitForSeconds(1.0f);
+
+        PhotonView.Find(ViewID).transform.Find("PassTheBomb").GetChild(1).gameObject.SetActive(true);
+        PhotonView.Find(ViewID).transform.Find("PassTheBomb").GetChild(0).gameObject.SetActive(false);
     }
 
     [PunRPC]
@@ -122,19 +141,30 @@ public class GameManager_PassTheBomb : MonoBehaviour
         {
             hasBomb = true;
             PV.RPC("On_Second", RpcTarget.AllBuffered, GameManager.GetInstance().MyShip.photonView.ViewID);
+            PV.RPC("Change_VC_Lookat", RpcTarget.AllBuffered, GameManager.GetInstance().MyShip.photonView.ViewID);
         }
+
+    }
+
+    [PunRPC]
+    public void Change_VC_Lookat(int ViewID)
+    {
+        VC_Bomb.LookAt = PhotonView.Find(ViewID).gameObject.transform;
+        VC_Bomb.Follow = PhotonView.Find(ViewID).gameObject.transform;
     }
 
     [PunRPC]
     public void Off_Second(int ViewID)
     {
         PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Bomb_Second").gameObject.SetActive(false);
+        PhotonView.Find(ViewID).gameObject.transform.Find("PassTheBomb").gameObject.SetActive(false);
     }
 
     [PunRPC]
     public void On_Second(int ViewID)
     {
         PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Bomb_Second").gameObject.SetActive(true);
+        PhotonView.Find(ViewID).gameObject.transform.Find("PassTheBomb").gameObject.SetActive(true);
     }
 
     [PunRPC]
@@ -166,5 +196,7 @@ public class GameManager_PassTheBomb : MonoBehaviour
         {
             hasBomb = true;
         }
+
+        Change_VC_Lookat(toViewID);
     }
 }

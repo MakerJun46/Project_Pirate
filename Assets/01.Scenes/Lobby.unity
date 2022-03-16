@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.7028302, g: 0.7869348, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 50bf15468c19e0e40b5bf26662770a34, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 133347283e115d147a5fcce7f47a538f, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2150,7 +2150,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: colorDepth
-      value: 2.42
+      value: 3.31
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: deepColor.b
@@ -2166,7 +2166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsScale
-      value: 0.5
+      value: 1.27
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsSpeed
@@ -2191,7 +2191,7 @@ PrefabInstance:
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsTexture
       value: 
-      objectReference: {fileID: 2800000, guid: 746d7c598bbd4e346af730641ebd6cde, type: 3}
+      objectReference: {fileID: 2800000, guid: da990b6f3cdaf74449f67dc0df772131, type: 3}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: shallowColor.a
       value: 0.5176471
@@ -2210,11 +2210,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsStrength
-      value: 0.25
+      value: 0.297
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingHardness
-      value: 0.389
+      value: 0.466
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: useColorGradient
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: enableSurfaceFoam
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsMovement.x
@@ -2222,27 +2230,67 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: normalsMovement.y
-      value: 0.5
+      value: 1.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamCutoff
+      value: 0.107
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamScale1
+      value: 0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamScale2
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingSmoothness
-      value: 0.549
+      value: 0.512
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: refractionStrength
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: d3b0d77dfe711a04c8ff18ecc260aa66, type: 3}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: colorGradientTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: 456226071f6c79c4fa16724f7f19aff7, type: 3}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: intersectionFoamScale
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamSampling.x
+      value: 0.107
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingSpecularColor.b
-      value: 0.9811321
+      value: 0.7735849
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingSpecularColor.g
-      value: 0.9811321
+      value: 0.7735849
       objectReference: {fileID: 0}
     - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: lightingSpecularColor.r
-      value: 0.9811321
+      value: 0.7735849
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamTilingAndOffset.w
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: surfaceFoamTilingAndOffset.z
+      value: 0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007618277402789822, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: underwaterRefractionStrength
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2020908177889845974, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: m_RootOrder
@@ -2303,6 +2351,18 @@ PrefabInstance:
     - target: {fileID: 3049197116402995397, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
       propertyPath: m_Name
       value: Water
+      objectReference: {fileID: 0}
+    - target: {fileID: 3633343404710732825, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3633343404710732825, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3633343404710732825, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e32246e7f0516f1458239cf9f43ac8f4, type: 3}
@@ -4070,6 +4130,34 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.0014286
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.15069163
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9885808
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194130401051581893, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 162.666
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc825f45895216a4c89cd2d4e113b392, type: 3}
 --- !u!1001 &1305920148
@@ -4079,6 +4167,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.2080922
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.97810924
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650148519745353390, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 204.021
+      objectReference: {fileID: 0}
     - target: {fileID: 8438683582821908691, guid: bbe34ffd2dce064489957f1b95af6e4b, type: 3}
       propertyPath: m_Name
       value: Raft
@@ -4662,7 +4774,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
