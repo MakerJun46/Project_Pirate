@@ -6,19 +6,12 @@ using UnityEngine.EventSystems;
 
 public class AttackJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
+    #region Variables & Initializer
     [SerializeField] Image joyStickBackground;
     [SerializeField] Image coolTimeImage;
     [SerializeField] Image joyStick;
 
     private Vector2 joyStickInput;
-    public Vector2 GetJoyStickInput()
-    {
-        return joyStickInput;
-    }
-    public void UpdateCoolTime(float _percent)
-    {
-        coolTimeImage.fillAmount= _percent;
-    }
 
     private void Start()
     {
@@ -26,6 +19,17 @@ public class AttackJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
         joyStick = transform.GetChild(0).GetComponent<Image>();
     }
 
+    public Vector2 GetJoyStickInput()
+    {
+        return joyStickInput;
+    }
+    public void UpdateCoolTime(float _percent)
+    {
+        coolTimeImage.fillAmount = _percent;
+    }
+    #endregion
+
+    #region EventSystem
     public void OnDrag(PointerEventData eventData)
     {
         if(RectTransformUtility.ScreenPointToLocalPointInRectangle(joyStickBackground.rectTransform,
@@ -47,4 +51,5 @@ public class AttackJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
     public void OnPointerDown(PointerEventData eventData)
     {
     }
+    #endregion
 }

@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
-
+using UnityEngine.UI;
 public class RoomGameManager : GameManager
 {
+    [SerializeField] Text GameModeTxt;
 
-    private int Compare(int a, int b)
-    {
-        if (a >= b)
-            return -1;
-        else
-            return 1;
-
-    }
     protected override void Start()
     {
         base.Start();
@@ -35,23 +28,14 @@ public class RoomGameManager : GameManager
             int rank=1000;
             for(int i = 0; i < sortedScore.Count; i++)
             {
-                print("I : " + i + " __ " + sortedScore[i]);
                 if(sortedScore[i] == RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber])
                 {
                     rank = i;
                 }
             }
 
-            if (rank <= 1)
-            {
-                WinPanel.SetActive(true);
-                LosePanel.SetActive(false);
-            }
-            else
-            {
-                WinPanel.SetActive(false);
-                LosePanel.SetActive(true);
-            }
+            WinPanel.SetActive(rank <= 0);
+            LosePanel.SetActive(rank > 0);
         }
     }
     public override void StartGame()
@@ -69,4 +53,17 @@ public class RoomGameManager : GameManager
             SceneManager.LoadScene(0);
     }
 
+    protected override void Update()
+    {
+        GameModeTxt.text = "GameMode : "+RoomData.GetInstance().gameMode.ToString();
+    }
+
+    private int Compare(int a, int b)
+    {
+        if (a > b)
+            return -1;
+        else
+            return 1;
+
+    }
 }

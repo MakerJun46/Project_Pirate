@@ -6,6 +6,7 @@ using Photon.Pun;
 
 public class AutoCannon : Cannon
 {
+    #region Variables & Initializer
     public enum CannonType
     {
         Trajectory,
@@ -43,6 +44,7 @@ public class AutoCannon : Cannon
                 break;
         }
     }
+    #endregion
 
     protected override void Update()
     {
@@ -58,7 +60,6 @@ public class AutoCannon : Cannon
             }
             else
             {
-                print("FOV : " + fov.currTarget?.name);
                 if (fov.currTarget)
                 {
                     cursor.transform.position = fov.currTarget.position;
@@ -77,7 +78,6 @@ public class AutoCannon : Cannon
                             case CannonType.ThreeWay:
                                 for (int i = 0; i < 3; i++)
                                 {
-                                    print("ysey");
                                     lrs[i].enabled = false;
                                     LaunchStraight(3,this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
                                 }
@@ -92,6 +92,7 @@ public class AutoCannon : Cannon
         }
     }
 
+    #region Cannon
     public override void ChangeCannonType(int _typeIndex,bool _isSet)
     {
         if(_isSet)
@@ -286,5 +287,5 @@ public class AutoCannon : Cannon
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, false);
         ResetAttackingState((divided>1)? 6f:4f);
     }
-
+#endregion
 }

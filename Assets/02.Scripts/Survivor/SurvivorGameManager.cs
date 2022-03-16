@@ -146,19 +146,19 @@ public class SurvivorGameManager : GameManager
                         index = i;
                     }
                 }
+                bool win = false;
                 if (count <= 1)
                 {
-                    if (index >= 0 && index < AllShip.Count && AllShip[index] == MyShip)
+                    win = (index >= 0 && index < AllShip.Count && AllShip[index] == MyShip);
+                    JudgeWinLose(win);
+                    if (IsWinner)
                     {
-                        JudgeWinLose(true);
+                        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
+                            PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
                     }
-                    else
-                    {
-                        JudgeWinLose(false);
-                    }
+                    FindObjectOfType<NetworkManager>().StartEndGame(false);
                 }
             }
         }
-        TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
     }
 }

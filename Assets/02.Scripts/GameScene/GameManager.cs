@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
         return instance;
     }
 
+    #region Variables & Initializer
     public bool GameStart;
     // Don't Judge Win or Lose
     [SerializeField] protected bool DebugMode;
@@ -44,8 +45,12 @@ public class GameManager : MonoBehaviour
 
     public int PlayerCount;
     protected float playTime;
+
+    private int ObserveIndex;
+
     [SerializeField]protected Text TimeText;
 
+    protected bool IsWinner;
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
 
@@ -53,11 +58,24 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         MainCamera = Camera.main;
+        IsWinner = false;
     }
+    public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip = true)
+    {
+        if (_setMyShip)
+            MyShip = _myShip;
+        VC_Top.m_Follow = _myShip.transform;
+        VC_Top.m_LookAt = _myShip.transform;
+        VC_TPS.m_Follow = _myShip.transform;
+        VC_TPS.m_LookAt = _myShip.transform;
+    }
+    #endregion
 
+    #region GameFlow
     public virtual void StartGame()
     {
         GameStart = true;
+        IsWinner = false;
     }
     public virtual void EndGame()
     {
@@ -65,70 +83,27 @@ public class GameManager : MonoBehaviour
         FindObjectOfType<NetworkManager>().GoToLobby();
     }
 
-    public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip=true)
-    {
-        if(_setMyShip)
-            MyShip = _myShip;
-        VC_Top.m_Follow = _myShip.transform;
-        VC_Top.m_LookAt = _myShip.transform;
-        VC_TPS.m_Follow = _myShip.transform;
-        VC_TPS.m_LookAt = _myShip.transform;
-    }
-
-    public void ToggleGameView()
-    {
-        topView = !topView;
-        VC_TPS.m_Priority = topView ? 9 : 11;
-    }
-
-    private int ObserveIndex;
-    public void Observe(int index, bool add = false)
-    {
-        if (add)
-        {
-            ObserveIndex += index;
-        }
-        else
-        {
-            ObserveIndex = index;
-        }
-
-        ObserveIndex = Mathf.Clamp(ObserveIndex, 0, AllShip.Count);
-        int foundedIndex = -1;
-        for (int i = ObserveIndex; i < ObserveIndex + AllShip.Count; i++)
-        {
-            if ((AllShip[i % AllShip.Count] == null || AllShip[i % AllShip.Count].GetComponent<Player_Combat_Ship>().health <= 0) == false)
-            {
-                foundedIndex = i;
-                break;
-            }
-        }
-        if (foundedIndex >= 0)
-            SetMyShip(AllShip[foundedIndex], false);
-    }
-
-
-
-    public virtual void JudgeWinLose(bool _win)
-    {
-        if (_win)
-        {
-            WinPanel.SetActive(true);
-            LosePanel.SetActive(false);
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
-        }
-        else
-        {
-            WinPanel.SetActive(false);
-            LosePanel.SetActive(true);
-        }
-    }
     public virtual void MasterChanged(bool _isMaster)
     {
     }
 
+    /// <summary>
+    /// 맨 마지막에 딱 한 번 실행되어야함
+    /// </summary>
+    /// <param name="_win"></param>
+    public virtual void JudgeWinLose(bool _win)
+    {
+        IsWinner = _win;
+        WinPanel.SetActive(_win);
+        LosePanel.SetActive(!_win);
+    }
+
     protected virtual void Update()
     {
+        if(TimeText)
+            TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
+
+        // 방향 조정
         if (MyShip)
         {
             if (MyShip.is_Turn_Left)
@@ -137,17 +112,24 @@ public class GameManager : MonoBehaviour
                 steeringRot += -180 * Time.deltaTime;
             else
                 steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+
             steeringRot = Mathf.Clamp(steeringRot, -720, 720);
             SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
         }
 
-        if (GameStart==true && (playTime >= 60 || FindObjectsOfType<Player_Controller_Ship>().Length<=1 ) && DebugMode==false)
+        // 일단은 부모에서는 시간 제한만 둠(자식이 오버라이딩해서 새로운 조건 추가)
+        if (GameStart==true && (playTime >= 60) && DebugMode==false)
         {
+            if (IsWinner) {
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
+                    PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
+            }
             FindObjectOfType<NetworkManager>().StartEndGame(false);
         }
     }
+    #endregion
 
-
+    #region UI Control Button
     public void Turn_Left_Button_Down()
     {
         MyShip.is_Turn_Left = true;
@@ -174,20 +156,15 @@ public class GameManager : MonoBehaviour
     public void TryUpgradeShip()
     {
         if (MyShip)
-        {
             MyShip.UpgradeShip();
-        }
     }
+    #endregion
 
+    #region Best Player
     public virtual void RefreshBestPlayer(GameObject viewer)
     {
-        if (viewer)
-        {
-            if (!BestPlayerLists.Contains(viewer))
-            {
-                BestPlayerLists.Add(viewer);
-            }
-        }
+        if (viewer && !BestPlayerLists.Contains(viewer))
+            BestPlayerLists.Add(viewer);
 
         int forCount = BestPlayerLists.Count;
         for (int i = forCount - 1; i >= 0; i--)
@@ -195,6 +172,7 @@ public class GameManager : MonoBehaviour
             if (BestPlayerLists[i] == null)
                 BestPlayerLists.RemoveAt(i);
         }
+
         BestPlayerLists.Sort(delegate (GameObject _A, GameObject _B)
         {
             Player_Controller_Ship A = _A.GetComponent<Player_Controller_Ship>();
@@ -223,15 +201,9 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     if (A.deadTime > B.deadTime)
-                    {
                         return -1;
-                    }
-                    else if (A.deadTime < B.deadTime)
-                    {
-                        return 1;
-                    }
                     else
-                        return 0;
+                        return 1;
                 }
             }
         });
@@ -250,10 +222,7 @@ public class GameManager : MonoBehaviour
                     Player_Controller_Ship tmpA = BestPlayerLists[i].GetComponent<Player_Controller_Ship>();
                     Player_Controller_Ship tmpB = BestPlayerLists[j].GetComponent<Player_Controller_Ship>();
 
-                    if (tmpA.myIndex < 0 || !tmpB.gameObject.activeInHierarchy)
-                        texts[i].color = Color.red;
-                    else
-                        texts[i].color = Color.black;
+                    texts[i].color = (tmpA.myIndex < 0 || !tmpB.gameObject.activeInHierarchy) ? Color.red : Color.black;
 
                     if (RoomData.GetInstance().Scores != null)
                         texts[i].text = (i + 1) + " : " + tmpA.myName + "||  Score :" + RoomData.GetInstance().Scores[tmpA.GetComponent<PhotonView>().Owner.ActorNumber];
@@ -266,4 +235,34 @@ public class GameManager : MonoBehaviour
             j++;
         }
     }
+    #endregion
+
+    #region Camera
+    public void ToggleGameView()
+    {
+        topView = !topView;
+        VC_TPS.m_Priority = topView ? 9 : 11;
+    }
+
+    public void Observe(int _shipIndex, bool _isSet = true)
+    {
+        if (_isSet)
+            ObserveIndex = _shipIndex;
+        else
+            ObserveIndex += _shipIndex;
+        ObserveIndex = Mathf.Clamp(ObserveIndex, 0, AllShip.Count);
+
+        int foundedIndex = -1;
+        for (int i = ObserveIndex; i < ObserveIndex + AllShip.Count; i++)
+        {
+            if ((AllShip[i % AllShip.Count] == null || AllShip[i % AllShip.Count].GetComponent<Player_Combat_Ship>().health <= 0) == false)
+            {
+                foundedIndex = i;
+                break;
+            }
+        }
+        if (foundedIndex >= 0)
+            SetMyShip(AllShip[foundedIndex], false);
+    }
+    #endregion
 }

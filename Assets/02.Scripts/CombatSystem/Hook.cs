@@ -29,7 +29,6 @@ public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                 break;
             }
         }
-        //AttackPS.Play(true);
     }
 
     void Update()
@@ -49,7 +48,6 @@ public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             myShip.additionalForce += distance.normalized * dragForce;
             enemyShip.additionalForce += -distance.normalized * dragForce;
 
-            print("Dist : " + distance.magnitude);
             if (distance.magnitude <= 10f)
             {
                 Destroy(this.gameObject);
