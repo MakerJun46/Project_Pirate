@@ -63,9 +63,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             while (_start)
             {
                 yield return new WaitForEndOfFrame();
-                // 모든 플레이어가 씬에 로드되어야지만 while문 멋어나서 게임 시작
+                // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
                 if (GameManager.GetInstance().BestPlayerLists.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    if(PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
+                    {
+                        GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
+                    }
                     break;
+                }
             }
 
             if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
@@ -113,6 +119,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Spawn()
     {
+        Debug.LogError("Spawn Ship");
+
         GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 
         if (go.GetComponent<PhotonView>().IsMine)
@@ -179,11 +187,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public override void OnJoinedRoom()
     {
+        Debug.LogError("OnJoinedRoom");
         DisconnetPanel.SetActive(false);
         if (RoomData.GetInstance() == null)
             PhotonNetwork.Instantiate("RoomData", Vector3.zero, Quaternion.identity);
 
-        Spawn();
+        if(!PhotonNetwork.IsMasterClient) // masterClient는 Observer 이므로 제외하고 Spawn - 0324
+            Spawn();
     }
     public override void OnLeftRoom()
     {
