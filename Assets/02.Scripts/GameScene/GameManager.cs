@@ -52,6 +52,9 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
 
+    [SerializeField] protected GameObject UI_Observer_RawImages;
+    [SerializeField] protected GameObject ObserverCameras_Parent;
+
     protected virtual void Start()
     {
         instance = this;
@@ -59,6 +62,21 @@ public class GameManager : MonoBehaviour, IPunObservable
         playTime = 0;
 
         bestPlayerTexts = BestPlayerContent.GetComponentsInChildren<Text>();
+    }
+
+    public virtual void SetObserverCamera()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            UI_Observer_RawImages.SetActive(true);
+            ObserverCameras_Parent.SetActive(true);
+
+            for (int i = 0; i < PhotonNetwork.CountOfPlayers; i++)
+            {
+                ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
+                ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
+            }
+        }
     }
     public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip = true)
     {
