@@ -56,7 +56,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
             // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
-            if (RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0 && _start)
+            if (RoomData.GetInstance() && RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0 && _start)
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
 
 
@@ -64,7 +64,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 yield return new WaitForEndOfFrame();
                 // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
-                if (GameManager.GetInstance().BestPlayerLists.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                if (GameManager.GetInstance().BestPlayerCount >= PhotonNetwork.CurrentRoom.PlayerCount)
                 {
                     if(PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
                     {
@@ -100,7 +100,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         for (int i = loading_sec; i > 0; i--)
         {
-            LoadingPanel.transform.Find("Loading_Second").GetComponent<TextMeshProUGUI>().text = i.ToString();
+            LoadingPanel.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
             yield return new WaitForSecondsRealtime(1.0f);
         }
 
@@ -119,7 +119,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Spawn()
     {
-        Debug.LogError("Spawn Ship");
+        Debug.Log("Spawn Ship");
 
         GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 
@@ -136,6 +136,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
+        FindObjectOfType<CustomizeManager>().EquipCostume(go.GetComponent<PhotonView>().ViewID);
     }
 
     [SerializeField] float PlayerSpawnRadius = 100f;

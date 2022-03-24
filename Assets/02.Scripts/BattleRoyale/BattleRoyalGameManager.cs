@@ -67,6 +67,16 @@ public class BattleRoyalGameManager : GameManager
         Item_Manager.GetInstance().AddItem(_item);
         Item_Manager.GetInstance().AddItem(_item);
     }
+    public override void StartGame()
+    {
+        base.StartGame();
+
+        TryUpgradeShip();
+        CombatManager.instance.EquipCannon(0, 0);
+        CombatManager.instance.EquipCannon(1, 0);
+        CombatManager.instance.EquipSail(0, 1);
+        CombatManager.instance.EquipSpecialCannon(0, 0);
+    }
 
     public override void SetMyShip(Player_Controller_Ship _myShip,bool _SetMyShip)
     {

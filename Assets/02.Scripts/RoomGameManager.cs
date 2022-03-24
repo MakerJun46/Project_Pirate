@@ -56,8 +56,11 @@ public class RoomGameManager : GameManager
 
     protected override void Update()
     {
-        GameModeTitleTxt.text = "GameMode : "+RoomData.GetInstance().gameMode.ToString();
-        GameModeInfoTxt.text = RoomData.GetInstance().GetGameModeInfo(RoomData.GetInstance().gameMode);
+        if (RoomData.GetInstance())
+        {
+            GameModeTitleTxt.text = "GameMode : " + RoomData.GetInstance().gameMode.ToString();
+            GameModeInfoTxt.text = RoomData.GetInstance().GetGameModeInfo(RoomData.GetInstance().gameMode);
+        }
     }
 
     private int Compare(int a, int b)

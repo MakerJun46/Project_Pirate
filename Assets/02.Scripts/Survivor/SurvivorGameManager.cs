@@ -36,6 +36,15 @@ public class SurvivorGameManager : GameManager
             Invoke("WaveStart", 5f);
         }
         //StartCoroutine("PickupGenerateCoroutine");
+
+    }
+
+    public override void StartGame()
+    {
+        base.StartGame();
+
+        CombatManager.instance.EquipCannon(0, 0);
+        CombatManager.instance.EquipSail(0, 1);
     }
 
     IEnumerator PickupGenerateCoroutine()
