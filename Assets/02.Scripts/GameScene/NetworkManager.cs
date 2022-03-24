@@ -21,7 +21,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         instance = this;
-        //Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
     }
@@ -39,15 +38,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Connect();
         }
 
-        // RoomData.GetInstance() == null Debug를 위함
-        // 플레이 한 게임모드가 3개가 되면 진짜 게임 종료
-        //
-        if (RoomData.GetInstance() == null ||  RoomData.GetInstance().PlayedGameCount < 3 || (RoomData.GetInstance().PlayedGameCount >= 3 && SceneManager.GetActiveScene().name != "GameScene_Room"))
+        // Play한 게임 count가 3 이하이라면 다음 게임을 위해 Start Game 호출
+        // 만약 3보다 크다면 RoomGameManager에서 처리
+        if (RoomData.GetInstance() == null || RoomData.GetInstance().PlayedGameCount <= 3 && !(RoomData.GetInstance().PlayedGameCount ==3 && SceneManager.GetActiveScene().name== "GameScene_Room"))
+        {
+            Debug.Log("Start End Game is Called");
             StartEndGame(true);
+        }
+        else
+        {
+            Debug.Log("Start End Game is Not Called");
+        }
     }
 
     public void StartEndGame(bool _start)
     {
+        if (_start == false)
+            GameManager.GetInstance().GameStart = false;
         StartCoroutine(StartEndGameCoroutine(_start));
     }
 
@@ -55,52 +62,57 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
-            // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
-            if (RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0 && _start)
-                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
-
-
             while (_start)
             {
                 yield return new WaitForEndOfFrame();
-                // 모든 플레이어가 씬에 로드되어야지만 while문 멋어나서 게임 시작
-                if (GameManager.GetInstance().BestPlayerLists.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
+                if (GameManager.GetInstance().BestPlayerCount >= PhotonNetwork.CurrentRoom.PlayerCount)
                     break;
             }
 
-            if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
+            // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
+            if (RoomData.GetInstance().PlayedGameCount != 0 && SceneManager.GetActiveScene().name == "GameScene_Room" && _start )
             {
+                int tmpRandom = Random.Range(0, 3);
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, tmpRandom);
+            }
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount <= 1)
+            {
+                Debug.Log("PhotonNetwork.CurrentRoom.PlayerCount <= 1");
                 // 플레이어 혼자만 남으면 Loading하지 않음 -> RoomGameManager에서 RoomExit하는 Panel Active
             }
             else
             {
+                Debug.Log("RoomData.GetInstance().GetComponent<PhotonView>().RPC(, RpcTarget.AllBuffered, _start)");
                 // 플레이어가 남아있을 경우 정상적으로 작동
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("StartLoading", RpcTarget.AllBuffered, _start);
             }
-            
         }
     }
 
     public void LoadingFunc(bool _start)
     {
+
         StartCoroutine(LoadingCoroutine(_start));
     }
     IEnumerator LoadingCoroutine(bool _start)
     {
         LoadingPanel.SetActive(true);
 
-        if (_start == false)
-            GameManager.GetInstance().GameStart = false;
+        //if (_start == false)
+        //    GameManager.GetInstance().GameStart = false;
 
+        TextMeshProUGUI loadingTxt = LoadingPanel.GetComponentInChildren<TextMeshProUGUI>();
         for (int i = loading_sec; i > 0; i--)
         {
-            LoadingPanel.transform.Find("Loading_Second").GetComponent<TextMeshProUGUI>().text = i.ToString();
+            loadingTxt.text = i.ToString();
             yield return new WaitForSecondsRealtime(1.0f);
         }
 
         LoadingPanel.SetActive(false);
 
-        print("LOADING END");
+        print("LOADING END : Start : "+ _start);
         if(_start)
             GameManager.GetInstance().StartGame();
         else
@@ -128,6 +140,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
+        CustomizeManager.GetInstance().EquipCostume(go.GetComponent<PhotonView>().ViewID);
     }
 
     [SerializeField] float PlayerSpawnRadius = 100f;

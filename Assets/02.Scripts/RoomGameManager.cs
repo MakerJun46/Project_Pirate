@@ -6,7 +6,8 @@ using Photon.Pun;
 using UnityEngine.UI;
 public class RoomGameManager : GameManager
 {
-    [SerializeField] Text GameModeTxt;
+    [SerializeField] Text GameModeTitleTxt;
+    [SerializeField] Text GameModeInfoTxt;
 
     protected override void Start()
     {
@@ -55,7 +56,8 @@ public class RoomGameManager : GameManager
 
     protected override void Update()
     {
-        GameModeTxt.text = "GameMode : "+RoomData.GetInstance().gameMode.ToString();
+        GameModeTitleTxt.text = "GameMode : "+RoomData.GetInstance().gameMode.ToString();
+        GameModeInfoTxt.text = RoomData.GetInstance().GetGameModeInfo(RoomData.GetInstance().gameMode);
     }
 
     private int Compare(int a, int b)

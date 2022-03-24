@@ -102,7 +102,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
                         readyCount++;
                 }
                 ReadyCountText.text = "Ready : " + readyCount + " / " + PhotonNetwork.CurrentRoom.PlayerCount;
-                if (readyCount >= 1 && readyCount >= PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
+                if (readyCount >= 2 && readyCount >= PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
                 {
                     GetComponent<PhotonView>().RPC("StartGame", RpcTarget.All);
                 }
@@ -289,6 +289,8 @@ public class NetworkController : MonoBehaviourPunCallbacks
             PhotonNetwork.Destroy(myPlayerListContent.gameObject);
         foreach (PlayerListContent player in FindObjectsOfType<PlayerListContent>())
             Destroy(player.gameObject);
+
+
 
         // 플레이어 리스트 다시 생성 및 동기화
         if (myPlayerListContent == null)
@@ -480,7 +482,8 @@ public class NetworkController : MonoBehaviourPunCallbacks
 
     public void AddGameModeIndex(int addAmount)
     {
-        int resultIndex = (addAmount + (int)RoomData.GetInstance().gameMode)% GameModeInfos.Length;
+        int resultIndex = (addAmount + (int)RoomData.GetInstance().gameMode);
+        resultIndex = Mathf.Clamp(resultIndex,0, GameModeInfos.Length-1);
         if (PhotonNetwork.IsConnected == false)
         {
             RoomData.GetInstance().SetGameModeRPC(resultIndex);
@@ -507,6 +510,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetGameModeRPC()
     {
+        print("(int)RoomData.GetInstance().gameMode " + (int)RoomData.GetInstance().gameMode);
         GameModeImage.sprite = GameModeInfos[(int)RoomData.GetInstance().gameMode].sprite;
         GameModeText.text = RoomData.GetInstance().gameMode.ToString();
 

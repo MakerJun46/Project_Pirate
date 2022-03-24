@@ -11,12 +11,32 @@ public class Snake : SurvivorMonster
     [SerializeField] CinemachineSmoothPath path;
     [SerializeField] CinemachineDollyCart cart;
 
+    [SerializeField] Transform SnakeTR;
+    List<Transform> SnakeBones;
+    [SerializeField] ParticleSystem StartPS;
+    [SerializeField] ParticleSystem EndPS;
+    bool StartPlayed;
+    bool EndPlayed;
+
+
     protected override void Start()
     {
         base.Start();
 
-        if(PhotonNetwork.IsConnected==false || GetComponent<PhotonView>().IsMine)
+        SnakeBones = new List<Transform>();
+        SnakeBones.Add(SnakeTR);
+        while (SnakeTR.childCount > 0)
+        {
+            SnakeBones.Add(SnakeTR.GetChild(0));
+            SnakeTR = SnakeTR.GetChild(0);
+        }
+
+        if (PhotonNetwork.IsConnected==false || GetComponent<PhotonView>().IsMine)
             StartCoroutine("SetTargetPosCoroutine");
+        StartPlayed = false;
+        EndPlayed = false;
+        if ((PhotonNetwork.IsConnected == false || GetComponent<PhotonView>().IsMine) == false)
+            cart.enabled = false;
     }
 
     IEnumerator SetTargetPosCoroutine()
@@ -24,7 +44,6 @@ public class Snake : SurvivorMonster
         if (target)
         {
             Vector3 TargetPos = target.transform.position;
-            TargetPos.y = Mathf.Max(10, TargetPos.y);
             Vector3 randomRange = Random.insideUnitSphere * 100f;
             randomRange.y = 0;
             Vector3 startPosition = TargetPos + randomRange;
@@ -44,7 +63,7 @@ public class Snake : SurvivorMonster
             Vector3 middlePos = (path.m_Waypoints[0].position + path.m_Waypoints[2].position) / 2f;
             middlePos.y = 0;
             path.m_Waypoints[1].position = middlePos + (Vector3.up * 10);
-            path.m_Waypoints[3].position = path.m_Waypoints[2].position + (endPosition-startPosition).normalized*(10)+(Vector3.down * 50);
+            path.m_Waypoints[3].position = path.m_Waypoints[2].position + (endPosition-startPosition).normalized*(10)+(Vector3.down * 150);
 
             path.InvalidateDistanceCache();
             cart.m_Position = 0;
@@ -66,6 +85,48 @@ public class Snake : SurvivorMonster
         {
             cart.transform.position = currPos;
             cart.transform.rotation = curRot;
+        }
+
+        RaycastHit hitInfo;
+        if (Physics.Raycast(SnakeBones[0].transform.position, Vector3.down, out hitInfo, 20, terrainLayer) && StartPlayed==false)
+        {
+            StartPS.transform.position = hitInfo.point;
+            StartPS.Play();
+            StartPlayed = true;
+        }
+        if (Physics.Raycast(SnakeBones[SnakeBones.Count-1].transform.position, Vector3.down, out hitInfo, 20, terrainLayer) && StartPlayed==true)
+        {
+            StartPlayed = false;
+            StartPS.Stop();
+        }
+
+        if (Physics.Raycast(SnakeBones[0].transform.position, Vector3.down, out hitInfo, 20, terrainLayer) && EndPlayed==false)
+        {
+            EndPS.transform.position = hitInfo.point;
+            EndPS.Play();
+            EndPlayed = true;
+        }
+        if (Physics.Raycast(SnakeBones[SnakeBones.Count - 1].transform.position, Vector3.down, out hitInfo, 20, terrainLayer) && EndPlayed==true)
+        {
+            EndPlayed = false;
+            EndPS.Stop();
+        }
+
+        if (PhotonNetwork.IsConnected == false || GetComponent<PhotonView>().IsMine)
+        {
+            Collider[] tmpColls;
+
+            for(int j=0;j< SnakeBones.Count; j++)
+            {
+                tmpColls = Physics.OverlapSphere(SnakeBones[j].position, attackRadius, targetLayer);
+                for (int i = 0; i < tmpColls.Length; i++)
+                {
+                    if (Vector3.Distance(colls[i].transform.position, StartPS.transform.position) <= attackRadius)
+                    {
+                        tmpColls[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
+                    }
+                }
+            }
         }
     }
     public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

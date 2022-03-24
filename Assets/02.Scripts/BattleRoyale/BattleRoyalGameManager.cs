@@ -14,10 +14,6 @@ public class BattleRoyalGameManager : GameManager
     public int Resource_Rock_Count;
     public int My_Sailor_Count;
 
-    [Header("[DeathField]")]
-    [SerializeField] private float deathFieldRadius = 100;
-    [SerializeField] private GameObject DeathFieldObj;
-    [SerializeField] private LayerMask deathFieldLayer;
 
     [Header("[Info UI]")]
     bool PlayerInfo_UI_Opened = false;
@@ -47,10 +43,6 @@ public class BattleRoyalGameManager : GameManager
     protected override void Start()
     {
         base.Start();
-        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
-        {
-            StartCoroutine("DeathFieldCoroutine");
-        }
 
         MyShip_On_Landing_Point = false;
         Resource_Wood_Count = 0;
@@ -86,27 +78,6 @@ public class BattleRoyalGameManager : GameManager
             MyShip.transform.Find("MinimapCircle").GetComponent<Renderer>().sharedMaterial = MyshipColor;
         }
     }
-    IEnumerator DeathFieldCoroutine()
-    {
-        yield return new WaitForSeconds(1f);
-
-        // 범위 내 존재하지 않는 플레이어를 찾아서 Attack
-        Collider[] innerFieldShips = Physics.OverlapSphere(Vector3.zero, deathFieldRadius, deathFieldLayer);
-        List<Player_Controller_Ship> tmpColls = new List<Player_Controller_Ship>();
-        foreach (Collider c in innerFieldShips)
-        {
-            tmpColls.Add(c.GetComponent<Player_Controller_Ship>());
-        }
-        for (int i = 0; i < AllShip.Count; i++)
-        {
-            if (tmpColls.Contains(AllShip[i]) == false)
-            {
-                AllShip[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 5f, Vector3.zero });
-            }
-        }
-        StartCoroutine("DeathFieldCoroutine");
-    }
-
     #endregion
 
     protected override void Update()
@@ -118,9 +89,6 @@ public class BattleRoyalGameManager : GameManager
         UI_Panel_Update();
 
 
-        deathFieldRadius -= Time.deltaTime;
-        deathFieldRadius = Mathf.Clamp(deathFieldRadius, 10, 10000);
-        DeathFieldObj.gameObject.transform.localScale = Vector3.one * deathFieldRadius / 250f;
 
         if (GameStart)
         {
@@ -130,12 +98,11 @@ public class BattleRoyalGameManager : GameManager
                 // 내 배가 없거나 health가 0이라면 패배, 아니라면 승리
                 bool Win = !(MyShip == null || MyShip.GetComponent<Player_Combat_Ship>().health <= 0);
                 JudgeWinLose(Win);
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
             }
             else
             {
                 // 시간이 아직 끝나지 않았으면
-                playTime += Time.deltaTime;
-
                 // 남아있는 player와 그 index를 확인
                 List<Player_Controller_Ship> survivedShips = new List<Player_Controller_Ship>();
                 for(int i = 0; i < AllShip.Count; i++)
@@ -159,11 +126,6 @@ public class BattleRoyalGameManager : GameManager
                         }
                     }
                     JudgeWinLose(Win);
-                    if (IsWinner)
-                    {
-                        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
-                            PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
-                    }
                     FindObjectOfType<NetworkManager>().StartEndGame(false);
                 }
             }
@@ -292,10 +254,4 @@ public class BattleRoyalGameManager : GameManager
     }
     #endregion
 
-    void OnDrawGizmos()
-    {
-        // Death Field Sphere
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(Vector3.zero, deathFieldRadius);
-    }
 }

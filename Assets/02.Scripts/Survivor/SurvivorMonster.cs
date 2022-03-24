@@ -24,7 +24,7 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
     float health;
     [SerializeField] float maxHealth = 100f;
 
-    private List<AttackInfo> attackedList = new List<AttackInfo>();
+    protected List<AttackInfo> attackedList = new List<AttackInfo>();
     protected Collider[] colls;
 
     [SerializeField] Vector2 EXPPercent;

@@ -11,10 +11,8 @@ public class Octopus : SurvivorMonster
 
     private float attackCooltime = 5f;
 
-
     Vector3 hintPos;
     Vector3 handlePos;
-
     Vector3 TargetPos;
 
     int index;
@@ -59,46 +57,42 @@ public class Octopus : SurvivorMonster
                     else
                         AttackFunc();
                 }
-
-                if (attacking)
-                {
-                    Collider[] tmpColl = Physics.OverlapSphere(IKHandler.position, attackRadius, targetLayer);
-                    for (int i = 0; i < tmpColl.Length; i++)
-                    {
-                        if (tmpColl[i].transform.GetComponent<PhotonView>())
-                            tmpColl[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
-                    }
-                    //IKHandler.transform.position = Vector3.Slerp(IKHandler.transform.position, TargetPos, Time.deltaTime * 5f);
-                    //IKHandler.transform.rotation = Quaternion.Euler(Mathf.Lerp(IKHandler.transform.rotation.eulerAngles.x,90, Time.deltaTime * 5f),0,0);
-                }
             }
-            if (index >= 0 && !attacking && target)
+            if (index >= 0 && !attacking && attackCooltime <= 4 && target)
             {
                 this.transform.LookAt(new Vector3(target.position.x, 0, target.transform.position.z));
-                IKHint.transform.localPosition = -(target.transform.position - this.transform.position);
-                //IKHandler.transform.rotation = Quaternion.Euler(Mathf.Lerp(IKHandler.transform.rotation.eulerAngles.x, -90, Time.deltaTime * 5f), 0, 0);
             }
-            IKHandler.transform.localPosition = Vector3.Slerp(IKHandler.transform.localPosition, new Vector3(0, 15, -12) + offset, Time.deltaTime * 1f);
-        }
-        else
-        {
-            IKHint.transform.localPosition = hintPos;
-            IKHandler.transform.localPosition = handlePos;
+
+            if (attacking)
+            {
+                RaycastHit[] tmpColl = Physics.SphereCastAll(this.transform.position, 5f, this.transform.forward, viewRadius-2.5f, targetLayer);
+                for (int i = 0; i < tmpColl.Length; i++)
+                {
+                    if (tmpColl[i].transform.GetComponent<PhotonView>())
+                        tmpColl[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
+                }
+            }
         }
     }
 
     [PunRPC]
     public void AttackFunc()
     {
-        StartCoroutine("AttackCoroutine");
         anim.SetTrigger("Attack");
+        attackCooltime = Random.Range(6f, 8f);
     }
 
-    IEnumerator AttackCoroutine()
+
+    /// <summary>
+    /// 애니메이션 이벤트로 실행
+    /// </summary>
+    public void SetAttackTrue()
     {
         attacking = true;
-        yield return new WaitForSeconds(4f);
-        attackCooltime = Random.Range(7f,9f);
+    }
+
+    public void SetAttackFalse()
+    {
         attacking = false;
     }
 
@@ -107,9 +101,9 @@ public class Octopus : SurvivorMonster
         StartCoroutine("AttackedCoroutine", _stunTime);
     }
 
-
     IEnumerator AttackedCoroutine(float stunTime)
     {
+        attacking = false;
         attacked = true;
         anim.SetTrigger("Attacked");
         GetComponentInChildren<SkinnedMeshRenderer>().materials[0].color = Color.red;

@@ -46,6 +46,24 @@ public class RoomData : MonoBehaviourPunCallbacks
         return nextSceneString;
     }
 
+    public string GetGameModeInfo(GameMode gameMode)
+    {
+        string info="";
+        switch (gameMode)
+        {
+            case GameMode.BattleRoyale:
+                info = "배틀로얄은 최후의 1인이 승리하는 게임입니다.\n 자원을 수집하고 장비를 제작하여 경쟁자와 싸우세요.";
+                break;
+            case GameMode.PassTheBomb:
+                info = "폭탄돌리기는 일정 시간 뒤에 폭탄을 가진 술래가 탈락하는 게임입니다.\n 탈락하기 싫다면 폭탄에서 최대한 멀어지세요!.";
+                break;
+            case GameMode.Survivor:
+                info = "서바이벌은 여러 종류의 해양 몬스터의 공격을 피해 살아남는 게임입니다.";
+                break;
+        }
+        return info;
+    }
+
     [PunRPC]
     public void AddPlayerRPC(int _actorID)
     {

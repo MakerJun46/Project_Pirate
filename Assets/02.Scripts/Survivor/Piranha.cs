@@ -9,6 +9,8 @@ public class Piranha : SurvivorMonster
     Vector3 currVel;
     Vector3 currPos;
     Quaternion currRot;
+
+    Animator anim;
     public override void ResetEnemy(SurvivorMonster _data)
     {
         base.ResetEnemy(_data);
@@ -19,19 +21,23 @@ public class Piranha : SurvivorMonster
     protected override void Start()
     {
         base.Start();
+        anim = GetComponent<Animator>();
+        this.transform.position = this.transform.position += Vector3.down * 2f;
     }
 
     protected override void Update()
     {
         base.Update();
-        print("Update");
         if (GetComponent<PhotonView>().IsMine)
         {
-            print("etComponent<PhotonView>().IsMine");
+            print("GetComponent<PhotonView>().IsMine");
             for (int i = 0; i < colls.Length; i++)
             {
                 if (Vector3.Distance(colls[i].transform.position, transform.position) <= attackRadius)
+                {
                     colls[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
+                    anim.SetTrigger("Attack");
+                }
             }
 
             //if (target != null)
@@ -51,7 +57,9 @@ public class Piranha : SurvivorMonster
                 if (target)
                 {
                     print("target");
-                    toTargetDir = (target.position - this.transform.position).normalized;
+                    toTargetDir = (target.position - this.transform.position);
+                    toTargetDir.y = 0;
+                    toTargetDir.Normalize();
                 }
                 else
                 {
@@ -59,7 +67,8 @@ public class Piranha : SurvivorMonster
                 }
             }
             rb.velocity = toTargetDir * speed;
-            this.transform.LookAt(target);
+
+            this.transform.LookAt(this.transform.position+ toTargetDir);
         }
     }
     protected override void AttackedFunc(float _stunTime)

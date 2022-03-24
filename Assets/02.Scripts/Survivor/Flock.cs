@@ -59,6 +59,7 @@ public class Flock : MonoBehaviour
             Vector3 spawnPosition = transform.position + randomVec;
             Quaternion rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0f);
             allUnits[i] = Instantiate(flockUnitPrefab, spawnPosition, rotation);
+            allUnits[i].transform.SetParent(this.transform);
             allUnits[i].AssignFlock(this);
             allUnits[i].InitializeSpeed(Random.Range(speedRange.x, speedRange.y));
         }

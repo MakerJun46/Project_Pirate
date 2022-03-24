@@ -70,9 +70,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         characterIndex++;
         deadTime = 0;
         GameManager.GetInstance().RefreshBestPlayer(this.gameObject);
+
     }
 
-
+    [PunRPC]
+    public void EquipCostume(int typeIndex,int index)
+    {
+        GetComponentInChildren<CharacterCustomize>().EquipCostume(typeIndex,index);
+    }
 
     private void FixedUpdate()
     {

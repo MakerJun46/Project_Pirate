@@ -7,7 +7,7 @@ using Cinemachine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IPunObservable
 {
     protected static GameManager instance;
     public static GameManager GetInstance()
@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
 
     public List<Player_Controller_Ship> AllShip;
     public Player_Controller_Ship MyShip;
-    public Camera MainCamera;
     public CinemachineVirtualCamera VC_Top;
     public CinemachineVirtualCamera VC_TPS;
     protected bool topView=true;
@@ -38,10 +37,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
 
     public GameObject BestPlayerContent;
-    public List<GameObject> BestPlayerLists = new List<GameObject>();
-    public Text[] bestPlayerTexts;
-    public Text bestPlayerSortText;
-    public int bestPlayerSortIndex = 0; // 0:most money
+    private List<GameObject> BestPlayerLists = new List<GameObject>();
+    public int BestPlayerCount => BestPlayerLists.Count;
+    Text[] bestPlayerTexts;
 
     public int PlayerCount;
     protected float playTime;
@@ -57,8 +55,10 @@ public class GameManager : MonoBehaviour
     protected virtual void Start()
     {
         instance = this;
-        MainCamera = Camera.main;
         IsWinner = false;
+        playTime = 0;
+
+        bestPlayerTexts = BestPlayerContent.GetComponentsInChildren<Text>();
     }
     public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip = true)
     {
@@ -79,7 +79,12 @@ public class GameManager : MonoBehaviour
     }
     public virtual void EndGame()
     {
-        GameStart = false;
+        if (IsWinner)
+        {
+            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
+                PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
+        }
+
         FindObjectOfType<NetworkManager>().GoToLobby();
     }
 
@@ -100,7 +105,11 @@ public class GameManager : MonoBehaviour
 
     protected virtual void Update()
     {
-        if(TimeText)
+        if (PhotonNetwork.IsMasterClient)
+        {
+            playTime += Time.deltaTime;
+        }
+        if (TimeText)
             TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
 
         // 방향 조정
@@ -115,16 +124,6 @@ public class GameManager : MonoBehaviour
 
             steeringRot = Mathf.Clamp(steeringRot, -720, 720);
             SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
-        }
-
-        // 일단은 부모에서는 시간 제한만 둠(자식이 오버라이딩해서 새로운 조건 추가)
-        if (GameStart==true && (playTime >= 60) && DebugMode==false)
-        {
-            if (IsWinner) {
-                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
-                    PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
-            }
-            FindObjectOfType<NetworkManager>().StartEndGame(false);
         }
     }
     #endregion
@@ -265,4 +264,17 @@ public class GameManager : MonoBehaviour
             SetMyShip(AllShip[foundedIndex], false);
     }
     #endregion
+
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(playTime);
+        }
+        else
+        {
+            playTime = (float)stream.ReceiveNext();
+        }
+    }
 }

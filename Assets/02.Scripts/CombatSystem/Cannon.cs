@@ -129,7 +129,7 @@ public class Cannon : MonoBehaviourPun
         attackingState = 0;
         currCannonDistance = 0;
         currChargeAmount = 0;
-        cursor.gameObject.SetActive(false);
+        //cursor.gameObject.SetActive(false);
     }
 
     protected LaunchData CalculateLaunchData(Vector3 _offset)

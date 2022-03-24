@@ -60,6 +60,7 @@ public class AutoCannon : Cannon
             }
             else
             {
+                cursor.gameObject.SetActive(fov.currTarget != null);
                 if (fov.currTarget)
                 {
                     cursor.transform.position = fov.currTarget.position;

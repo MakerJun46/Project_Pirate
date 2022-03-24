@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class AttackInfo
 {
@@ -35,6 +36,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<GameObject> mySails;
 
     [SerializeField] private ParticleSystem AttackedPS;
+    [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
+    CinemachineImpulseSource impulseSource;
+
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
 
@@ -42,6 +46,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     {
         health = maxHealth;
         GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, 0);
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Update()
@@ -143,6 +148,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void PlayAttackPS(int _spotIndex, bool _isSpecial = false)
     {
+        ShakeCamera(2f);
         if (_isSpecial)
         {
             mySpecialCannons[_spotIndex].PlayAttackPS();
@@ -156,6 +162,15 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void Attacked(object[] param)
     {
+        if (FindObjectOfType<PassTheBombGameManager>()) // pass the bomb °ÔÀÓÀÎ °æ¿ì ºÎµúÈ÷¸é ÆøÅº ÀüÀÌ
+        {
+            if (FindObjectOfType<PassTheBombGameManager>().hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
+            {
+                if((int)param[2] != photonView.ViewID)
+                    FindObjectOfType<PassTheBombGameManager>().CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
+            }
+        }
+
         bool canAttack = false;
         if (param.Length > 2)
         {
@@ -164,6 +179,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 AttackIDs.Add(new AttackInfo((int)param[2],1f));
                 canAttack = true;
             }
+
         }
         else
             canAttack = true;
@@ -172,8 +188,17 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
         if (canAttack)
         {
+            if (param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<CannonBall>())
+            {
+                ParticleSystem tmpVFX = Instantiate(AttackedPS_Flare[Random.Range(0, AttackedPS_Flare.Count)], this.transform.position, Quaternion.identity);
+                tmpVFX.transform.position = PhotonView.Find((int)param[2]).transform.position;
+                tmpVFX.transform.LookAt(this.transform.position + (PhotonView.Find((int)param[2]).transform.position - this.transform.position).normalized);
+                tmpVFX.transform.localScale = Vector3.one * (float)param[0];
+            }
             AttackedPS.Play();
             GetComponent<Player_Controller_Ship>().additionalForce = (Vector3)param[1];
+
+            ShakeCamera((float)param[0]);
 
             if (GameManager.GetInstance().GameStart)
             {
@@ -194,12 +219,16 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
-                    PhotonNetwork.Destroy(GetComponent<PhotonView>());
+                    if(PhotonNetwork.IsMasterClient)
+                        PhotonNetwork.Destroy(GetComponent<PhotonView>());
                 }
             }
         }
     }
-
+    public void ShakeCamera(float _force)
+    {
+        impulseSource.GenerateImpulse(_force);
+    }
 
 
 
@@ -365,12 +394,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     5.0f
                     ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
                 });
-
-
-                if (FindObjectOfType<PassTheBombGameManager>()) // pass the bomb °ÔÀÓÀÎ °æ¿ì ºÎµúÈ÷¸é ÆøÅº ÀüÀÌ
-                {
-                    FindObjectOfType<PassTheBombGameManager>().CrashOtherShip(collision.gameObject);
-                }
             }
         }
     }

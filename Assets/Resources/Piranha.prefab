@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 471102402296280340}
   - component: {fileID: -7475786632229244398}
   - component: {fileID: 8615952732946556493}
+  - component: {fileID: 3829363649073934586}
+  - component: {fileID: -548306311783654153}
   m_Layer: 10
   m_Name: Piranha
   m_TagString: Enemy
@@ -30,7 +32,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 471102402296280341}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.97, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3075727035948833158}
@@ -49,9 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c45a3e8c69b3c649b456d06891495ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
+  damage: 2
   viewRadius: 50
-  attackRadius: 5
+  attackRadius: 3
   targetLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -70,7 +72,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &-2245946269365843018
 Rigidbody:
@@ -110,6 +112,7 @@ MonoBehaviour:
   - {fileID: 1513772653183398246}
   - {fileID: -7475786632229244398}
   - {fileID: 8615952732946556493}
+  - {fileID: -548306311783654153}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -145,6 +148,46 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!95 &3829363649073934586
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471102402296280341}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fd136ccd2a3fa4840bee3aa0cbe8d1e3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-548306311783654153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471102402296280341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 9
+    SynchronizeType: 0
+    Name: Attack
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &8779259982471468169
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,13 +213,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8779259982471468169}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: -2, z: 0.5}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 471102402296280339}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &3313701829443454989
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -184,7 +227,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8779259982471468169}
-  m_Mesh: {fileID: -7657180726784711129, guid: dea02f3e0582f884ea589020e373158e, type: 3}
+  m_Mesh: {fileID: -5495902117074765545, guid: a8a18501f91b49043833b5e6cd9418c8, type: 3}
 --- !u!23 &5884291509362093525
 MeshRenderer:
   m_ObjectHideFlags: 0

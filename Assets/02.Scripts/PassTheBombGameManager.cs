@@ -4,13 +4,11 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 
-public class PassTheBombGameManager : GameManager, IPunObservable
+public class PassTheBombGameManager : GameManager
 {
     public bool hasBomb;
-    public PhotonView PV;
-    System.Random random;
+    private PhotonView PV;
     public TextMeshProUGUI bomb_Second;
-    public float Count_Sec;
 
     public GameObject LoadingPanel;
 
@@ -40,8 +38,6 @@ public class PassTheBombGameManager : GameManager, IPunObservable
     public void InitializeGame()
     {
         print("InitializeGame");
-        hasBomb = false;
-        random = new System.Random();
         bomb_Second = MyShip.transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>();
 
         for (int i = 0; i < AllShip.Count; i++)
@@ -51,8 +47,6 @@ public class PassTheBombGameManager : GameManager, IPunObservable
             canvas.Find("Health").gameObject.SetActive(false);
             canvas.Find("Bomb_Second").gameObject.SetActive(false);
         }
-
-        Count_Sec = 60;
 
         PV = GetComponent<PhotonView>();
         if (PhotonNetwork.IsMasterClient)
@@ -74,17 +68,11 @@ public class PassTheBombGameManager : GameManager, IPunObservable
     {
         base.Update();
 
-        if (Count_Sec < 1 && hasBomb)
-        {
-            Debug.LogError(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
-            PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
-            hasBomb = false;
-        }
 
         for(int i = 0; i < AllShip.Count; i++)
         {
             if(AllShip[i]!=null)
-                AllShip[i].transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>().text = ((int)Count_Sec).ToString();
+                AllShip[i].transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>().text = (60-(int)playTime).ToString();
         }
 
         for (int i = AttackIDs.Count - 1; i >= 0; i--)
@@ -94,16 +82,17 @@ public class PassTheBombGameManager : GameManager, IPunObservable
                 AttackIDs.RemoveAt(i);
         }
 
-        if (GameStart && DebugMode == false)
+        if (GameStart)
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (playTime >= 60)
             {
-                Count_Sec -= Time.deltaTime;
-            }
-
-            if (playTime < 60){
-                playTime += Time.deltaTime;
-
+                JudgeWinLose(!hasBomb);
+                Debug.Log(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
+                if(hasBomb)
+                    PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+                hasBomb = false;
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
+            }else{
                 int count = 0;
                 int index = -1;
                 for (int i = 0; i < AllShip.Count; i++)
@@ -141,13 +130,6 @@ public class PassTheBombGameManager : GameManager, IPunObservable
         VC_Bomb.Priority = 15;
         yield return new WaitForSeconds(1.0f);
 
-        JudgeWinLose(PhotonView.Find(ViewID).OwnerActorNr != PhotonNetwork.LocalPlayer.ActorNumber);
-        if (PhotonView.Find(ViewID).OwnerActorNr != PhotonNetwork.LocalPlayer.ActorNumber)
-        {
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
-                PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
-        }
-
         // Explosion VFX
         PhotonView.Find(ViewID).transform.Find("PassTheBomb").GetChild(1).gameObject.SetActive(true);
         // Fire VFX
@@ -164,12 +146,20 @@ public class PassTheBombGameManager : GameManager, IPunObservable
     [PunRPC]
     public void FirstHasBomb(int PlayerIndex)
     {
-        print(PlayerIndex + "  // "+ MyShip.GetComponent<PhotonView>().OwnerActorNr);
+        print("FirstHasBomb :"+PlayerIndex + "  // "+ MyShip.GetComponent<PhotonView>().OwnerActorNr);
         if (PlayerIndex == MyShip.GetComponent<PhotonView>().OwnerActorNr)
         {
             hasBomb = true;
+            if (PV == null)
+            {
+                PV = GetComponent<PhotonView>();
+            }
             PV.RPC("On_Second", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
             PV.RPC("Change_VC_Lookat", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+        }
+        else
+        {
+            hasBomb = false;
         }
     }
 
@@ -196,8 +186,11 @@ public class PassTheBombGameManager : GameManager, IPunObservable
 
     public void CrashOtherShip(GameObject CrashedShip)
     {
-        if (this.hasBomb)
+        if(MyShip.photonView.ViewID != CrashedShip.GetPhotonView().ViewID)
+        {
+            print(MyShip.photonView.ViewID + " / " + CrashedShip.GetPhotonView().ViewID);
             PV.RPC("change_has_bomb", RpcTarget.AllBuffered, new object[] { MyShip.photonView.ViewID, CrashedShip.GetPhotonView().ViewID });
+        }
     }
 
     [PunRPC]
@@ -231,15 +224,4 @@ public class PassTheBombGameManager : GameManager, IPunObservable
         }
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(Count_Sec);
-        }
-        else
-        {
-            Count_Sec = (float)stream.ReceiveNext();
-        }
-    }
 }

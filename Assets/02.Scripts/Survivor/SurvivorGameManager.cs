@@ -85,7 +85,9 @@ public class SurvivorGameManager : GameManager
             for (int k = 0; k < waveData.waves[waveIndex].enemies[j].count; k++)
             {
                 GameObject tmpEnemy = PhotonNetwork.Instantiate(waveData.waves[waveIndex].enemies[j].EnemyPrefab.name, Vector3.zero, Quaternion.identity);
-                tmpEnemy.transform.position = new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * waveData.waves[waveIndex].spawnRange;
+
+                if(waveData.waves[waveIndex].enemies[j].EnemyPrefab.name != "SnakeParent")
+                    tmpEnemy.transform.position = new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * waveData.waves[waveIndex].spawnRange;
 
                 tmpEnemy.GetComponent<SurvivorMonster>().ResetEnemy(waveData.waves[waveIndex].enemies[j].EnemyPrefab.GetComponent<SurvivorMonster>());
                 tmpEnemy.GetComponent<SurvivorMonster>().InitializeEnemy(
@@ -131,11 +133,10 @@ public class SurvivorGameManager : GameManager
                 {
                     JudgeWinLose(true);
                 }
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
             }
             else
             {
-                playTime += Time.deltaTime;
-
                 int count = 0;
                 int index = -1;
                 for (int i = 0; i < AllShip.Count; i++)
@@ -151,11 +152,7 @@ public class SurvivorGameManager : GameManager
                 {
                     win = (index >= 0 && index < AllShip.Count && AllShip[index] == MyShip);
                     JudgeWinLose(win);
-                    if (IsWinner)
-                    {
-                        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
-                            PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
-                    }
+
                     FindObjectOfType<NetworkManager>().StartEndGame(false);
                 }
             }

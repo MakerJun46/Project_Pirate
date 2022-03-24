@@ -9,6 +9,8 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     float damage=10;
     Rigidbody rb;
 
+    [SerializeField] List<ParticleSystem> AttackParticles;
+
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         // sendData | 0: damage 1: scale
@@ -27,11 +29,12 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     {
         transform.GetChild(0).Rotate(new Vector3(rb.velocity.z, 0, -rb.velocity.x) * Time.deltaTime * 60f, Space.World);
 
-        if(this.transform.position.y < -10)
+        if(this.transform.position.y < -50)
         {
             Destroy(this.gameObject);
         }
     }
+
     private void FixedUpdate()
     {
         rb.AddForce(gravity);
@@ -39,10 +42,11 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && photonView.IsMine && other.GetComponent<PhotonView>().IsMine==false)
+        if (other.CompareTag("Player") && photonView.IsMine && other.GetComponent<PhotonView>().IsMine == false)
         {
-            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered,new object[]{damage,Vector3.zero, GetComponent<PhotonView>().ViewID});
-        }else if(other.CompareTag("Enemy") && photonView.IsMine)
+            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
+        }
+        else if(other.CompareTag("Enemy") && photonView.IsMine)
         {
             other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
         }
