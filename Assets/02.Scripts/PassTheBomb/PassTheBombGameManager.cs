@@ -92,7 +92,9 @@ public class PassTheBombGameManager : GameManager
                     PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
                 hasBomb = false;
                 FindObjectOfType<NetworkManager>().StartEndGame(false);
-            }else{
+            }
+            else
+            {
                 int count = 0;
                 int index = -1;
                 for (int i = 0; i < AllShip.Count; i++)

@@ -29,7 +29,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         PV = GetComponent<PhotonView>();
-        if (PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
         {
             DisconnetPanel.SetActive(false);
             Invoke("Spawn",1f);
@@ -59,19 +59,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (RoomData.GetInstance() && RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0 && _start)
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
 
-
             while (_start)
             {
                 yield return new WaitForEndOfFrame();
                 // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
                 if (GameManager.GetInstance().BestPlayerCount >= PhotonNetwork.CurrentRoom.PlayerCount)
                 {
-                    if(PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
-                    {
-                        GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
-                    }
                     break;
                 }
+            }
+
+            if (PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
+            {
+                GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
             }
 
             if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
@@ -179,7 +179,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         //PhotonNetwork.LocalPlayer.NickName = PlayerPrefs.GetString("NickName");
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 5 }, null);
         Debug.Log("Conneted to Master");
     }
 
