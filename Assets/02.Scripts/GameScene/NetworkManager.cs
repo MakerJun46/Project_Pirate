@@ -34,7 +34,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             DisconnetPanel.SetActive(false);
             Invoke("Spawn",1f);
         }
-        else
+        else if(!PhotonNetwork.IsConnected)
         {
             Connect();
         }
@@ -63,7 +63,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 yield return new WaitForEndOfFrame();
                 // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
-                if (GameManager.GetInstance().BestPlayerCount >= PhotonNetwork.CurrentRoom.PlayerCount)
+                if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount) // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음_0327
                 {
                     break;
                 }

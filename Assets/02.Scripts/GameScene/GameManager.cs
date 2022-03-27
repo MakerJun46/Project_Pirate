@@ -25,14 +25,14 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected bool DebugMode;
 
     private float steeringRot;
-    [SerializeField]private Image SteeringImg;
+    [SerializeField] private Image SteeringImg;
 
 
     public List<Player_Controller_Ship> AllShip;
     public Player_Controller_Ship MyShip;
     public CinemachineVirtualCamera VC_Top;
     public CinemachineVirtualCamera VC_TPS;
-    protected bool topView=true;
+    protected bool topView = true;
 
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
 
@@ -46,13 +46,13 @@ public class GameManager : MonoBehaviour, IPunObservable
 
     private int ObserveIndex;
 
-    [SerializeField]protected Text TimeText;
+    [SerializeField] protected Text TimeText;
 
     protected bool IsWinner;
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
 
-    [SerializeField] protected GameObject UI_Observer_RawImages;
+    [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
 
     protected virtual void Start()
@@ -68,10 +68,10 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            UI_Observer_RawImages.SetActive(true);
+            UI_Observer.SetActive(true);
             ObserverCameras_Parent.SetActive(true);
 
-            for (int i = 0; i < PhotonNetwork.CountOfPlayers; i++)
+            for (int i = 0; i < AllShip.Count; i++)
             {
                 ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
                 ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
@@ -127,22 +127,25 @@ public class GameManager : MonoBehaviour, IPunObservable
         {
             playTime += Time.deltaTime;
         }
+        else
+        {
+            // 방향 조정
+            if (MyShip)
+            {
+                if (MyShip.is_Turn_Left)
+                    steeringRot += 180 * Time.deltaTime;
+                else if (MyShip.is_Turn_Right)
+                    steeringRot += -180 * Time.deltaTime;
+                else
+                    steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+
+                steeringRot = Mathf.Clamp(steeringRot, -720, 720);
+                SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+            }
+        }
+
         if (TimeText)
             TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
-
-        // 방향 조정
-        if (MyShip)
-        {
-            if (MyShip.is_Turn_Left)
-                steeringRot += 180 * Time.deltaTime;
-            else if (MyShip.is_Turn_Right)
-                steeringRot += -180 * Time.deltaTime;
-            else
-                steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
-
-            steeringRot = Mathf.Clamp(steeringRot, -720, 720);
-            SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
-        }
     }
     #endregion
 
