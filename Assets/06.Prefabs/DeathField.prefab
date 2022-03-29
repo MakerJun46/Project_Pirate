@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7565676523103291967}
   - component: {fileID: 7565676523103291966}
   m_Layer: 0
-  m_Name: Sphere (1)
+  m_Name: InnerDathField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 7565676523580467136}
   - component: {fileID: 7565676523580467139}
   m_Layer: 0
-  m_Name: DeathFieldObj
+  m_Name: DeathFieldOuter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathFieldRadius: 200
-  DeathFieldObj: {fileID: 7565676523580467140}
+  deathFieldDamage: 5
   deathFieldLayer:
     serializedVersion: 2
     m_Bits: 64

@@ -963,6 +963,7 @@ GameObject:
   m_Component:
   - component: {fileID: 161101652}
   - component: {fileID: 161101651}
+  - component: {fileID: 161101653}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -982,21 +983,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56c8cf39b66195e45868cedc43b7864a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameStart: 0
-  DebugMode: 0
-  SteeringImg: {fileID: 1044845090}
+  GameStarted: 0
+  PlayerCount: 0
+  maxPlayTime: 30
+  TimeText: {fileID: 0}
+  BestPlayerContent: {fileID: 519049470}
   AllShip: []
   MyShip: {fileID: 0}
   VC_Top: {fileID: 1315902773}
   VC_TPS: {fileID: 1384850262}
   camOffset: {x: 0, y: 60, z: -60}
-  BestPlayerContent: {fileID: 519049470}
-  PlayerCount: 0
-  TimeText: {fileID: 0}
   WinPanel: {fileID: 1620709761}
   LosePanel: {fileID: 1513582803}
+  SteeringImg: {fileID: 1044845090}
   UI_Observer_RawImages: {fileID: 74991596}
   ObserverCameras_Parent: {fileID: 231006878}
+  VC_Winner: {fileID: 1384850262}
   GameModeTitleTxt: {fileID: 1417752427}
   GameModeInfoTxt: {fileID: 711217974}
 --- !u!4 &161101652
@@ -1013,6 +1015,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &161101653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161101650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 161101651}
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &181317951
 GameObject:
   m_ObjectHideFlags: 0
@@ -4228,7 +4253,6 @@ GameObject:
   m_Component:
   - component: {fileID: 855461761}
   - component: {fileID: 855461765}
-  - component: {fileID: 855461764}
   - component: {fileID: 855461763}
   - component: {fileID: 855461762}
   m_Layer: 16
@@ -4318,14 +4342,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &855461764
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 855461760}
-  m_Enabled: 1
 --- !u!20 &855461765
 Camera:
   m_ObjectHideFlags: 0
@@ -4896,7 +4912,6 @@ GameObject:
   m_Component:
   - component: {fileID: 971198780}
   - component: {fileID: 971198784}
-  - component: {fileID: 971198783}
   - component: {fileID: 971198782}
   - component: {fileID: 971198781}
   m_Layer: 13
@@ -4986,14 +5001,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &971198783
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 971198779}
-  m_Enabled: 1
 --- !u!20 &971198784
 Camera:
   m_ObjectHideFlags: 0
@@ -6163,7 +6170,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1236935266}
   - component: {fileID: 1236935270}
-  - component: {fileID: 1236935269}
   - component: {fileID: 1236935268}
   - component: {fileID: 1236935267}
   m_Layer: 15
@@ -6253,14 +6259,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &1236935269
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1236935265}
-  m_Enabled: 1
 --- !u!20 &1236935270
 Camera:
   m_ObjectHideFlags: 0
@@ -7339,7 +7337,7 @@ MonoBehaviour:
   instance: {fileID: 1510809182}
   DisconnetPanel: {fileID: 199111934}
   LoadingPanel: {fileID: 765876458}
-  loading_sec: 10
+  loading_sec: 5
   PlayerSpawnRadius: 100
 --- !u!4 &1510809183
 Transform:
@@ -9171,7 +9169,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1917646328}
   - component: {fileID: 1917646332}
-  - component: {fileID: 1917646331}
   - component: {fileID: 1917646330}
   - component: {fileID: 1917646329}
   m_Layer: 14
@@ -9261,14 +9258,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &1917646331
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1917646327}
-  m_Enabled: 1
 --- !u!20 &1917646332
 Camera:
   m_ObjectHideFlags: 0

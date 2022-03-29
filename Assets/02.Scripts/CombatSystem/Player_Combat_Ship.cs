@@ -162,12 +162,13 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void Attacked(object[] param)
     {
-        if (FindObjectOfType<PassTheBombGameManager>()) // pass the bomb °ÔÀÓÀÎ °æ¿ì ºÎµúÈ÷¸é ÆøÅº ÀüÀÌ
+        PassTheBombGameManager passTheBombGameManager = FindObjectOfType<PassTheBombGameManager>();
+        if (passTheBombGameManager) // pass the bomb °ÔÀÓÀÎ °æ¿ì ºÎµúÈ÷¸é ÆøÅº ÀüÀÌ
         {
-            if (FindObjectOfType<PassTheBombGameManager>().hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
+            if (passTheBombGameManager.hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
             {
                 if((int)param[2] != photonView.ViewID)
-                    FindObjectOfType<PassTheBombGameManager>().CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
+                    passTheBombGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
             }
         }
 
@@ -200,7 +201,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
             ShakeCamera((float)param[0]);
 
-            if (GameManager.GetInstance().GameStart)
+            if (GameManager.GetInstance().GameStarted)
             {
                 health -= (float)param[0];
                 GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
@@ -219,8 +220,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
-                    if(PhotonNetwork.IsMasterClient)
-                        PhotonNetwork.Destroy(GetComponent<PhotonView>());
+                    if(GetComponent<PhotonView>().IsMine)
+                        PhotonNetwork.Destroy(this.gameObject);
                 }
             }
         }
@@ -230,37 +231,103 @@ public class Player_Combat_Ship : MonoBehaviourPun
         impulseSource.GenerateImpulse(_force);
     }
 
+    public int GetLastSailIndex()
+    {
+        int index = -1;
+        for (int i = 0; i < mySails.Count; i++)
+        {
+            if (mySails[i] == null)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+    public int GetLastAutoCannonIndex()
+    {
+        int index = -1;
+        for (int i = 0; i < myAutoCannons.Count; i++)
+        {
+            if (myAutoCannons[i] == null)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+    public int GetLastmySpecialCannonsIndex()
+    {
+        int index = -1;
+        for (int i = 0; i < mySpecialCannons.Count; i++)
+        {
+            if (mySpecialCannons[i] == null)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
 
+    public void GetSupply(SupplyType _supplyType, int _supplyIndex)
+    {
+        PhotonView pv = GetComponent<PhotonView>();
+        int spotIndex = -1;
+        switch (_supplyType)
+        {
+            case SupplyType.Sail:
+                spotIndex = GetLastSailIndex();
+                if(spotIndex>=0)
+                {
+                    pv.RPC("EquipSail", RpcTarget.AllBuffered, spotIndex, _supplyIndex);
+                }
+                break;
+            case SupplyType.Cannon:
+                spotIndex = GetLastAutoCannonIndex();
+                if (spotIndex >= 0)
+                {
+                    pv.RPC("EquipCannon", RpcTarget.AllBuffered, spotIndex, _supplyIndex);
+                }
+                break;
+            case SupplyType.SpecialCannon:
+                spotIndex = GetLastmySpecialCannonsIndex();
+                if (spotIndex >= 0)
+                {
+                    pv.RPC("EquipSpecialCannon", RpcTarget.AllBuffered, spotIndex, _supplyIndex);
+                }
+                break;
+        }
+    }
 
     [PunRPC]
     public void EquipSail(int _spotIndex, int _sailIndex)
     {
-        //print("EquipSail0 : " + _spotIndex + "/" + _sailIndex);
+        Player_Controller_Ship myShip = GetComponent<Player_Controller_Ship>();
         if (_spotIndex >= mySails.Count)
             return;
 
-        //print("EquipSail1 : " + _spotIndex + "/" + _sailIndex);
         if (_sailIndex == -1)
         {
             if (mySails[_spotIndex] != null)
             {
-                GetComponent<Player_Controller_Ship>().MaxSpeed -= 5f;
-                GetComponent<Player_Controller_Ship>().MoveSpeed -= 5f;
+                myShip.MaxSpeed -= 5f;
+                myShip.MoveSpeed -= 5f;
                 Destroy(mySails[_spotIndex].gameObject);
             }
             return;
         }
 
-        //print("EquipSail2 : " + _spotIndex + "/" + _sailIndex);
         if (mySails[_spotIndex] != null)
         {
-            GetComponent<Player_Controller_Ship>().MaxSpeed -= 5f;
-            GetComponent<Player_Controller_Ship>().MoveSpeed -= 5f;
+            myShip.MaxSpeed -= 5f;
+            myShip.MoveSpeed -= 5f;
             Destroy(mySails[_spotIndex].gameObject);
         }
 
-        GetComponent<Player_Controller_Ship>().MaxSpeed += 5f;
-        GetComponent<Player_Controller_Ship>().MoveSpeed += 5f;
+        myShip.MaxSpeed += 5f;
+        myShip.MoveSpeed += 5f;
 
         GameObject tmpCannon = null;
         tmpCannon = Instantiate(Resources.Load("Sail_" + _sailIndex) as GameObject, Vector3.zero, Quaternion.identity);
@@ -275,29 +342,23 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void EquipCannon(int _spotIndex, int _cannonIndex)
     {
-        //Debug.Log("EquipCannon0 : "+_spotIndex+ "/"+_cannonIndex );
         if (_spotIndex >= AutoCannonSpots.Count)
             return;
 
-        //Debug.Log("EquipCannon1: " + _spotIndex + "/" + _cannonIndex);
         if (_cannonIndex == -1)
         {
-            print("UnEquip");
             if (myAutoCannons[_spotIndex] != null)
             {
                 myAutoCannons[_spotIndex].UnEquipCannon();
             }
             return;
         }
-        //Debug.Log("EquipCannon2: " + _spotIndex + "/" + _cannonIndex);
 
-        bool _active = true;
         if (myAutoCannons[_spotIndex] == null)
         {
             GameObject tmpCannon = null;
             tmpCannon = Instantiate(Resources.Load("AutoCannon") as GameObject, Vector3.zero, Quaternion.identity);
 
-            //Debug.Log("EquipCannon3: " + _spotIndex + "/" + _cannonIndex);
             tmpCannon.transform.SetParent(AutoCannonSpots[_spotIndex]);
             tmpCannon.transform.localPosition = Vector3.zero;
             tmpCannon.transform.localScale = Vector3.one;
@@ -315,7 +376,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
         if (photonView.IsMine)
         {
             CombatManager combatManager = FindObjectOfType<CombatManager>();
-            //combatManager.joySticks[_spotIndex].gameObject.SetActive(_active);
             if (myAutoCannons[_spotIndex] != null)
             {
                 myAutoCannons[_spotIndex].tmpJoyStick = combatManager.joySticks[_spotIndex];
@@ -326,18 +386,15 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void EquipSpecialCannon(int _spotIndex, int _cannonIndex)
     {
-        //print("EquipSpecialCannon0 : " + _spotIndex + "/" + _cannonIndex);
         if (_spotIndex >= SpecialCannonSpots.Count)
             return;
 
-        //print("EquipSpecialCannon1 : " + _spotIndex + "/" + _cannonIndex);
         if (_cannonIndex == -1)
         {
             if (mySpecialCannons[_spotIndex] != null)
                 mySpecialCannons[_spotIndex].UnEquipCannon();
             return;
         }
-        //print("EquipSpecialCannon2 : " + _spotIndex + "/" + _cannonIndex);
 
         bool _active = true;
         if (mySpecialCannons[_spotIndex] == null)
@@ -353,7 +410,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
         ChangeSpecialCannonType(_spotIndex, _cannonIndex, true);
 
-        //print("EquipSpecialCannon3 : " + _spotIndex + "/" + _cannonIndex);
         if (photonView.IsMine)
         {
             CombatManager combatManager = FindObjectOfType<CombatManager>();

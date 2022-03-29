@@ -19,44 +19,6 @@ public class CombatManager : MonoBehaviour
     public List<AttackJoyStick> SpecialJoySticks = new List<AttackJoyStick>();
 
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            EquipCannon(0, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            EquipCannon(1, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            EquipCannon(2, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            EquipCannon(3, 0);
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            EquipSail(0, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.O))
-        {
-            EquipSail(0, 1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            EquipSpecialCannon(0, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            EquipSpecialCannon(1, 0);
-        }
-    }
-
     public void SetMyShip(Player_Combat_Ship _ship)
     {
         myShip = _ship;

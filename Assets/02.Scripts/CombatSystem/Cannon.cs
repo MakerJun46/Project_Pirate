@@ -43,27 +43,17 @@ public class Cannon : MonoBehaviourPun
 
     public virtual void Initialize(Player_Combat_Ship _myShip,int _spotIndex,int _gameModeIndex)
     {
-        print("Cannon : 1");
         myShip = _myShip;
-        print("Cannon : 2");
         spotIndex = _spotIndex;
-        print("Cannon : 3");
         gameMode = (GameMode)_gameModeIndex;
-        print("Cannon : 4");
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
-            print("Cannon : 5");
             cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
-        }
-        else
-        {
-
         }
     }
 
     public void UnEquipCannon()
     {
-        print("UnEquipCannon");
         if(cursor)
             Destroy(cursor.gameObject);
         Destroy(this.gameObject);

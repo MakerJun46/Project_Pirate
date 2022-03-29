@@ -42,6 +42,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public Vector3 currPos;
     public Quaternion currRot;
 
+    public ParticleSystem WinnerEffectPrefab;
+    public ParticleSystem LoseEffectPrefab;
     private void Awake()
     {
         RB = GetComponent<Rigidbody>();
@@ -77,6 +79,18 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public void EquipCostume(int typeIndex,int index)
     {
         GetComponentInChildren<CharacterCustomize>().EquipCostume(typeIndex,index);
+    }
+
+    public void ActiveWinLoseEffect(bool _isWinner)
+    {
+        if (_isWinner)
+        {
+            WinnerEffectPrefab.Play();
+        }
+        else
+        {
+            LoseEffectPrefab.Play();
+        }
     }
 
     private void FixedUpdate()
