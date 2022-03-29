@@ -20,12 +20,24 @@ public class GameManager : MonoBehaviour, IPunObservable
     }
 
     #region Variables & Initializer
-    public bool GameStart;
-    // Don't Judge Win or Lose
-    [SerializeField] protected bool DebugMode;
+    public bool GameStarted;
+
+    public int PlayerCount;
+    private int ObserveIndex;
+
+    protected float currPlayTime;
+    public float maxPlayTime = 60f;
+
+    [SerializeField] protected Text TimeText;
 
     private float steeringRot;
     [SerializeField] private Image SteeringImg;
+
+
+    public GameObject BestPlayerContent;
+    private List<GameObject> BestPlayerLists = new List<GameObject>();
+    public int BestPlayerCount => BestPlayerLists.Count;
+    Text[] bestPlayerTexts;
 
 
     public List<Player_Controller_Ship> AllShip;
@@ -35,18 +47,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     protected bool topView = true;
 
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
-
-    public GameObject BestPlayerContent;
-    private List<GameObject> BestPlayerLists = new List<GameObject>();
-    public int BestPlayerCount => BestPlayerLists.Count;
-    Text[] bestPlayerTexts;
-
-    public int PlayerCount;
-    protected float playTime;
-
-    private int ObserveIndex;
-
-    [SerializeField] protected Text TimeText;
 
     protected bool IsWinner;
     [SerializeField] protected GameObject WinPanel;
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         instance = this;
         IsWinner = false;
-        playTime = 0;
+        currPlayTime = 0;
 
         bestPlayerTexts = BestPlayerContent.GetComponentsInChildren<Text>();
     }
@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     #region GameFlow
     public virtual void StartGame()
     {
-        GameStart = true;
+        GameStarted = true;
         IsWinner = false;
     }
     public virtual void EndGame()
@@ -103,6 +103,8 @@ public class GameManager : MonoBehaviour, IPunObservable
                 PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
         }
 
+        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
+            RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddPlayedGameCount", RpcTarget.AllBuffered);
         FindObjectOfType<NetworkManager>().GoToLobby();
     }
 
@@ -114,20 +116,47 @@ public class GameManager : MonoBehaviour, IPunObservable
     /// 맨 마지막에 딱 한 번 실행되어야함
     /// </summary>
     /// <param name="_win"></param>
-    public virtual void JudgeWinLose(bool _win)
+    public virtual void JudgeWinLose()
     {
-        IsWinner = _win;
-        WinPanel.SetActive(_win);
-        LosePanel.SetActive(!_win);
+        WinPanel.SetActive(IsWinner);
+        LosePanel.SetActive(!IsWinner);
+        print("End : " + IsWinner);
+        GameStarted = false;
+
+
+        //if (MyShip)
+        //{
+        //    MyShip.ActiveWinLoseEffect(IsWinner);
+        //    Change_VC_Lookat(MyShip.GetComponent<PhotonView>().ViewID);
+        //}
+        //else
+        //{
+        //    if (BestPlayerLists.Count > 0)
+        //    {
+        //        BestPlayerLists[0].GetComponent<Player_Controller_Ship>().ActiveWinLoseEffect(true);
+        //        Change_VC_Lookat(BestPlayerLists[0].GetComponent<PhotonView>().ViewID);
+        //    }
+        //}
+    }
+    public Cinemachine.CinemachineVirtualCamera VC_Winner;
+    public void Change_VC_Lookat(int ViewID)
+    {
+        VC_Winner.Priority = 15;
+        if (PhotonView.Find(ViewID) && PhotonView.Find(ViewID).gameObject)
+        {
+            VC_Winner.LookAt = PhotonView.Find(ViewID).gameObject.transform;
+            VC_Winner.Follow = PhotonView.Find(ViewID).gameObject.transform;
+        }
     }
 
     protected virtual void Update()
     {
+        if (TimeText)
+            TimeText.text = ((int)(currPlayTime / 60)) + ":" + ((int)(currPlayTime % 60));
         if (PhotonNetwork.IsMasterClient)
         {
-            playTime += Time.deltaTime;
-        }
-        else
+            currPlayTime += Time.deltaTime;
+        }else
         {
             // 방향 조정
             if (MyShip)
@@ -143,9 +172,6 @@ public class GameManager : MonoBehaviour, IPunObservable
                 SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
             }
         }
-
-        if (TimeText)
-            TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
     }
     #endregion
 
@@ -291,11 +317,11 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(playTime);
+            stream.SendNext(currPlayTime);
         }
         else
         {
-            playTime = (float)stream.ReceiveNext();
+            currPlayTime = (float)stream.ReceiveNext();
         }
     }
 }

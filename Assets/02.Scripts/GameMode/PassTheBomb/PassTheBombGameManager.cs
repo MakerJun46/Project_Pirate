@@ -25,10 +25,14 @@ public class PassTheBombGameManager : GameManager
     {
         base.MasterChanged(_isMaster);
     }
-    public override void JudgeWinLose(bool _win)
+    public override void JudgeWinLose()
     {
-        base.JudgeWinLose(_win);
-        print("End : " + _win);
+        IsWinner = !hasBomb;
+        Debug.Log(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
+        if (hasBomb)
+            PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+        hasBomb = false;
+        base.JudgeWinLose();
     }
 
     public override void SetObserverCamera()
@@ -83,12 +87,12 @@ public class PassTheBombGameManager : GameManager
     {
         base.Update();
 
-        if (playTime <= 60)
+        if (currPlayTime <= maxPlayTime)
         {
             for (int i = 0; i < AllShip.Count; i++)
             {
                 if (AllShip[i] != null)
-                    AllShip[i].transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>().text = (60 - (int)playTime).ToString();
+                    AllShip[i].transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>().text = (maxPlayTime - (int)currPlayTime).ToString();
             }
         }
 
@@ -99,39 +103,11 @@ public class PassTheBombGameManager : GameManager
                 AttackIDs.RemoveAt(i);
         }
 
-        if (GameStart)
+        if (GameStarted)
         {
-            if (playTime >= 60)
+            if (currPlayTime >= maxPlayTime)
             {
-                JudgeWinLose(!hasBomb);
-                Debug.Log(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
-                if (hasBomb)
-                    PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
-                hasBomb = false;
-            }
-            else
-            {
-                int count = 0;
-                int index = -1;
-                for (int i = 0; i < AllShip.Count; i++)
-                {
-                    if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
-                    {
-                        count++;
-                        index = i;
-                    }
-                }
-                if (count <= 1)
-                {
-                    if (index >= 0 && index < AllShip.Count && AllShip[index] == MyShip)
-                    {
-                        JudgeWinLose(true);
-                    }
-                    else
-                    {
-                        JudgeWinLose(false);
-                    }
-                }
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
             }
         }
     }
@@ -161,7 +137,7 @@ public class PassTheBombGameManager : GameManager
         // Fire VFX
         PhotonView.Find(ViewID).transform.Find("PassTheBomb").GetChild(0).gameObject.SetActive(false);
 
-        FindObjectOfType<NetworkManager>().StartEndGame(false);
+        //FindObjectOfType<NetworkManager>().StartEndGame(false);
     }
 
     private int selectBomb()
