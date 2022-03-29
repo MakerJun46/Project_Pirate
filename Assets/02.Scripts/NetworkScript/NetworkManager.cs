@@ -29,76 +29,64 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         PV = GetComponent<PhotonView>();
-        if (PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
         {
             DisconnetPanel.SetActive(false);
             Invoke("Spawn",1f);
         }
-        else
+        else if(!PhotonNetwork.IsConnected)
         {
             Connect();
         }
 
-        if (RoomData.GetInstance() != null)
-        {
-            if (RoomData.GetInstance().PlayGameCountOvered() == false)
-            {
-                // 플레이 한 게임모드가 최대가 되지 않으면 정상적으로 게임 진행
-                StartEndGame(true);
-            }
-            else
-            {
-                // 플레이 한 게임모드가 최대가 되면 진짜 게임 종료
-                // GameScene_Room의 RoomGameManager가 게임 종료 처리
-                if (SceneManager.GetActiveScene().name != "GameScene_Room")
-                {
-                    SceneManager.LoadScene("GameScene_Room");
-                }
-            }
-        }
+        // RoomData.GetInstance() == null Debug를 위함
+        // 플레이 한 게임모드가 3개가 되면 진짜 게임 종료
+        //
+        if (RoomData.GetInstance() == null ||  RoomData.GetInstance().PlayedGameCount < 3 || (RoomData.GetInstance().PlayedGameCount >= 3 && SceneManager.GetActiveScene().name != "GameScene_Room"))
+            StartEndGame(true);
     }
 
     public void StartEndGame(bool _start)
     {
-        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
-        {
-            StartCoroutine(StartEndGameCoroutine(_start));
-        }
+        StartCoroutine(StartEndGameCoroutine(_start));
     }
 
     public IEnumerator StartEndGameCoroutine(bool _start)
     {
-        // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
-        if (RoomData.GetInstance() && RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount != 0 && _start)
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
-
-
-        while (_start)
+        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
-            yield return new WaitForEndOfFrame();
-            // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
-            if (GameManager.GetInstance().BestPlayerCount >= PhotonNetwork.CurrentRoom.PlayerCount)
+            // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
+            if (RoomData.GetInstance() && RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount!=0 && _start)
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
+
+            while (_start)
             {
-                if (PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
+                yield return new WaitForEndOfFrame();
+                // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
+                if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount) // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음_0327
                 {
-                    GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
+                    break;
                 }
-                break;
             }
-        }
 
-        if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
-        {
-            // 플레이어 혼자만 남으면 Loading하지 않음 -> RoomGameManager에서 RoomExit하는 Panel Active
-        }
-        else
-        {
-            // 플레이어가 남아있을 경우 정상적으로 작동
-            GetComponent<PhotonView>().RPC("LoadingFunc", RpcTarget.AllBuffered, _start);
+            if (PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
+            {
+                GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
+            }
+
+            if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
+            {
+                // 플레이어 혼자만 남으면 Loading하지 않음 -> RoomGameManager에서 RoomExit하는 Panel Active
+            }
+            else
+            {
+                // 플레이어가 남아있을 경우 정상적으로 작동
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("StartLoading", RpcTarget.AllBuffered, _start);
+            }
+            
         }
     }
 
-    [PunRPC]
     public void LoadingFunc(bool _start)
     {
         StartCoroutine(LoadingCoroutine(_start));
@@ -107,8 +95,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         LoadingPanel.SetActive(true);
 
-        if(_start==false)
-            GameManager.GetInstance().JudgeWinLose();
+        if (_start == false)
+            GameManager.GetInstance().GameStart = false;
 
         for (int i = loading_sec; i > 0; i--)
         {
@@ -118,6 +106,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         LoadingPanel.SetActive(false);
 
+        print("LOADING END");
         if(_start)
             GameManager.GetInstance().StartGame();
         else
@@ -190,7 +179,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         //PhotonNetwork.LocalPlayer.NickName = PlayerPrefs.GetString("NickName");
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 5 }, null);
         Debug.Log("Conneted to Master");
     }
 

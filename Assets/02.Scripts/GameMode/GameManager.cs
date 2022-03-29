@@ -7,7 +7,7 @@ using Cinemachine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
+public class GameManager : MonoBehaviour, IPunObservable
 {
     protected static GameManager instance;
     public static GameManager GetInstance()
@@ -20,49 +20,46 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     #region Variables & Initializer
-    public bool GameStarted;
+    public bool GameStart;
+    // Don't Judge Win or Lose
+    [SerializeField] protected bool DebugMode;
 
-    public int PlayerCount;
-
-    private int ObserveIndex;
-
-    protected float currPlayTime;
-    public float maxPlayTime=60f;
-
-    [SerializeField] protected Text TimeText;
-
-
-
-    public GameObject BestPlayerContent;
-    private List<GameObject> BestPlayerLists = new List<GameObject>();
-    public int BestPlayerCount => BestPlayerLists.Count;
-    Text[] bestPlayerTexts;
+    private float steeringRot;
+    [SerializeField] private Image SteeringImg;
 
 
     public List<Player_Controller_Ship> AllShip;
     public Player_Controller_Ship MyShip;
     public CinemachineVirtualCamera VC_Top;
     public CinemachineVirtualCamera VC_TPS;
-    protected bool topView=true;
+    protected bool topView = true;
 
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
 
+    public GameObject BestPlayerContent;
+    private List<GameObject> BestPlayerLists = new List<GameObject>();
+    public int BestPlayerCount => BestPlayerLists.Count;
+    Text[] bestPlayerTexts;
+
+    public int PlayerCount;
+    protected float playTime;
+
+    private int ObserveIndex;
+
+    [SerializeField] protected Text TimeText;
 
     protected bool IsWinner;
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
 
-    private float steeringRot;
-    [SerializeField] private Image SteeringImg;
-
-    [SerializeField] protected GameObject UI_Observer_RawImages;
+    [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
 
     protected virtual void Start()
     {
         instance = this;
         IsWinner = false;
-        currPlayTime = 0;
+        playTime = 0;
 
         bestPlayerTexts = BestPlayerContent.GetComponentsInChildren<Text>();
     }
@@ -71,10 +68,10 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            UI_Observer_RawImages.SetActive(true);
+            UI_Observer.SetActive(true);
             ObserverCameras_Parent.SetActive(true);
 
-            for (int i = 0; i < PhotonNetwork.CountOfPlayers; i++)
+            for (int i = 0; i < AllShip.Count; i++)
             {
                 ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
                 ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
@@ -95,7 +92,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     #region GameFlow
     public virtual void StartGame()
     {
-        GameStarted = true;
+        GameStart = true;
         IsWinner = false;
     }
     public virtual void EndGame()
@@ -106,8 +103,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
                 PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
         }
 
-        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddPlayedGameCount", RpcTarget.AllBuffered);
         FindObjectOfType<NetworkManager>().GoToLobby();
     }
 
@@ -119,62 +114,38 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     /// 맨 마지막에 딱 한 번 실행되어야함
     /// </summary>
     /// <param name="_win"></param>
-    public virtual void JudgeWinLose()
+    public virtual void JudgeWinLose(bool _win)
     {
-        WinPanel.SetActive(IsWinner);
-        LosePanel.SetActive(!IsWinner);
-        print("End : " + IsWinner);
-        GameStarted = false;
-
-
-        //if (MyShip)
-        //{
-        //    MyShip.ActiveWinLoseEffect(IsWinner);
-        //    Change_VC_Lookat(MyShip.GetComponent<PhotonView>().ViewID);
-        //}
-        //else
-        //{
-        //    if (BestPlayerLists.Count > 0)
-        //    {
-        //        BestPlayerLists[0].GetComponent<Player_Controller_Ship>().ActiveWinLoseEffect(true);
-        //        Change_VC_Lookat(BestPlayerLists[0].GetComponent<PhotonView>().ViewID);
-        //    }
-        //}
+        IsWinner = _win;
+        WinPanel.SetActive(_win);
+        LosePanel.SetActive(!_win);
     }
-    public Cinemachine.CinemachineVirtualCamera VC_Winner;
-    public void Change_VC_Lookat(int ViewID)
-    {
-        VC_Winner.Priority = 15;
-        if (PhotonView.Find(ViewID) && PhotonView.Find(ViewID).gameObject)
-        {
-            VC_Winner.LookAt = PhotonView.Find(ViewID).gameObject.transform;
-            VC_Winner.Follow = PhotonView.Find(ViewID).gameObject.transform;
-        }
-    }
-
 
     protected virtual void Update()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            currPlayTime += Time.deltaTime;
+            playTime += Time.deltaTime;
         }
-        if (TimeText)
-            TimeText.text = ((int)(currPlayTime / 60)) + ":" + ((int)(currPlayTime % 60));
-
-        // 방향 조정
-        if (MyShip)
+        else
         {
-            if (MyShip.is_Turn_Left)
-                steeringRot += 180 * Time.deltaTime;
-            else if (MyShip.is_Turn_Right)
-                steeringRot += -180 * Time.deltaTime;
-            else
-                steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+            // 방향 조정
+            if (MyShip)
+            {
+                if (MyShip.is_Turn_Left)
+                    steeringRot += 180 * Time.deltaTime;
+                else if (MyShip.is_Turn_Right)
+                    steeringRot += -180 * Time.deltaTime;
+                else
+                    steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
 
-            steeringRot = Mathf.Clamp(steeringRot, -720, 720);
-            SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+                steeringRot = Mathf.Clamp(steeringRot, -720, 720);
+                SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+            }
         }
+
+        if (TimeText)
+            TimeText.text = ((int)(playTime / 60)) + ":" + ((int)(playTime % 60));
     }
     #endregion
 
@@ -316,15 +287,15 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     #endregion
 
 
-    public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(currPlayTime);
+            stream.SendNext(playTime);
         }
         else
         {
-            currPlayTime = (float)stream.ReceiveNext();
+            playTime = (float)stream.ReceiveNext();
         }
     }
 }

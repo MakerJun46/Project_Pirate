@@ -228,7 +228,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
-        roomOptions.MaxPlayers = (byte)4;
+        roomOptions.MaxPlayers = (byte)5;
         roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         SetRoomName(PhotonNetwork.LocalPlayer.NickName + "'s Room");
@@ -243,7 +243,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
-        roomOptions.MaxPlayers = (byte)4;
+        roomOptions.MaxPlayers = (byte)5;
         roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, null);
@@ -530,7 +530,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [System.Obsolete]
     public void AddMaxPlayers(int _add)
     {
-        if (PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add >= (byte)1 && PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add <= (byte)4)
+        if (PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add >= (byte)1 && PhotonNetwork.CurrentRoom.MaxPlayers + (byte)_add <= (byte)5)
         {
             PhotonNetwork.CurrentRoom.MaxPlayers += (byte)_add;
         }
