@@ -148,7 +148,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
-        FindObjectOfType<CustomizeManager>().EquipCostume(go.GetComponent<PhotonView>().ViewID);
+        //FindObjectOfType<CustomizeManager>().EquipCostume(go.GetComponent<PhotonView>().ViewID);
     }
 
     [SerializeField] float PlayerSpawnRadius = 100f;

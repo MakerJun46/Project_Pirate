@@ -44,7 +44,7 @@ public class PassTheBombGameManager : GameManager
             Transform canvas = AllShip[i].gameObject.transform.Find("Canvas");
             canvas.Find("HealthArea").gameObject.SetActive(false);
             canvas.Find("Health").gameObject.SetActive(false);
-            canvas.Find("Bomb_Second").gameObject.SetActive(false);
+            canvas.Find("Count_Text").gameObject.SetActive(false);
         }
     }
 
@@ -66,14 +66,14 @@ public class PassTheBombGameManager : GameManager
     public void InitializeGame()
     {
         print("InitializeGame");
-        bomb_Second = MyShip.transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>();
+        bomb_Second = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
         for (int i = 0; i < AllShip.Count; i++)
         {
             Transform canvas = AllShip[i].gameObject.transform.Find("Canvas");
             canvas.Find("HealthArea").gameObject.SetActive(false);
             canvas.Find("Health").gameObject.SetActive(false);
-            canvas.Find("Bomb_Second").gameObject.SetActive(false);
+            canvas.Find("Count_Text").gameObject.SetActive(false);
         }
         TryUpgradeShip();
         CombatManager.instance.EquipSail(0, 1);
@@ -92,7 +92,7 @@ public class PassTheBombGameManager : GameManager
             for (int i = 0; i < AllShip.Count; i++)
             {
                 if (AllShip[i] != null)
-                    AllShip[i].transform.Find("Canvas").transform.Find("Bomb_Second").GetComponent<TextMeshProUGUI>().text = (maxPlayTime - (int)currPlayTime).ToString();
+                    AllShip[i].transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>().text = (maxPlayTime - (int)currPlayTime).ToString();
             }
         }
 
@@ -180,14 +180,14 @@ public class PassTheBombGameManager : GameManager
     [PunRPC]
     public void Off_Second(int ViewID)
     {
-        PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Bomb_Second").gameObject.SetActive(false);
+        PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Count_Text").gameObject.SetActive(false);
         PhotonView.Find(ViewID).gameObject.transform.Find("PassTheBomb").gameObject.SetActive(false);
     }
 
     [PunRPC]
     public void On_Second(int ViewID)
     {
-        PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Bomb_Second").gameObject.SetActive(true);
+        PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Count_Text").gameObject.SetActive(true);
         PhotonView.Find(ViewID).gameObject.transform.Find("PassTheBomb").gameObject.SetActive(true);
     }
 

@@ -777,6 +777,9 @@ MonoBehaviour:
   UI_Observer: {fileID: 908597251320251242}
   ObserverCameras_Parent: {fileID: 3014258686978273997}
   VC_Winner: {fileID: 2016304424}
+  TreasureSpawner_Object: {fileID: 663032015}
+  Player_TreasureCount_Value: 0
+  Player_TreasureCount_Text: {fileID: 0}
 --- !u!4 &161101652
 Transform:
   m_ObjectHideFlags: 0
@@ -4662,7 +4665,7 @@ Transform:
   m_GameObject: {fileID: 1561859351}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 25, y: 1, z: 25}
+  m_LocalScale: {x: 15, y: 1, z: 15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 17
@@ -5452,7 +5455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 50, z: -50}
+  m_FollowOffset: {x: 0, y: 100, z: -40}
   m_XDamping: 0.5
   m_YDamping: 0.5
   m_ZDamping: 0.5
@@ -5473,7 +5476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
+  m_TrackedObjectOffset: {x: 0, y: 0, z: -10}
   m_LookaheadTime: 0.1
   m_LookaheadSmoothing: 1
   m_LookaheadIgnoreY: 0
@@ -5484,7 +5487,7 @@ MonoBehaviour:
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
+  m_SoftZoneHeight: 0.8774748
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1
