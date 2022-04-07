@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+
 public enum GameMode
 {
     BattleRoyale,
     PassTheBomb,
-    Survivor
+    Survivor,
+    HitTheTarget
 }
 
 public class RoomData : MonoBehaviourPunCallbacks
@@ -23,12 +26,17 @@ public class RoomData : MonoBehaviourPunCallbacks
         return instance;
     }
 
-    public Dictionary<int, int> Scores{ get; private set; }
+    PhotonView PV;
 
-    public GameMode gameMode = 0; //0:배틀로얄 1:폭탄돌리기 2: 몬스터피하기
+    public List<int> FinalScores = new List<int>(10000);
+    public List<int> currGameScores = new List<int>(10000);
+
+    public GameMode gameMode = 0; //0:배틀로얄 1:폭탄돌리기 2: 몬스터피하기 3: target 맞추기
 
     public int PlayedGameCount { get; private set; }
     private int MaxPlayGameCount = 3;
+
+    public Color[] playerColor;
 
     public bool PlayGameCountOvered()
     {
@@ -37,19 +45,16 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
-        GetComponent<PhotonView>().RPC("AddPlayerRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
+        PV = GetComponent<PhotonView>();
+        PV.RPC("InitializePlayerScoreRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
         PlayedGameCount = 0;
-        if (Scores == null)
-            Scores = new Dictionary<int, int>();
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public string GetCurrSceneString()
     {
-        string nextSceneString= "GameScene_";
-        nextSceneString+=gameMode.ToString();
-
-        return nextSceneString;
+        return "GameScene_" + gameMode.ToString();
     }
 
     public string GetGameModeInfo(GameMode gameMode)
@@ -66,28 +71,41 @@ public class RoomData : MonoBehaviourPunCallbacks
             case GameMode.Survivor:
                 info = "서바이벌은 여러 종류의 해양 몬스터의 공격을 피해 살아남는 게임입니다.";
                 break;
+            case GameMode.HitTheTarget:
+                info = "타겟 맞추기는 가장 많은 과녁을 맞추는 플레이어가 승리하는 게임입니다.";
+                break;
         }
         return info;
     }
+    public void AddPlayedGameCount()
+    {
+        PV.RPC("AddPlayedGameCountRPC", RpcTarget.AllBuffered);
+    }
+    public void SetFinalScore()
+    {
+        PV.RPC("SetFinalScoreRPC", RpcTarget.AllBuffered);
+    }
+    public void SetCurrScore(int _actorID, float _addScore)
+    {
+        PV.RPC("SetCurrScoreRPC", RpcTarget.AllBuffered, _actorID, currGameScores[_actorID]+ (int)_addScore);
+    }
 
     [PunRPC]
-    public void AddPlayerRPC(int _actorID)
+    public void InitializePlayerScoreRPC(int _actorID)
     {
-        if (Scores == null)
-            Scores = new Dictionary<int, int>();
-        if (Scores.ContainsKey(_actorID))
-        {
-            Scores[_actorID] = 0;
-        }
-        else
-        {
-            Scores.Add(_actorID, 0);
-        }
+        // Player가 추가되었을 때 초기화
+        FinalScores[_actorID] = 0;
+        currGameScores[_actorID] = 0;
+    }
+
+    public void SetCurrGameScoreToZero(int _actorID)
+    {
+        currGameScores[_actorID] = 0;
     }
 
 
     [PunRPC]
-    public void AddPlayedGameCount()
+    public void AddPlayedGameCountRPC()
     {
         PlayedGameCount++;
     }
@@ -99,17 +117,76 @@ public class RoomData : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SetScoreRPC(int _actorID, int _score)
+    public void SetFinalScoreRPC()
     {
-        if (Scores == null)
-            Scores = new Dictionary<int, int>();
-        Scores[_actorID] = _score;
+        for(int i = 0; i < FinalScores.Count; i++)
+        {
+            FinalScores[i] += currGameScores[i];
+            currGameScores[i] = 0;
+        }
+        GameManager.GetInstance().RefreshPlayeScore(true);
     }
-
     [PunRPC]
-    public void DestroyRoomData()
+    public void SetCurrScoreRPC(int _actorID, int _score)
     {
-        Destroy(this.gameObject);
+        GameManager.GetInstance().ActiveScoreEffect(_actorID, _score- currGameScores[_actorID]);
+        currGameScores[_actorID] = _score;
+        GameManager.GetInstance().RefreshPlayeScore(false);
+    }
+    [PunRPC]
+    public void SetRandomGameModeRPC(bool _val)
+    {
+        setSceneRandom = _val;
     }
 
+    public void ToggleRandomGameMode(bool val)
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                // RoomData의 SetGameModeRPC는 Data 변경 동기화
+                GetComponent<PhotonView>().RPC("SetRandomGameModeRPC", RpcTarget.AllBuffered, val);
+                // NetworkController의 SetGameModeRPC는 UI 동기화
+                if (FindObjectOfType<LobbyManager>())
+                {
+                    FindObjectOfType<LobbyManager>().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered);
+                }
+            }
+        }
+    }
+
+    public void AddGameModeIndex(int addAmount)
+    {
+        int resultIndex = (addAmount + (int)gameMode)%4;
+        if (resultIndex < 0)
+        {
+            resultIndex += 4;
+        }
+        if (PhotonNetwork.IsConnected == false)
+        {
+            SetGameModeRPC(resultIndex);
+            
+            if (FindObjectOfType<LobbyManager>())
+            {
+                FindObjectOfType<LobbyManager>().SetGameModeRPC();
+            }
+        }
+        else
+        {
+            if (PhotonNetwork.InRoom)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    // RoomData의 SetGameModeRPC는 Data 변경 동기화
+                    GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, resultIndex);
+                    // NetworkController의 SetGameModeRPC는 UI 동기화
+                    if (FindObjectOfType<LobbyManager>())
+                    {
+                        FindObjectOfType<LobbyManager>().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered);
+                    }
+                }
+            }
+        }
+    }
 }

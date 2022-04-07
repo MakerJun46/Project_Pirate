@@ -36,7 +36,7 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
         this.transform.localScale = new Vector3(.9f, .9f, 1);
         if (myPlayer != null)
         {
-            nameTxt.text = myPlayer.NickName;
+            nameTxt.text = "["+ myPlayer.ActorNumber+ "]" + myPlayer.NickName;
             //teamColor.color = GameManager.GetInstance().ColorByIndex(PhotonTeamExtensions.GetPhotonTeam(myPlayer).Code);
             if ((string)myPlayer.CustomProperties["Ready"] == "0")
                 readyToggle.isOn = false;

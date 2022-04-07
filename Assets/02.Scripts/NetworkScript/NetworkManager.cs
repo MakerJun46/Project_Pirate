@@ -21,7 +21,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         instance = this;
-        //Screen.SetResolution(960, 540, false);
+        Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
     }
@@ -69,8 +69,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public IEnumerator StartEndGameCoroutine(bool _start)
     {
         // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
-        if (RoomData.GetInstance() && RoomData.GetInstance().setSceneRandom && RoomData.GetInstance().PlayedGameCount != 0 && _start)
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 3));
+        if (RoomData.GetInstance() && RoomData.GetInstance().PlayedGameCount != 0 && _start)
+        {
+            if (RoomData.GetInstance().setSceneRandom)
+            {
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 4));
+            }
+            else if(FindObjectOfType<RoomGameManager>())
+            {
+                RoomData.GetInstance().AddGameModeIndex(1);
+            }
+        }
 
         while (_start)
         {
@@ -118,7 +127,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         LoadingPanel.SetActive(false);
 
-        print("LOADING END");
         if(_start)
             GameManager.GetInstance().StartGame();
         else
@@ -211,7 +219,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
-        RoomData.GetInstance().DestroyRoomData();
+        //RoomData.GetInstance().DestroyRoomData();
     }
 
     /// <summary>

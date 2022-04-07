@@ -6,6 +6,8 @@ using TMPro;
 
 public class PassTheBombGameManager : GameManager
 {
+    float scoreTime;
+
     public bool hasBomb;
     private PhotonView PV;
     public TextMeshProUGUI bomb_Second;
@@ -108,6 +110,14 @@ public class PassTheBombGameManager : GameManager
             if (currPlayTime >= maxPlayTime)
             {
                 FindObjectOfType<NetworkManager>().StartEndGame(false);
+            }
+
+            if(hasBomb==false)
+                scoreTime += Time.deltaTime;
+            if (scoreTime >= 1 && PhotonNetwork.IsMasterClient==false)
+            {
+                scoreTime -= 1;
+                RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);
             }
         }
     }

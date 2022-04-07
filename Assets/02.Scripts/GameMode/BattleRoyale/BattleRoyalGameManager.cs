@@ -29,6 +29,7 @@ public class BattleRoyalGameManager : GameManager
     public GameObject Landing_Button_Blur;
     public Text LandingEscape_Button_Text;
 
+    float levelUpTime;
     [SerializeField] GameObject LevelUpPanel;
     [SerializeField] Transform LevelUpBtnContainer;
 
@@ -74,15 +75,14 @@ public class BattleRoyalGameManager : GameManager
     {
         base.StartGame();
 
-        //TryUpgradeShip();
-        //CombatManager.instance.EquipCannon(0, 0);
-        //CombatManager.instance.EquipCannon(1, 0);
-        //CombatManager.instance.EquipSail(0, 1);
-        //CombatManager.instance.EquipSpecialCannon(0, 0);
+        LevelUp();
+    }
 
+    public void LevelUp()
+    {
         LevelUpPanel.SetActive(true);
 
-        if (PhotonNetwork.IsMasterClient==false)
+        if (PhotonNetwork.IsMasterClient == false)
         {
             List<Vector2> randomRoullet = new List<Vector2>();
             Player_Combat_Ship currShip = MyShip.GetComponent<Player_Combat_Ship>();
@@ -100,17 +100,20 @@ public class BattleRoyalGameManager : GameManager
                 randomRoullet.Add(new Vector2(1, 2));
                 randomRoullet.Add(new Vector2(1, 3));
             }
-            spotIndex = currShip.GetLastmySpecialCannonsIndex();
-            if (spotIndex >= 0)
-            {
-                randomRoullet.Add(new Vector2(2, 0));
-                randomRoullet.Add(new Vector2(2, 1));
-                randomRoullet.Add(new Vector2(2, 2));
-                randomRoullet.Add(new Vector2(2, 3));
-            }
             if (MyShip.upgradeIndex <= 1)
             {
                 randomRoullet.Add(new Vector2(3, 0));
+            }
+            if (MyShip.upgradeIndex >= 1)
+            {
+                spotIndex = currShip.GetLastmySpecialCannonsIndex();
+                if (spotIndex >= 0)
+                {
+                    randomRoullet.Add(new Vector2(2, 0));
+                    randomRoullet.Add(new Vector2(2, 1));
+                    randomRoullet.Add(new Vector2(2, 2));
+                    randomRoullet.Add(new Vector2(2, 3));
+                }
             }
 
 
@@ -178,36 +181,40 @@ public class BattleRoyalGameManager : GameManager
     {
         base.Update();
 
-        UI_Resources_Text_Update();
-        UI_Panel_Update();
+        //UI_Resources_Text_Update();
+        //UI_Panel_Update();
 
         if (GameStarted)
         {
+            bool shouldGameEnd = false;
+
             if (currPlayTime >= maxPlayTime)
             {
-                // 시간이 끝났을 때 게임 종료
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                shouldGameEnd = true;
             }
             else
             {
-                // 시간이 아직 끝나지 않았으면
-                List<Player_Controller_Ship> survivedShips = new List<Player_Controller_Ship>();
-                for(int i = 0; i < AllShip.Count; i++)
+                int count = 0;
+                for (int i = 0; i < AllShip.Count; i++)
                     if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
-                        survivedShips.Add(AllShip[i]);
+                        count++;
+                if (count <= 1) shouldGameEnd = true;
+            }
 
-                // 남아있는 플레이어가 1명 이하일 때 게임 종료
-                if (survivedShips.Count <= 1)
-                {
-                    FindObjectOfType<NetworkManager>().StartEndGame(false);
-                }
+            if (shouldGameEnd)
+            {
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
+            }
+
+
+            levelUpTime += Time.deltaTime;
+            if (levelUpTime >= 10)
+            {
+                levelUpTime -= 10;
+                LevelUp();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ToggleGameView();
-        }
 
         if (Input.GetKeyDown(KeyCode.M))
         {
@@ -245,6 +252,10 @@ public class BattleRoyalGameManager : GameManager
         }
         // 마지막에 플레이어가 살아있다면 승리
         IsWinner = survivedShips.Contains(MyShip) && MyShip!=null;
+
+        if(IsWinner)
+            RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 100);
+
         base.JudgeWinLose();
     }
 

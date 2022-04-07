@@ -25,6 +25,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public bool IsOpen = true;
 
     [SerializeField] Image GameModeImage;
+    [SerializeField] Toggle GameModeToggle;
     [SerializeField] Text GameModeText;
     [SerializeField] GameModeInfo[] GameModeInfos;
 
@@ -231,6 +232,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = (byte)5;
         roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
+        roomOptions.CleanupCacheOnLeave = false;
         SetRoomName(PhotonNetwork.LocalPlayer.NickName + "'s Room");
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
@@ -346,13 +348,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Destroy(player.gameObject);
 
         // 동기화되어 생성된 RoomData LocalPlayer에서만 삭제(다른 플레이어는 사용중일 수 있으므로)
-        RoomData.GetInstance().DestroyRoomData();
+        //if (RoomData.GetInstance())
+        //{
+        //RoomData.GetInstance().GetComponent<Photon.Pun.PhotonView>().TransferOwnership(PhotonNetwork.MasterClient);
+        // RoomData.GetInstance().DestroyRoomData();
+        //}
     }
 
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
         debugLog = "방장 바뀜 to :" + newMasterClient.NickName;
-
+        if (RoomData.GetInstance())
+        {
+            RoomData.GetInstance().GetComponent<Photon.Pun.PhotonView>().TransferOwnership(PhotonNetwork.MasterClient);
+        }
         if (PhotonNetwork.IsConnected)
         {
             if (PhotonNetwork.IsMasterClient)
@@ -482,26 +491,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void AddGameModeIndex(int addAmount)
     {
-        int resultIndex = (addAmount + (int)RoomData.GetInstance().gameMode);
-        resultIndex = Mathf.Clamp(resultIndex,0, GameModeInfos.Length-1);
-        if (PhotonNetwork.IsConnected == false)
-        {
-            RoomData.GetInstance().SetGameModeRPC(resultIndex);
-            SetGameModeRPC();
-        }
-        else
-        {
-            if (PhotonNetwork.InRoom)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    // RoomData의 SetGameModeRPC는 Data 변경 동기화
-                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, resultIndex);
-                    // NetworkController의 SetGameModeRPC는 UI 동기화
-                    GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered);
-                }
-            }
-        }
+        RoomData.GetInstance().AddGameModeIndex(addAmount);
+    }
+
+
+    public void ToggleRandomGameMode(bool val)
+    {
+        RoomData.GetInstance().ToggleRandomGameMode(val);
     }
 
     /// <summary>
@@ -510,9 +506,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetGameModeRPC()
     {
-        print("(int)RoomData.GetInstance().gameMode " + (int)RoomData.GetInstance().gameMode);
         GameModeImage.sprite = GameModeInfos[(int)RoomData.GetInstance().gameMode].sprite;
         GameModeText.text = RoomData.GetInstance().gameMode.ToString();
+
+        GameModeToggle.isOn = RoomData.GetInstance().setSceneRandom;
 
         // 만약 게임 모드에 따라 Room에 다른 이펙트를 추가하고싶다면 아래의 코드를 사용
         switch (RoomData.GetInstance().gameMode)
@@ -522,6 +519,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             case GameMode.PassTheBomb:
                 break;
             case GameMode.Survivor:
+                break;
+            case GameMode.HitTheTarget:
                 break;
         }
     }

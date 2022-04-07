@@ -71,8 +71,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         myName = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         characterIndex++;
         deadTime = 0;
-        GameManager.GetInstance().RefreshBestPlayer(this.gameObject);
-
+        GameManager.GetInstance().AddThisPlayerToPlayerList(this.gameObject);
     }
 
     [PunRPC]
@@ -192,7 +191,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
-            Debug.Log("On anchoragePoint");
+            //Debug.Log("On anchoragePoint");
             GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = true;
             Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
         }
