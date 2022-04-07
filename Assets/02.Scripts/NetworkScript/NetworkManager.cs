@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    public NetworkManager instance;
+    public static NetworkManager instance;
 
     [SerializeField]private GameObject DisconnetPanel;
     private PhotonView PV;
@@ -156,7 +156,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
-        FindObjectOfType<CustomizeManager>().EquipCostume(go.GetComponent<PhotonView>().ViewID);
+        //FindObjectOfType<CustomizeManager>().EquipCostume(go.GetComponent<PhotonView>().ViewID);
     }
 
     [SerializeField] float PlayerSpawnRadius = 100f;
@@ -213,7 +213,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (RoomData.GetInstance() == null)
             PhotonNetwork.Instantiate("RoomData", Vector3.zero, Quaternion.identity);
 
-        if(!PhotonNetwork.IsMasterClient) // masterClient는 Observer 이므로 제외하고 Spawn - 0324
+        //if(!PhotonNetwork.IsMasterClient) // masterClient는 Observer 이므로 제외하고 Spawn - 0324
             Spawn();
     }
     public override void OnLeftRoom()

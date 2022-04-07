@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -44,10 +45,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
     public ParticleSystem WinnerEffectPrefab;
     public ParticleSystem LoseEffectPrefab;
+
+    public TextMeshProUGUI Count_Text;
     private void Awake()
     {
         RB = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
+
+        Count_Text = transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
@@ -183,6 +188,16 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             int resourceCode = (int)other.GetComponent<Resource>().type;
 
             Item_Manager.instance.AddItem(Item_Manager.instance.Resource_item_list[resourceCode]);
+
+            Destroy(other.gameObject);
+        }
+        else if(other.gameObject.CompareTag("Treasure"))
+        {
+            Treasure_GameManager.instance.Player_TreasureCount_Value++;
+
+            Treasure_GameManager.instance.Update_TreasureCount();
+
+            Debug.Log("get Treasure, Count : " + Treasure_GameManager.instance.Player_TreasureCount_Value);
 
             Destroy(other.gameObject);
         }
