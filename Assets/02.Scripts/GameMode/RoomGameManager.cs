@@ -14,15 +14,19 @@ public class RoomGameManager : GameManager
         base.Start();
         
         RefreshPlayeScore(true);
-        
+
+        Invoke("ActiveResultPanel", 1f);
+    }
+    protected override void Update()
+    {
+        base.Update();
+
         RoomData currRoomData = RoomData.GetInstance();
         if (currRoomData)
         {
             GameModeTitleTxt.text = "GameMode : " + currRoomData.gameMode.ToString();
             GameModeInfoTxt.text = currRoomData.GetGameModeInfo(RoomData.GetInstance().gameMode);
         }
-
-        Invoke("ActiveResultPanel", 1f);
     }
     public override void StartGame()
     {

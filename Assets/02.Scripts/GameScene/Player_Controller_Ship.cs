@@ -193,11 +193,10 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         }
         else if(other.gameObject.CompareTag("Treasure"))
         {
-            Treasure_GameManager.instance.Player_TreasureCount_Value++;
-
-            Treasure_GameManager.instance.Update_TreasureCount();
-
-            Debug.Log("get Treasure, Count : " + Treasure_GameManager.instance.Player_TreasureCount_Value);
+            if (GetComponent<PhotonView>().IsMine)
+            {
+                Treasure_GameManager.instance.Update_TreasureCount(GetComponent<PhotonView>().ViewID);
+            }
 
             Destroy(other.gameObject);
         }

@@ -20,7 +20,6 @@ public class HitTheTargetGameManager : GameManager
         {
             Invoke("WaveStart", 3f);
         }
-
     }
 
     public override void StartGame()
@@ -124,8 +123,6 @@ public class HitTheTargetGameManager : GameManager
             Vector2 spawnPoint = Random.insideUnitCircle * targetSpawnDistance;
             GameObject tmpTarget = PhotonNetwork.Instantiate("ScoreTarget_" + Random.Range(0, 3),new Vector3(spawnPoint.x,0, spawnPoint.y) , Quaternion.identity);
             yield return new WaitForSeconds(0.1f);
-
-            //yield return new WaitUntil(() => FindObjectsOfType<SurvivorMonster>().Length <= 10);
         }
         yield return new WaitForSeconds(3f);
 

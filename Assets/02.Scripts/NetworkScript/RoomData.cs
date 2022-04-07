@@ -9,7 +9,8 @@ public enum GameMode
     BattleRoyale,
     PassTheBomb,
     Survivor,
-    HitTheTarget
+    HitTheTarget,
+    Treasure
 }
 
 public class RoomData : MonoBehaviourPunCallbacks
@@ -31,7 +32,7 @@ public class RoomData : MonoBehaviourPunCallbacks
     public List<int> FinalScores = new List<int>(10000);
     public List<int> currGameScores = new List<int>(10000);
 
-    public GameMode gameMode = 0; //0:배틀로얄 1:폭탄돌리기 2: 몬스터피하기 3: target 맞추기
+    public GameMode gameMode = 0;
 
     public int PlayedGameCount { get; private set; }
     private int MaxPlayGameCount = 3;
@@ -73,6 +74,9 @@ public class RoomData : MonoBehaviourPunCallbacks
                 break;
             case GameMode.HitTheTarget:
                 info = "타겟 맞추기는 가장 많은 과녁을 맞추는 플레이어가 승리하는 게임입니다.";
+                break;
+            case GameMode.Treasure:
+                info = "보물찾기는 가장 많은 보물을 얻은 플레이어가 승리하는 게임입니다.";
                 break;
         }
         return info;
@@ -158,10 +162,10 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     public void AddGameModeIndex(int addAmount)
     {
-        int resultIndex = (addAmount + (int)gameMode)%4;
+        int resultIndex = (addAmount + (int)gameMode)%5;
         if (resultIndex < 0)
         {
-            resultIndex += 4;
+            resultIndex += 5;
         }
         if (PhotonNetwork.IsConnected == false)
         {
