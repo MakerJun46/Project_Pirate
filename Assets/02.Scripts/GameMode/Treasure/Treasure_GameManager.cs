@@ -98,6 +98,12 @@ public class Treasure_GameManager : GameManager
     {
         PhotonView.Find(ViewID).GetComponent<Player_Controller_Ship>().Count_Text.text = value.ToString();
     }
+    public override void JudgeWinLose()
+    {
+        int rank = RoomData.GetInstance().GetPlayerCurrentRank(PhotonNetwork.LocalPlayer.ActorNumber);
+        IsWinner = rank <= 0 ? true : false;
+        base.JudgeWinLose();
+    }
 
     IEnumerator TreasureSpawner()
     {

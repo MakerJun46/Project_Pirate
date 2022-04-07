@@ -20,7 +20,7 @@ public class RoomGameManager : GameManager
     protected override void Update()
     {
         base.Update();
-
+        
         RoomData currRoomData = RoomData.GetInstance();
         if (currRoomData)
         {
@@ -56,60 +56,63 @@ public class RoomGameManager : GameManager
 
         if (currRoomData.PlayGameCountOvered() || ForceQuit)
         {
-            List<int> sortedScore = new List<int>();
-            for (int i = 0; i < currRoomData.FinalScores.Count; i++)
-            {
-                sortedScore.Add(currRoomData.FinalScores[i]);
-            }
-            sortedScore.Sort(Compare);
+            WinPanel.SetActive(false);
+            LosePanel.SetActive(false);
+            ObserverModePanel.SetActive(false);
 
-            int rank = 1000;
-
-            for (int i = 0; i < sortedScore.Count; i++)
+            if (PhotonNetwork.IsMasterClient)
             {
-                if (sortedScore[i] == currRoomData.FinalScores[PhotonNetwork.LocalPlayer.ActorNumber])
+                // 자신의 등수가 아닌 전체 등수를 알려면 따로 계산이 필요함
+                ObserverModePanel.SetActive(true);
+
+                List<int> sortedScore = new List<int>();
+                for (int i = 0; i < currRoomData.FinalScores.Count; i++)
                 {
-                    rank = i;
-                    break;
+                    sortedScore.Add(currRoomData.FinalScores[i]);
                 }
-            }
+                sortedScore.Sort(Compare);
 
-            List<int> bestPlayerNumbers = new List<int>();
-            for (int i = 0; i < sortedScore.Count; i++)
-            {
-                for (int j = 0; j < currRoomData.FinalScores.Count; j++)
+                List<int> bestPlayerNumbers = new List<int>();
+                for (int i = 0; i < sortedScore.Count; i++)
                 {
-                    if (sortedScore[i] == currRoomData.FinalScores[j] && bestPlayerNumbers.Contains(j) == false)
+                    for (int j = 0; j < currRoomData.FinalScores.Count; j++)
                     {
-                        bestPlayerNumbers.Add(j);
-                        break;
+                        if (sortedScore[i] == currRoomData.FinalScores[j] && bestPlayerNumbers.Contains(j) == false)
+                        {
+                            bestPlayerNumbers.Add(j);
+                            break;
+                        }
+                    }
+                }
+
+                ObserverModePanel.GetComponentInChildren<Text>().text = "Game END\n";
+                for (int i = 0; i < bestPlayerNumbers.Count; i++)
+                {
+                    int tmpFounded = -1;
+                    for (int j = 0; j < PhotonNetwork.PlayerList.Length; j++)
+                    {
+                        if (PhotonNetwork.PlayerList[j].IsMasterClient)
+                            continue;
+                        if (bestPlayerNumbers[i] == PhotonNetwork.PlayerList[j].ActorNumber)
+                        {
+                            tmpFounded = j;
+                            break;
+                        }
+                    }
+                    if (tmpFounded >= 0)
+                    {
+                        ObserverModePanel.GetComponentInChildren<Text>().text += (i + 1) + "th : " + PhotonNetwork.PlayerList[tmpFounded].NickName + "\n";
                     }
                 }
             }
-
-            ObserverModePanel.SetActive(PhotonNetwork.IsMasterClient);
-            ObserverModePanel.GetComponentInChildren<Text>().text = "Game END\n";
-            for (int i = 0; i < bestPlayerNumbers.Count; i++)
+            else
             {
-                int tmpFounded = -1;
-                for (int j = 0; j < PhotonNetwork.PlayerList.Length; j++)
-                {
-                    if (PhotonNetwork.PlayerList[j].IsMasterClient)
-                        continue;
-                    if (bestPlayerNumbers[i] == PhotonNetwork.PlayerList[j].ActorNumber)
-                    {
-                        tmpFounded = j;
-                        break;
-                    }
-                }
-                if (tmpFounded >= 0)
-                {
-                    ObserverModePanel.GetComponentInChildren<Text>().text += (i + 1) + "th : " + PhotonNetwork.PlayerList[tmpFounded].NickName + "\n";
-                }
-            }
+                // 자신의 등수 알아내기
+                int rank = currRoomData.GetPlayerFinalRank(PhotonNetwork.LocalPlayer.ActorNumber);
 
-            WinPanel.SetActive(PhotonNetwork.IsMasterClient == false && rank <= 0);
-            LosePanel.SetActive(PhotonNetwork.IsMasterClient == false && rank > 0);
+                WinPanel.SetActive(rank <= 0);
+                LosePanel.SetActive(rank > 0);
+            }
         }
     }
 

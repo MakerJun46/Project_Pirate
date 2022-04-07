@@ -109,6 +109,8 @@ public class HitTheTargetGameManager : GameManager
 
     public override void JudgeWinLose()
     {
+        int rank= RoomData.GetInstance().GetPlayerCurrentRank(PhotonNetwork.LocalPlayer.ActorNumber);
+        IsWinner = rank <= 0 ? true : false;
         base.JudgeWinLose();
     }
 

@@ -137,6 +137,57 @@ public class RoomData : MonoBehaviourPunCallbacks
         currGameScores[_actorID] = _score;
         GameManager.GetInstance().RefreshPlayeScore(false);
     }
+
+    public int GetPlayerFinalRank(int _actorID)
+    {
+        List<int> sortedScore = new List<int>();
+        for (int i = 0; i < FinalScores.Count; i++)
+        {
+            sortedScore.Add(FinalScores[i]);
+        }
+        sortedScore.Sort(Compare);
+
+        int rank = 1000;
+
+        for (int i = 0; i < sortedScore.Count; i++)
+        {
+            if (sortedScore[i] == FinalScores[_actorID])
+            {
+                rank = i;
+                break;
+            }
+        }
+        return rank;
+    }
+    public int GetPlayerCurrentRank(int _actorID)
+    {
+        List<int> sortedScore = new List<int>();
+        for (int i = 0; i < currGameScores.Count; i++)
+        {
+            sortedScore.Add(currGameScores[i]);
+        }
+        sortedScore.Sort(Compare);
+
+        int rank = 1000;
+
+        for (int i = 0; i < sortedScore.Count; i++)
+        {
+            if (sortedScore[i] == currGameScores[_actorID])
+            {
+                rank = i;
+                break;
+            }
+        }
+        return rank;
+    }
+    private int Compare(int a, int b)
+    {
+        if (a > b)
+            return -1;
+        else
+            return 1;
+    }
+
     [PunRPC]
     public void SetRandomGameModeRPC(bool _val)
     {
