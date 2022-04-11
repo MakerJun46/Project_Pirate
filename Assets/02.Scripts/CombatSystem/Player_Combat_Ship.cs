@@ -163,13 +163,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
     public void Attacked(object[] param)
     {
         PassTheBombGameManager passTheBombGameManager = FindObjectOfType<PassTheBombGameManager>();
-        if (passTheBombGameManager) // pass the bomb 게임인 경우 부딪히면 폭탄 전이
+        // pass the bomb 게임인 경우 부딪히면 폭탄 전이
+        if (passTheBombGameManager && passTheBombGameManager.hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
         {
-            if (passTheBombGameManager.hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
-            {
-                if((int)param[2] != photonView.ViewID)
-                    passTheBombGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
-            }
+            if ((int)param[2] != photonView.ViewID)
+                passTheBombGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
         }
 
         bool canAttack = false;
@@ -180,12 +178,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 AttackIDs.Add(new AttackInfo((int)param[2],1f));
                 canAttack = true;
             }
-
         }
         else
             canAttack = true;
-
-
 
         if (canAttack)
         {
@@ -205,18 +200,18 @@ public class Player_Combat_Ship : MonoBehaviourPun
             {
                 health -= (float)param[0];
                 GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
+
+
+                BattleRoyalGameManager battleRoyalGameManager = FindObjectOfType<BattleRoyalGameManager>();
+                if (battleRoyalGameManager && param.Length > 2)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                        RoomData.GetInstance().SetCurrScore(PhotonView.Find((int)param[2]).OwnerActorNr, (float)param[0]);
+                }
+
+
                 if (health <= 0)
                 {
-
-                    // ItemManager가 없는 경우 에러떠서 일시적으로 주석처리
-                    /*
-                    GameObject go = PhotonNetwork.Instantiate("TreasureChest", transform.position, Quaternion.identity);
-
-                    for (int i = 0; i < Item_Manager.instance.Player_items.Count; i++)
-                    {
-                        go.GetComponent<TreasureChest>().items.Add(Item_Manager.instance.Player_items[i]);
-                    }
-                    */
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
@@ -451,6 +446,13 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
                 });
             }
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("ScoreTarget") && photonView.IsMine)
+        {
+            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 5, Vector3.zero, GetComponent<PhotonView>().ViewID });
         }
     }
 }

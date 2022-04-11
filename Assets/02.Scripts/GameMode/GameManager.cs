@@ -33,11 +33,10 @@ public class GameManager : MonoBehaviour, IPunObservable
     private float steeringRot;
     [SerializeField] private Image SteeringImg;
 
-
     public GameObject BestPlayerContent;
     private List<GameObject> BestPlayerLists = new List<GameObject>();
     public int BestPlayerCount => BestPlayerLists.Count;
-    Text[] bestPlayerTexts;
+    List<PlayerScoreList> bestPlayerListBox = new List<PlayerScoreList>();
 
 
     public List<Player_Controller_Ship> AllShip;
@@ -51,6 +50,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     protected bool IsWinner;
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
+    [SerializeField] protected GameObject ObserverModePanel;
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
@@ -61,7 +61,13 @@ public class GameManager : MonoBehaviour, IPunObservable
         IsWinner = false;
         currPlayTime = 0;
 
-        bestPlayerTexts = BestPlayerContent.GetComponentsInChildren<Text>();
+        bestPlayerListBox.Clear();
+        for (int i=0;i< BestPlayerContent.transform.childCount; i++)
+        {
+            bestPlayerListBox.Add(BestPlayerContent.transform.GetChild(i).GetComponent<PlayerScoreList>());
+        }
+
+        RefreshPlayeScore(false);
     }
 
     public virtual void SetObserverCamera()
@@ -73,8 +79,11 @@ public class GameManager : MonoBehaviour, IPunObservable
 
             for (int i = 0; i < AllShip.Count; i++)
             {
-                ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
-                ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
+                if (AllShip[i] != null)
+                {
+                    ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
+                    ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
+                }
             }
         }
     }
@@ -97,14 +106,12 @@ public class GameManager : MonoBehaviour, IPunObservable
     }
     public virtual void EndGame()
     {
-        if (IsWinner)
+        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetScoreRPC", RpcTarget.AllBuffered,
-                PhotonNetwork.LocalPlayer.ActorNumber, RoomData.GetInstance().Scores[PhotonNetwork.LocalPlayer.ActorNumber] + 1);
+            RoomData.GetInstance().SetFinalScore();
+            RoomData.GetInstance().AddPlayedGameCount();
         }
 
-        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
-            RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddPlayedGameCount", RpcTarget.AllBuffered);
         FindObjectOfType<NetworkManager>().GoToLobby();
     }
 
@@ -124,11 +131,11 @@ public class GameManager : MonoBehaviour, IPunObservable
         GameStarted = false;
 
 
-        //if (MyShip)
-        //{
-        //    MyShip.ActiveWinLoseEffect(IsWinner);
-        //    Change_VC_Lookat(MyShip.GetComponent<PhotonView>().ViewID);
-        //}
+        if (MyShip)
+        {
+            MyShip.ActiveWinLoseEffect(IsWinner);
+            Change_VC_Lookat(MyShip.GetComponent<PhotonView>().ViewID);
+        }
         //else
         //{
         //    if (BestPlayerLists.Count > 0)
@@ -172,6 +179,10 @@ public class GameManager : MonoBehaviour, IPunObservable
                 SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
             }
         }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ToggleGameView();
+        }
     }
     #endregion
 
@@ -207,79 +218,49 @@ public class GameManager : MonoBehaviour, IPunObservable
     #endregion
 
     #region Best Player
-    public virtual void RefreshBestPlayer(GameObject viewer)
+    public void ActiveScoreEffect(int _actorID, int _score)
+    {
+        for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if(PhotonNetwork.PlayerList[i].ActorNumber == _actorID){
+                bestPlayerListBox[i - 1].AddScoreEffect(_score);
+            }
+        }
+    }
+    public virtual void RefreshPlayeScore(bool isFinal)
+    {
+        int maxScore = -1;
+        for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            int score;
+            if (isFinal)
+                score = RoomData.GetInstance().FinalScores[PhotonNetwork.PlayerList[i].ActorNumber];
+            else
+                score = RoomData.GetInstance().currGameScores[PhotonNetwork.PlayerList[i].ActorNumber];
+            bestPlayerListBox[i - 1].SetScore(score);
+            //bestPlayerListBox[currIndex].GetComponentInChildren<Text>().color = (tmpA.myIndex < 0 || !tmpA.gameObject.activeInHierarchy) ? Color.red : Color.black;
+            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[i - 1], Color.black, (i) + " : " + PhotonNetwork.PlayerList[i].NickName + "||  Score :" + score);
+
+            if (maxScore < score)
+            {
+                maxScore = score;
+            }
+        }
+        for (int i = 0; i < bestPlayerListBox.Count; i++)
+        {
+            bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore);
+
+            if (PhotonNetwork.PlayerList.Length-1 <= i)
+            {
+                bestPlayerListBox[i].SetInfoUI(Color.black, Color.white, "XXX");
+            }
+        }
+    }
+
+    public virtual void AddThisPlayerToPlayerList(GameObject viewer)
     {
         if (viewer && !BestPlayerLists.Contains(viewer))
             BestPlayerLists.Add(viewer);
-
-        int forCount = BestPlayerLists.Count;
-        for (int i = forCount - 1; i >= 0; i--)
-        {
-            if (BestPlayerLists[i] == null)
-                BestPlayerLists.RemoveAt(i);
-        }
-
-        BestPlayerLists.Sort(delegate (GameObject _A, GameObject _B)
-        {
-            Player_Controller_Ship A = _A.GetComponent<Player_Controller_Ship>();
-            Player_Controller_Ship B = _B.GetComponent<Player_Controller_Ship>();
-
-            int aScore = RoomData.GetInstance().Scores[A.GetComponent<PhotonView>().Owner.ActorNumber];
-            int bScore = RoomData.GetInstance().Scores[B.GetComponent<PhotonView>().Owner.ActorNumber];
-            if (aScore > bScore)
-            {
-                return -1;
-            }
-            else if (aScore < bScore)
-            {
-                return 1;
-            }
-            else
-            {
-                if (A.myIndex > B.myIndex)
-                {
-                    return -1;
-                }
-                else if (A.myIndex < B.myIndex)
-                {
-                    return 1;
-                }
-                else
-                {
-                    if (A.deadTime > B.deadTime)
-                        return -1;
-                    else
-                        return 1;
-                }
-            }
-        });
-        SetBestPlayerListTexts(bestPlayerTexts);
-    }
-
-    public virtual void SetBestPlayerListTexts(Text[] texts)
-    {
-        int j = 0;
-        for (int i = 0; i < texts.Length; i++)
-        {
-            if (BestPlayerLists.Count > i)
-            {
-                if (BestPlayerLists[i] != null)
-                {
-                    Player_Controller_Ship tmpA = BestPlayerLists[i].GetComponent<Player_Controller_Ship>();
-                    Player_Controller_Ship tmpB = BestPlayerLists[j].GetComponent<Player_Controller_Ship>();
-
-                    texts[i].color = (tmpA.myIndex < 0 || !tmpB.gameObject.activeInHierarchy) ? Color.red : Color.black;
-
-                    if (RoomData.GetInstance().Scores != null)
-                        texts[i].text = (i + 1) + " : " + tmpA.myName + "||  Score :" + RoomData.GetInstance().Scores[tmpA.GetComponent<PhotonView>().Owner.ActorNumber];
-                }
-            }
-            else
-            {
-                texts[i].text = "null";
-            }
-            j++;
-        }
     }
     #endregion
 

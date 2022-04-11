@@ -18,18 +18,14 @@ public struct EnemyInfo
 
 public class SurvivorGameManager : GameManager
 {
-
-    public int DeathCount;
-    public Text DeathText;
-
     int waveIndex = 0;
 
+    float scoreTime;
 
     [SerializeField] WaveData waveData;
     protected override void Start()
     {
         base.Start();
-        DeathCount = 0;
 
         if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected==false)
         {
@@ -101,9 +97,12 @@ public class SurvivorGameManager : GameManager
         
         if (GameStarted)
         {
+
+            bool shouldGameEnd = false;
+
             if (currPlayTime >= maxPlayTime)
             {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                shouldGameEnd = true;
             }
             else
             {
@@ -111,10 +110,20 @@ public class SurvivorGameManager : GameManager
                 for (int i = 0; i < AllShip.Count; i++)
                     if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
                         count++;
-                if (count <= 1)
-                {
-                    FindObjectOfType<NetworkManager>().StartEndGame(false);
-                }
+                if (count < 1) shouldGameEnd = true;
+            }
+
+            if (shouldGameEnd)
+            {
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
+            }
+
+
+            scoreTime += Time.deltaTime;
+            if (scoreTime>=1 && PhotonNetwork.IsMasterClient == false)
+            {
+                scoreTime -= 1;
+                RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);
             }
         }
     }

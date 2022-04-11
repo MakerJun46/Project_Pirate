@@ -76,8 +76,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         myName = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         characterIndex++;
         deadTime = 0;
-        GameManager.GetInstance().RefreshBestPlayer(this.gameObject);
-
+        GameManager.GetInstance().AddThisPlayerToPlayerList(this.gameObject);
     }
 
     [PunRPC]
@@ -194,11 +193,10 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         }
         else if(other.gameObject.CompareTag("Treasure") && other.GetComponent<Treasure>().isPickable)
         {
-            Treasure_GameManager.instance.Player_TreasureCount_Value++;
-
-            Treasure_GameManager.instance.Update_TreasureCount();
-
-            Debug.Log("get Treasure, Count : " + Treasure_GameManager.instance.Player_TreasureCount_Value);
+            if (GetComponent<PhotonView>().IsMine)
+            {
+                Treasure_GameManager.instance.Update_TreasureCount(GetComponent<PhotonView>().ViewID);
+            }
 
             Destroy(other.gameObject);
         }
@@ -207,7 +205,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.CompareTag("anchoragePoint"))
         {
-            Debug.Log("On anchoragePoint");
+            //Debug.Log("On anchoragePoint");
             GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = true;
             Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
         }

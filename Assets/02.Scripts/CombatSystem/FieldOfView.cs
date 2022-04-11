@@ -59,7 +59,7 @@ public class FieldOfView : MonoBehaviourPun
             DrawFieldOfView(coolTimeMesh,viewRadius * myCannon.currChargeAmount/ myCannon.maxChargetAmount);
 
             float minDistance = 1000;
-            int index = -1;
+            int closestIndex = -1;
             for (int i = 0; i < visibleTargets.Count; i++)
             {
                 if (visibleTargets[i] == null)
@@ -68,40 +68,42 @@ public class FieldOfView : MonoBehaviourPun
                 if (tmpDistance <= minDistance)
                 {
                     minDistance = tmpDistance;
-                    index = i;
+                    closestIndex = i;
                 }
             }
-            print("index : " + index);
-            if (0 <= index && index < visibleTargets.Count)
+
+            if (0 <= closestIndex && closestIndex < visibleTargets.Count)
             {
-                currTarget = visibleTargets[index];
+                currTarget = visibleTargets[closestIndex];
             }
             else
             {
                 currTarget = null;
             }
 
+            MeshRenderer viewMeshRenderer = viewMeshFilter.GetComponent<MeshRenderer>();
+            MeshRenderer coolTimeMeshRenderer = coolTimeMeshFilter.GetComponent<MeshRenderer>();
             if (currTarget == null)
             {
                 myCannon.currChargeAmount -= Time.deltaTime;
-                viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
-                coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+                viewMeshRenderer.enabled = false;
+                coolTimeMeshRenderer.enabled = false;
             }
             else
             {
                 if (myCannon.currCoolTime<=0)
                 {
-                    viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[0];
-                    coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                    viewMeshRenderer.material = fov_mats[0];
+                    coolTimeMeshRenderer.enabled = true;
                     myCannon.currChargeAmount += Time.deltaTime * 3f;
                 }
                 else
                 {
-                    viewMeshFilter.GetComponent<MeshRenderer>().material = fov_mats[1];
-                    coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+                    viewMeshRenderer.material = fov_mats[1];
+                    coolTimeMeshRenderer.enabled = false;
                 }
 
-                viewMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                viewMeshRenderer.enabled = true;
             }
             myCannon.currChargeAmount = Mathf.Clamp(myCannon.currChargeAmount, 0, myCannon.maxChargetAmount);
         }
@@ -113,7 +115,6 @@ public class FieldOfView : MonoBehaviourPun
             yield return new WaitForSeconds(delay);
             FindVisibleTargets();
         }
-
     }
 
     void FindVisibleTargets()
