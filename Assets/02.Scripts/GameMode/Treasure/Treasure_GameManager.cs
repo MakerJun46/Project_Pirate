@@ -34,7 +34,7 @@ public class Treasure_GameManager : GameManager
     void Update()
     {
         base.Update();
-        if(!SpawnStart && GameManager.GetInstance().MyShip != null)
+        if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
         {
             initialize();
         }
@@ -87,7 +87,9 @@ public class Treasure_GameManager : GameManager
             }
 
             Debug.Log("Spawn");
-            PhotonNetwork.Instantiate("Treasure", NetworkManager.instance.CalculateSpawnPos(), Quaternion.identity);
+            GameObject go = PhotonNetwork.Instantiate("Treasure", TreasureSpawner_Object.transform.position + new Vector3(0, 2, 0), Quaternion.identity);
+            go.GetComponent<Treasure>().startMove(NetworkManager.instance.CalculateSpawnPos());
+
             TreasureSpawnCount++;
 
             yield return new WaitForSeconds(treasureSpawn_Time); 

@@ -192,7 +192,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
             Destroy(other.gameObject);
         }
-        else if(other.gameObject.CompareTag("Treasure"))
+        else if(other.gameObject.CompareTag("Treasure") && other.GetComponent<Treasure>().isPickable)
         {
             Treasure_GameManager.instance.Player_TreasureCount_Value++;
 
