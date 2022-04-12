@@ -73,8 +73,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
         myShipObjects.SetActive(true);
 
         // upgrade
-        maxHealth += (int)param * 50f;
-        health += (int)param * 50f;
+        maxHealth += (int)param * 25f;
+        health += (int)param * 25f;
 
         AutoCannonSpots.Clear();
         SpecialCannonSpots.Clear();
@@ -184,6 +184,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
         if (canAttack)
         {
+            FloatingTextController.CreateFloatingText("- " + (float)param[0], this.transform, Color.red);
+
             if (param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<CannonBall>())
             {
                 ParticleSystem tmpVFX = Instantiate(AttackedPS_Flare[Random.Range(0, AttackedPS_Flare.Count)], this.transform.position, Quaternion.identity);
@@ -401,7 +403,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localScale = Vector3.one;
             tmpCannon.transform.localRotation = Quaternion.identity;
             mySpecialCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
-            tmpCannon.GetComponent<SpecialCannon>().Initialize(this, _spotIndex, (int)RoomData.GetInstance().gameMode);
+            tmpCannon.GetComponent<SpecialCannon>().Initialize(this, _spotIndex, RoomData.GetInstance().gameMode);
         }
         ChangeSpecialCannonType(_spotIndex, _cannonIndex, true);
 

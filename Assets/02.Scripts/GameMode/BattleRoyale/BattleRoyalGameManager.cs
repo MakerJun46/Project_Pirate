@@ -29,11 +29,6 @@ public class BattleRoyalGameManager : GameManager
     public GameObject Landing_Button_Blur;
     public Text LandingEscape_Button_Text;
 
-    float levelUpTime;
-    [SerializeField] GameObject LevelUpPanel;
-    [SerializeField] Transform LevelUpBtnContainer;
-
-
     [Header("[MiniMap]")]
     [SerializeField] GameObject miniMap;
     [SerializeField] protected GameObject WorldMap;
@@ -75,94 +70,9 @@ public class BattleRoyalGameManager : GameManager
     {
         base.StartGame();
 
-        LevelUp();
+        CombatManager.instance.SetLevelUpCount(3);
     }
 
-    public void LevelUp()
-    {
-        LevelUpPanel.SetActive(true);
-
-        if (PhotonNetwork.IsMasterClient == false)
-        {
-            List<Vector2> randomRoullet = new List<Vector2>();
-            Player_Combat_Ship currShip = MyShip.GetComponent<Player_Combat_Ship>();
-            int spotIndex = currShip.GetLastSailIndex();
-            if (spotIndex >= 0)
-            {
-                randomRoullet.Add(new Vector2(0, 0));
-                randomRoullet.Add(new Vector2(0, 1));
-            }
-            spotIndex = currShip.GetLastAutoCannonIndex();
-            if (spotIndex >= 0)
-            {
-                randomRoullet.Add(new Vector2(1, 0));
-                randomRoullet.Add(new Vector2(1, 1));
-                randomRoullet.Add(new Vector2(1, 2));
-                randomRoullet.Add(new Vector2(1, 3));
-            }
-            if (MyShip.upgradeIndex <= 1)
-            {
-                randomRoullet.Add(new Vector2(3, 0));
-            }
-            if (MyShip.upgradeIndex >= 1)
-            {
-                spotIndex = currShip.GetLastmySpecialCannonsIndex();
-                if (spotIndex >= 0)
-                {
-                    randomRoullet.Add(new Vector2(2, 0));
-                    randomRoullet.Add(new Vector2(2, 1));
-                    randomRoullet.Add(new Vector2(2, 2));
-                    randomRoullet.Add(new Vector2(2, 3));
-                }
-            }
-
-
-            for (int i = 0; i < LevelUpBtnContainer.childCount; i++)
-            {
-                GameObject levelUpBtn = LevelUpBtnContainer.GetChild(i).gameObject;
-
-
-                if (randomRoullet.Count > 0)
-                {
-                    int selectIndex = Random.Range(0, randomRoullet.Count);
-                    Vector2 selectedRoullet = randomRoullet[selectIndex];
-                    randomRoullet.RemoveAt(selectIndex);
-
-                    levelUpBtn.SetActive(true);
-                    levelUpBtn.GetComponentInChildren<Text>().text = "";
-                    levelUpBtn.GetComponent<Button>().onClick.RemoveAllListeners();
-
-
-                    int levelUpIndex = (int)selectedRoullet.y;
-
-                    switch ((int)selectedRoullet.x)
-                    {
-                        case 0:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Get Sail " + levelUpIndex;
-                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => CombatManager.instance.EquipSail(currShip.GetLastSailIndex(), levelUpIndex));
-                            break;
-                        case 1:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Get Cannon " + levelUpIndex;
-                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => CombatManager.instance.EquipCannon(currShip.GetLastAutoCannonIndex(), levelUpIndex));
-                            break;
-                        case 2:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Get SpecialCannon " + levelUpIndex;
-                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => CombatManager.instance.EquipSpecialCannon(currShip.GetLastmySpecialCannonsIndex(), levelUpIndex));
-                            break;
-                        case 3:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Upgrade";
-                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => TryUpgradeShip());
-                            break;
-                    }
-                    levelUpBtn.GetComponent<Button>().onClick.AddListener(() => LevelUpPanel.SetActive(false));
-                }
-                else
-                {
-                    levelUpBtn.SetActive(false);
-                }
-            }
-        }
-    }
 
     public override void SetMyShip(Player_Controller_Ship _myShip,bool _SetMyShip)
     {
@@ -205,16 +115,7 @@ public class BattleRoyalGameManager : GameManager
             {
                 FindObjectOfType<NetworkManager>().StartEndGame(false);
             }
-
-
-            levelUpTime += Time.deltaTime;
-            if (levelUpTime >= 10)
-            {
-                levelUpTime -= 10;
-                LevelUp();
-            }
         }
-
 
         if (Input.GetKeyDown(KeyCode.M))
         {

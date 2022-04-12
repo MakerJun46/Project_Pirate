@@ -14,6 +14,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [System.Serializable]
     public struct GameModeInfo
     {
+        public string title;
         public Sprite sprite;
     }
 
@@ -25,7 +26,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public bool IsOpen = true;
 
     [SerializeField] Image GameModeImage;
-    [SerializeField] Toggle GameModeToggle;
     [SerializeField] Text GameModeText;
     [SerializeField] GameModeInfo[] GameModeInfos;
 
@@ -506,13 +506,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetGameModeRPC()
     {
-        GameModeImage.sprite = GameModeInfos[(int)RoomData.GetInstance().gameMode].sprite;
-        GameModeText.text = RoomData.GetInstance().gameMode.ToString();
-
-        GameModeToggle.isOn = RoomData.GetInstance().setSceneRandom;
+        GameModeImage.sprite = GameModeInfos[RoomData.GetInstance().gameMode].sprite;
+        GameModeText.text = GameModeInfos[RoomData.GetInstance().gameMode].title;
 
         // 만약 게임 모드에 따라 Room에 다른 이펙트를 추가하고싶다면 아래의 코드를 사용
-        switch (RoomData.GetInstance().gameMode)
+        switch ((GameMode)RoomData.GetInstance().gameMode)
         {
             case GameMode.BattleRoyale:
                 break;
@@ -521,6 +519,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             case GameMode.Survivor:
                 break;
             case GameMode.HitTheTarget:
+                break;
+            default:
                 break;
         }
     }

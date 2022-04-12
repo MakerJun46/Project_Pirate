@@ -24,8 +24,8 @@ public class RoomGameManager : GameManager
         RoomData currRoomData = RoomData.GetInstance();
         if (currRoomData)
         {
-            GameModeTitleTxt.text = "GameMode : " + currRoomData.gameMode.ToString();
-            GameModeInfoTxt.text = currRoomData.GetGameModeInfo(RoomData.GetInstance().gameMode);
+            GameModeTitleTxt.text = "GameMode : " + currRoomData.GetCurrSceneString();
+            GameModeInfoTxt.text = currRoomData.GetGameModeInfo();
         }
     }
     public override void StartGame()
@@ -33,10 +33,10 @@ public class RoomGameManager : GameManager
         base.StartGame();
 
         RoomData currRoomData = RoomData.GetInstance();
-        Scene tmpScene = SceneManager.GetSceneByName(currRoomData.GetCurrSceneString());
+        Scene tmpScene = SceneManager.GetSceneByName("GameScene_" + currRoomData.GetCurrSceneString());
         if (tmpScene != null)
         {
-            SceneManager.LoadScene(currRoomData.GetCurrSceneString());
+            SceneManager.LoadScene("GameScene_" + currRoomData.GetCurrSceneString());
         }
         else
             SceneManager.LoadScene(0);
