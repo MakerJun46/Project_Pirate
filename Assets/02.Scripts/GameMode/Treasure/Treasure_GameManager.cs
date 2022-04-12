@@ -15,82 +15,47 @@ public class Treasure_GameManager : GameManager
     PhotonView PV;
 
     private float treasureSpawn_Time;
+    private bool SpawnStart;
 
     public int Player_TreasureCount_Value;
     public TextMeshProUGUI Player_TreasureCount_Text;
 
-    protected override void Start()
+    void Start()
     {
         base.Start();
         instance = this;
         treasureSpawn_Time = 1.0f;
-
+        SpawnStart = false;
         PV = GetComponent<PhotonView>();
 
         Player_TreasureCount_Value = 0;
     }
 
-    public override void StartGame()
-    {
-        base.StartGame();
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("SpawnStart");
-            StartCoroutine(TreasureSpawner());
-        }
-        else
-        {
-            VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
-            VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
-
-            Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
-        }
-    }
-
-    public override void MasterChanged(bool _isMaster)
-    {
-        base.MasterChanged(_isMaster);
-        if (_isMaster)
-        {
-            StartCoroutine(TreasureSpawner());
-        }
-    }
-
-    protected override void Update()
+    void Update()
     {
         base.Update();
-
-        if (GameStarted)
+        if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
         {
-            bool shouldGameEnd = false;
-
-            if (currPlayTime >= maxPlayTime)
-            {
-                shouldGameEnd = true;
-            }
-            else
-            {
-                int count = 0;
-                for (int i = 0; i < AllShip.Count; i++)
-                    if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
-                        count++;
-                if (count <= 1) shouldGameEnd = true;
-            }
-
-            if (shouldGameEnd)
-            {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
-            }
+            initialize();
         }
     }
 
-    public void Update_TreasureCount(int _viewID)
+    public void initialize()
     {
-        Player_TreasureCount_Value++;
+        VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
+        VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
+
+        Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
+
+        StartCoroutine(TreasureSpawner());
+        SpawnStart = true;
+    }
+
+    public void Update_TreasureCount()
+    {
         Player_TreasureCount_Text.text = Player_TreasureCount_Value.ToString();
 
-        RoomData.GetInstance().SetCurrScore(PhotonView.Find(_viewID).OwnerActorNr, 1);
-        PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, _viewID });
+        PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, MyShip.photonView.ViewID });
     }
 
     [PunRPC]
@@ -98,11 +63,16 @@ public class Treasure_GameManager : GameManager
     {
         PhotonView.Find(ViewID).GetComponent<Player_Controller_Ship>().Count_Text.text = value.ToString();
     }
-    public override void JudgeWinLose()
+
+    public override void StartGame()
     {
-        int rank = RoomData.GetInstance().GetPlayerCurrentRank(PhotonNetwork.LocalPlayer.ActorNumber);
-        IsWinner = rank <= 0 ? true : false;
-        base.JudgeWinLose();
+        base.StartGame();
+        if(PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("SpawnStart");
+            StartCoroutine(TreasureSpawner());
+        }
+
     }
 
     IEnumerator TreasureSpawner()
@@ -117,7 +87,9 @@ public class Treasure_GameManager : GameManager
             }
 
             Debug.Log("Spawn");
-            PhotonNetwork.Instantiate("Treasure", NetworkManager.instance.CalculateSpawnPos(), Quaternion.identity);
+            GameObject go = PhotonNetwork.Instantiate("Treasure", TreasureSpawner_Object.transform.position + new Vector3(0, 2, 0), Quaternion.identity);
+            go.GetComponent<Treasure>().startMove(NetworkManager.instance.CalculateSpawnPos());
+
             TreasureSpawnCount++;
 
             yield return new WaitForSeconds(treasureSpawn_Time); 

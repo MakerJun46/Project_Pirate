@@ -191,7 +191,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
             Destroy(other.gameObject);
         }
-        else if(other.gameObject.CompareTag("Treasure"))
+        else if(other.gameObject.CompareTag("Treasure") && other.GetComponent<Treasure>().isPickable)
         {
             if (GetComponent<PhotonView>().IsMine)
             {

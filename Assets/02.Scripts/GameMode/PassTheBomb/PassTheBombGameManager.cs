@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using Cinemachine;
 
 public class PassTheBombGameManager : GameManager
 {
@@ -13,6 +14,8 @@ public class PassTheBombGameManager : GameManager
     public TextMeshProUGUI bomb_Second;
 
     public GameObject LoadingPanel;
+
+    public GameObject statue;
 
     public Cinemachine.CinemachineVirtualCamera VC_Bomb;
 
@@ -80,6 +83,8 @@ public class PassTheBombGameManager : GameManager
         TryUpgradeShip();
         CombatManager.instance.EquipSail(0, 1);
         CombatManager.instance.EquipSpecialCannon(0, 0);
+
+        VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = statue.transform;
 
         MyShip.MoveSpeed = 20;
     }
