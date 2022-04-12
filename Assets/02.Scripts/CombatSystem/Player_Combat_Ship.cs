@@ -450,11 +450,4 @@ public class Player_Combat_Ship : MonoBehaviourPun
             }
         }
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("ScoreTarget") && photonView.IsMine)
-        {
-            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 5, Vector3.zero, GetComponent<PhotonView>().ViewID });
-        }
-    }
 }
