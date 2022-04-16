@@ -45,6 +45,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 // 플레이 한 게임모드가 최대가 되지 않으면 정상적으로 게임 진행
                 StartEndGame(true);
+                if (SceneManager.GetActiveScene().name != "GameScene_Room")
+                {
+                    RoomData.GetInstance().RemoveCurrGameMode();
+                }
             }
             else
             {
@@ -68,17 +72,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public IEnumerator StartEndGameCoroutine(bool _start)
     {
-        // 맨 처음에는 마스터가 지정한 게임을 하고, 아니라면 랜덤한 게임을 시작
-        if (RoomData.GetInstance() && RoomData.GetInstance().PlayedGameCount != 0 && _start)
+        if (RoomData.GetInstance() && _start)
         {
-            if (RoomData.GetInstance().setSceneRandom)
+            // 첫 번째 판이 아니거나, 첫 번째 판인데 random을 고른 경우 -> 랜덤
+            if (RoomData.GetInstance().PlayedGameCount > 0 || (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode==5))
             {
-                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, Random.Range(0, 4));
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
             }
-            else if(FindObjectOfType<RoomGameManager>())
+            /*
+            if(FindObjectOfType<RoomGameManager>())
             {
                 RoomData.GetInstance().AddGameModeIndex(1);
             }
+            */
         }
 
         while (_start)

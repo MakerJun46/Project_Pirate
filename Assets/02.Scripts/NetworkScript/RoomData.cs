@@ -1,8 +1,6 @@
-using System.Collections;
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
 
 public enum GameMode
 {
@@ -32,7 +30,8 @@ public class RoomData : MonoBehaviourPunCallbacks
     public List<int> FinalScores = new List<int>(10000);
     public List<int> currGameScores = new List<int>(10000);
 
-    public GameMode gameMode = 0;
+    public List<int> remainGameModeList = new List<int>();
+    public int gameMode = 0;
 
     public int PlayedGameCount { get; private set; }
     private int MaxPlayGameCount = 3;
@@ -50,18 +49,34 @@ public class RoomData : MonoBehaviourPunCallbacks
         PV.RPC("InitializePlayerScoreRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
         PlayedGameCount = 0;
 
+        remainGameModeList.Clear();
+        for (int i = 0; i < 5; i++)
+        {
+            remainGameModeList.Add(i);
+        }
+
         DontDestroyOnLoad(this.gameObject);
     }
 
+    public int GetNotOverlappedRandomGameMode()
+    {
+        int currGameIndex = Random.Range(0, remainGameModeList.Count);
+        return remainGameModeList[currGameIndex];
+    }
+    public void RemoveCurrGameMode()
+    {
+        if(remainGameModeList.Contains(gameMode))
+            remainGameModeList.Remove(gameMode);
+    }
     public string GetCurrSceneString()
     {
-        return "GameScene_" + gameMode.ToString();
+        return ((GameMode)gameMode).ToString();
     }
 
-    public string GetGameModeInfo(GameMode gameMode)
+    public string GetGameModeInfo()
     {
         string info="";
-        switch (gameMode)
+        switch ((GameMode)gameMode)
         {
             case GameMode.BattleRoyale:
                 info = "배틀로얄은 최후의 1인이 승리하는 게임입니다.\n 자원을 수집하고 장비를 제작하여 경쟁자와 싸우세요.";
@@ -117,7 +132,7 @@ public class RoomData : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetGameModeRPC(int _gameModeIndex)
     {
-        gameMode = (GameMode)_gameModeIndex;
+        gameMode = _gameModeIndex;
     }
 
     [PunRPC]
@@ -213,11 +228,12 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     public void AddGameModeIndex(int addAmount)
     {
-        int resultIndex = (addAmount + (int)gameMode)%5;
+        int resultIndex = (addAmount + (int)gameMode)%6;
         if (resultIndex < 0)
         {
-            resultIndex += 5;
+            resultIndex += 6;
         }
+
         if (PhotonNetwork.IsConnected == false)
         {
             SetGameModeRPC(resultIndex);

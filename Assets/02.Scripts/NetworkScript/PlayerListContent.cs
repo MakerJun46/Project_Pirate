@@ -14,14 +14,14 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
     public Image teamColor;
 
     public Photon.Realtime.Player myPlayer;
-    private LobbyManager networkController;
+    private LobbyManager lobbyManager;
     private void Start()
     {
         myPlayer = GetComponent<PhotonView>().Owner;
-        networkController = FindObjectOfType<LobbyManager>();
+        lobbyManager = FindObjectOfType<LobbyManager>();
         if (PhotonNetwork.IsMasterClient && myPlayer != PhotonNetwork.LocalPlayer)
         {
-            KickBtn.onClick.AddListener(() => networkController.KickPlayer(myPlayer.UserId));
+            KickBtn.onClick.AddListener(() => lobbyManager.KickPlayer(myPlayer.UserId));
         }
         else
         {
@@ -49,9 +49,9 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
                 PhotonNetwork.Destroy(GetComponent<PhotonView>());
         }
 
-        if (networkController.myPlayerListContent)
+        if (lobbyManager.myPlayerListContent)
         {
-            if (networkController.myPlayerListContent.gameObject != this.gameObject)
+            if (lobbyManager.myPlayerListContent.gameObject != this.gameObject)
             {
                 if (GetComponent<PhotonView>().IsMine)
                     PhotonNetwork.Destroy(GetComponent<PhotonView>());
@@ -62,10 +62,10 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
     [PunRPC]
     public void doEnable()
     {
-        if(networkController==null)
-            networkController = FindObjectOfType<LobbyManager>();
+        if(lobbyManager==null)
+            lobbyManager = FindObjectOfType<LobbyManager>();
 
-        transform.SetParent(networkController.PlayerListContainer);
+        transform.SetParent(lobbyManager.PlayerListContainer);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

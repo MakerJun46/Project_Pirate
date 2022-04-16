@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -2245946269365843018}
   - component: {fileID: 471102402296280340}
   - component: {fileID: -7475786632229244398}
+  - component: {fileID: 4627765787653952534}
   m_Layer: 10
   m_Name: ScoreTarget_0
   m_TagString: ScoreTarget
@@ -117,6 +118,25 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!95 &4627765787653952534
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471102402296280341}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6f9fbd3066758074faa2114459697b9d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8779259982471468169
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +149,7 @@ GameObject:
   - component: {fileID: 3313701829443454989}
   - component: {fileID: 5884291509362093525}
   m_Layer: 10
-  m_Name: GameObject
+  m_Name: TargetModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -199,6 +199,9 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             Destroy(other.gameObject);
+        }else if (other.CompareTag("ScoreTarget") && photonView.IsMine)
+        {
+            other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 5, Vector3.zero, GetComponent<PhotonView>().ViewID });
         }
     }
     private void OnTriggerStay(Collider other)

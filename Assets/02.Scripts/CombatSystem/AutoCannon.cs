@@ -246,7 +246,7 @@ public class AutoCannon : Cannon
     {
         for (int i = 0; i < 10; i++)
         {
-            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] {2.0f ,0.3f });
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] {4.0f ,0.3f });
             ball = tmp.GetComponent<Rigidbody>();
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
 

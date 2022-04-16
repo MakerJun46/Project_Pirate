@@ -20,7 +20,7 @@ public class Treasure_GameManager : GameManager
     public int Player_TreasureCount_Value;
     public TextMeshProUGUI Player_TreasureCount_Text;
 
-    void Start()
+    protected override void Start()
     {
         base.Start();
         instance = this;
@@ -31,12 +31,20 @@ public class Treasure_GameManager : GameManager
         Player_TreasureCount_Value = 0;
     }
 
-    void Update()
+    public override void StartGame()
     {
-        base.Update();
-        if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
+        base.StartGame();
+        if (PhotonNetwork.IsMasterClient)
         {
-            initialize();
+            Debug.Log("SpawnStart");
+            StartCoroutine(TreasureSpawner());
+        }
+        else
+        {
+            VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
+            VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
+
+            Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
         }
     }
 
@@ -51,11 +59,54 @@ public class Treasure_GameManager : GameManager
         SpawnStart = true;
     }
 
-    public void Update_TreasureCount()
+    public override void MasterChanged(bool _isMaster)
     {
+        base.MasterChanged(_isMaster);
+        if (_isMaster)
+        {
+            StartCoroutine(TreasureSpawner());
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
+        {
+            initialize();
+        }
+
+        if (GameStarted)
+        {
+            bool shouldGameEnd = false;
+
+            if (currPlayTime >= maxPlayTime)
+            {
+                shouldGameEnd = true;
+            }
+            else
+            {
+                int count = 0;
+                for (int i = 0; i < AllShip.Count; i++)
+                    if (AllShip[i] != null && AllShip[i].GetComponent<Player_Combat_Ship>().health > 0)
+                        count++;
+                if (count <= 1) shouldGameEnd = true;
+            }
+
+            if (shouldGameEnd)
+            {
+                FindObjectOfType<NetworkManager>().StartEndGame(false);
+            }
+        }
+    }
+
+    public void Update_TreasureCount(int _viewID)
+    {
+        Player_TreasureCount_Value++;
         Player_TreasureCount_Text.text = Player_TreasureCount_Value.ToString();
 
-        PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, MyShip.photonView.ViewID });
+        RoomData.GetInstance().SetCurrScore(PhotonView.Find(_viewID).OwnerActorNr, 1);
+        PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, _viewID });
     }
 
     [PunRPC]
@@ -64,16 +115,13 @@ public class Treasure_GameManager : GameManager
         PhotonView.Find(ViewID).GetComponent<Player_Controller_Ship>().Count_Text.text = value.ToString();
     }
 
-    public override void StartGame()
+    public override void JudgeWinLose()
     {
-        base.StartGame();
-        if(PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("SpawnStart");
-            StartCoroutine(TreasureSpawner());
-        }
-
+        int rank = RoomData.GetInstance().GetPlayerCurrentRank(PhotonNetwork.LocalPlayer.ActorNumber);
+        IsWinner = rank <= 0 ? true : false;
+        base.JudgeWinLose();
     }
+
 
     IEnumerator TreasureSpawner()
     {
