@@ -27,6 +27,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public bool is_Turn_Left;
     public bool is_Turn_Right;
     public bool is_Landing;
+    public bool isBoosting;
 
     public float motorFoamMultiplier;
     public float moterFoamBase;
@@ -35,6 +36,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     private Rigidbody RB;
     private PhotonView PV;
     public Text NickNameText;
+    public GameObject MyShip_Canvas;
     public int Landed_island_ID;
 
     ParticleSystem.EmissionModule motor, front;
@@ -45,6 +47,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
     public ParticleSystem WinnerEffectPrefab;
     public ParticleSystem LoseEffectPrefab;
+    public GameObject BoosterEffect;
 
     public TextMeshProUGUI Count_Text;
     private void Awake()
@@ -56,6 +59,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
+
+        MyShip_Canvas = transform.Find("Canvas").gameObject;
 
         goOrStop = false;
         is_Turn_Left = false;
@@ -139,6 +144,30 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
     }
 
+    public void startBooster()
+    {
+        if(!isBoosting)
+            StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
+    }
+
+    public IEnumerator Ship_Booster(float sec, float addMoveSpeed, float addTrunSpeed)
+    {
+        //isBoosting = true;
+        BoosterEffect.SetActive(true);
+        MoveSpeed += addMoveSpeed;
+        turningSpeed += addTrunSpeed;
+
+        yield return new WaitForSecondsRealtime(sec);
+
+        BoosterEffect.SetActive(false);
+        MoveSpeed -= addMoveSpeed;
+        turningSpeed -= addTrunSpeed;
+
+
+        yield return new WaitForSecondsRealtime(7f); // cooltime
+        isBoosting = false;
+    }
+
 
     public void GetInput()
     {
@@ -195,7 +224,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (GetComponent<PhotonView>().IsMine)
             {
-                Treasure_GameManager.instance.Update_TreasureCount();
+                Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
             }
 
             Destroy(other.gameObject);

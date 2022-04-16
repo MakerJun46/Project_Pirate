@@ -51,7 +51,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     private void Update()
     {
-        for(int i= AttackIDs.Count-1; i>=0 ; i--)
+        for (int i = AttackIDs.Count - 1; i >= 0; i--)
         {
             AttackIDs[i].lifetime -= Time.deltaTime;
             if (AttackIDs[i].lifetime <= 0)
@@ -173,9 +173,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
         bool canAttack = false;
         if (param.Length > 2)
         {
-            if (AttackIDs.Find(s=>s.id== (int)param[2]) == null)
+            if (AttackIDs.Find(s => s.id == (int)param[2]) == null)
             {
-                AttackIDs.Add(new AttackInfo((int)param[2],1f));
+                AttackIDs.Add(new AttackInfo((int)param[2], 1f));
                 canAttack = true;
             }
         }
@@ -217,7 +217,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
-                    if(GetComponent<PhotonView>().IsMine)
+                    if (GetComponent<PhotonView>().IsMine)
                         PhotonNetwork.Destroy(this.gameObject);
                 }
             }
@@ -276,7 +276,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
         {
             case SupplyType.Sail:
                 spotIndex = GetLastSailIndex();
-                if(spotIndex>=0)
+                if (spotIndex >= 0)
                 {
                     pv.RPC("EquipSail", RpcTarget.AllBuffered, spotIndex, _supplyIndex);
                 }
@@ -362,8 +362,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localRotation = Quaternion.identity;
             myAutoCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
 
-            if(PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("GameModeIndex"))
-                tmpCannon.GetComponent<AutoCannon>().Initialize(this,_spotIndex, int.Parse((string)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
+            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("GameModeIndex"))
+                tmpCannon.GetComponent<AutoCannon>().Initialize(this, _spotIndex, int.Parse((string)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
             else
                 tmpCannon.GetComponent<AutoCannon>().Initialize(this, _spotIndex, -1);
         }
@@ -439,14 +439,20 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 if (Vector3.Dot(collision.GetContact(0).normal, impulse) < 0f)
                     impulse *= -1f;
 
+                if ((GameMode)RoomData.GetInstance().gameMode == GameMode.Treasure)
+                {
+                    Treasure_GameManager.instance.DropAllTreasure();
+                }
+
                 collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
                     5.0f
                     ,-1*impulse*3f,photonView.ViewID
-                });
+                    });
                 this.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
                     5.0f
                     ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
-                });
+                    });
+
             }
         }
     }

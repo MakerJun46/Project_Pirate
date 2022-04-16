@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
     [SerializeField] protected GameObject ObserverModePanel;
+    [SerializeField] protected GameObject BoosterButton;
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
@@ -86,11 +87,6 @@ public class GameManager : MonoBehaviour, IPunObservable
                 }
             }
 
-            bestPlayerListBox.Clear();
-            for(int i = 0; i < PlayerCount; i++)
-            {
-                bestPlayerListBox.Add(UI_Observer.transform.Find("ScoreBox").GetChild(i).GetComponent<PlayerScoreList>());
-            }
 
             BestPlayerContent.SetActive(false);
             RefreshPlayeScore(true);
@@ -218,12 +214,17 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         MyShip.goOrStop = !MyShip.goOrStop;
     }
+    public void Booster_Button()
+    {
+        MyShip.startBooster();
+    }
 
     public void TryUpgradeShip()
     {
         if (MyShip)
             MyShip.UpgradeShip();
     }
+
     #endregion
 
     #region Best Player

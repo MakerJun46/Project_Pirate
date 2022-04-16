@@ -20,6 +20,10 @@ public class Treasure_GameManager : GameManager
     public int Player_TreasureCount_Value;
     public TextMeshProUGUI Player_TreasureCount_Text;
 
+
+    // 0416 - chest animation 을 위한 임시 변수
+    public Animator chestAnimator;
+
     protected override void Start()
     {
         base.Start();
@@ -48,8 +52,21 @@ public class Treasure_GameManager : GameManager
         }
     }
 
+    [PunRPC]
+    public void UI_initialize(int ViewID)
+    {
+        Player_Controller_Ship ship = PhotonView.Find(ViewID).GetComponent<Player_Controller_Ship>();
+
+        ship.MyShip_Canvas.transform.Find("HealthArea").gameObject.SetActive(false);
+        ship.MyShip_Canvas.transform.Find("Health").gameObject.SetActive(false);
+        ship.Count_Text.text = "0";
+    }
+
+
     public void initialize()
     {
+        PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+
         VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
         VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
 
@@ -109,6 +126,26 @@ public class Treasure_GameManager : GameManager
         PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, _viewID });
     }
 
+
+    /// <summary>
+    /// 다른 배와 부딪힌 경우 모든 보물 뱉어냄
+    /// </summary>
+    public void DropAllTreasure()
+    {
+        Debug.Log("DropTreasure");
+
+        for(int i = 0; i < Player_TreasureCount_Value; i++)
+        {
+            Vector3 randomPos = MyShip.transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
+
+            GameObject go = PhotonNetwork.Instantiate("Treasure", MyShip.transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+            go.GetComponent<Treasure>().startMove(randomPos);
+        }
+
+        Player_TreasureCount_Value = 0;
+        Update_TreasureCount(MyShip.photonView.ViewID);
+    }
+
     [PunRPC]
     public void Set_Count(int value, int ViewID)
     {
@@ -125,6 +162,8 @@ public class Treasure_GameManager : GameManager
 
     IEnumerator TreasureSpawner()
     {
+        yield return new WaitForSeconds(3.0f);
+
         int TreasureSpawnCount = 0;
 
         while(currPlayTime < maxPlayTime)
@@ -134,7 +173,7 @@ public class Treasure_GameManager : GameManager
                 treasureSpawn_Time = 1.0f - 0.1f * (TreasureSpawnCount / 10); // 시간이 지날수록 점점 빠르게 생성
             }
 
-            Debug.Log("Spawn");
+            chestAnimator.SetTrigger("Open");
             GameObject go = PhotonNetwork.Instantiate("Treasure", TreasureSpawner_Object.transform.position + new Vector3(0, 2, 0), Quaternion.identity);
             go.GetComponent<Treasure>().startMove(NetworkManager.instance.CalculateSpawnPos());
 
