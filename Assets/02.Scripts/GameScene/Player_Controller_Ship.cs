@@ -195,7 +195,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (GetComponent<PhotonView>().IsMine)
             {
-                Treasure_GameManager.instance.Update_TreasureCount(GetComponent<PhotonView>().ViewID);
+                Treasure_GameManager.instance.Update_TreasureCount();
             }
 
             Destroy(other.gameObject);

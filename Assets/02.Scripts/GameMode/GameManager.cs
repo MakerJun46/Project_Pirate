@@ -85,6 +85,15 @@ public class GameManager : MonoBehaviour, IPunObservable
                     ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
                 }
             }
+
+            bestPlayerListBox.Clear();
+            for(int i = 0; i < PlayerCount; i++)
+            {
+                bestPlayerListBox.Add(UI_Observer.transform.Find("ScoreBox").GetChild(i).GetComponent<PlayerScoreList>());
+            }
+
+            BestPlayerContent.SetActive(false);
+            RefreshPlayeScore(true);
         }
     }
     public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip = true)
