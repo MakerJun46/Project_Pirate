@@ -11,7 +11,8 @@ public class SpecialCannon : Cannon
         Hook,
         Sniper,
         OakBarrel,
-        Rain
+        Rain,
+        KnockBack
     }
     public SpecialCannonType mySpecialCannonType;
 
@@ -19,6 +20,11 @@ public class SpecialCannon : Cannon
     public override void Initialize(Player_Combat_Ship _myShip,int _spotIndex,int _gameModeIndex)
     {
         base.Initialize(_myShip, _spotIndex, _gameModeIndex);
+        fov = GetComponent<FieldOfView>();
+        fov.enabled = false;
+        fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+        fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+        fov.useCoolTime = false;
     }
 
     protected override void Update()
@@ -66,7 +72,7 @@ public class SpecialCannon : Cannon
             case SpecialCannonType.Hook:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    ChargeCannon(-1,30);
+                    ChargeCannon(-1, 30);
 
                     lrs[0].enabled = true;
                     int resolution = 2;
@@ -78,6 +84,24 @@ public class SpecialCannon : Cannon
                 {
                     lrs[0].enabled = false;
                     LaunchHook(cursor.transform.position);
+                }
+                break;
+            case SpecialCannonType.KnockBack:
+                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                {
+                    fov.enabled = true;
+                    fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                    fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                    fov.transform.rotation = Quaternion.LookRotation(new Vector3(tmpInput.x,0, tmpInput.y));
+                    attackingState = 2;
+                }
+                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                {
+                    LaunchKnockBack();
+                    fov.enabled = false;
+                    fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+                    fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+                    attackingState = 1;
                 }
                 break;
             case SpecialCannonType.Rain:
@@ -104,10 +128,10 @@ public class SpecialCannon : Cannon
                 break;
             case SpecialCannonType.OakBarrel:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
-                { 
+                {
                     ChargeCannon();
 
-                    currCannonDistance += Time.deltaTime*20f;
+                    currCannonDistance += Time.deltaTime * 20f;
                     currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 12f);
 
                     lrs[0].enabled = true;
@@ -124,11 +148,25 @@ public class SpecialCannon : Cannon
     }
     protected void LaunchHook(Vector3 targetPos)
     {
-        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Hook", this.transform.position, Quaternion.identity,0,new object[]{ PhotonNetwork.LocalPlayer.ActorNumber,targetPos,ShootVelocity});
+        GameObject tmp = PhotonNetwork.Instantiate("Cannon_Hook", this.transform.position, Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.ActorNumber, targetPos, ShootVelocity });
 
         ResetAttackingState(10f);
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, true);
     }
+
+    [SerializeField] FieldOfView fov;
+    protected void LaunchKnockBack()
+    {
+        for(int i=0;i< fov.visibleTargets.Count; i++)
+        {
+            Vector3 dist = fov.visibleTargets[i].position - this.transform.position;
+            float power = dist.magnitude ==0 ? 1 : (1/dist.magnitude);
+            power *= fov.viewRadius*20f;
+            fov.visibleTargets[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 3.0f, power*dist.normalized, myShip.photonView.ViewID });
+        }
+        myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, true);
+    }
+
     protected void LaunchSniper()
     {
         GameObject tmp = PhotonNetwork.Instantiate("CannonBall_Rain", cursor.transform.position + Vector3.up* 50f, Quaternion.identity,

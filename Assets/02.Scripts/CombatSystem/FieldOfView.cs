@@ -20,6 +20,7 @@ public class FieldOfView : MonoBehaviourPun
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
 
+    public bool useCoolTime=true;
     public MeshFilter coolTimeMeshFilter;
     Mesh coolTimeMesh;
 
@@ -83,27 +84,44 @@ public class FieldOfView : MonoBehaviourPun
 
             MeshRenderer viewMeshRenderer = viewMeshFilter.GetComponent<MeshRenderer>();
             MeshRenderer coolTimeMeshRenderer = coolTimeMeshFilter.GetComponent<MeshRenderer>();
-            if (currTarget == null)
+            if (useCoolTime)
             {
-                myCannon.currChargeAmount -= Time.deltaTime;
-                viewMeshRenderer.enabled = false;
-                coolTimeMeshRenderer.enabled = false;
-            }
-            else
-            {
-                if (myCannon.currCoolTime<=0)
+                if (currTarget == null)
                 {
-                    viewMeshRenderer.material = fov_mats[0];
-                    coolTimeMeshRenderer.enabled = true;
-                    myCannon.currChargeAmount += Time.deltaTime * 3f;
+                    myCannon.currChargeAmount -= Time.deltaTime;
+                    viewMeshRenderer.enabled = false;
+                    coolTimeMeshRenderer.enabled = false;
                 }
                 else
                 {
-                    viewMeshRenderer.material = fov_mats[1];
-                    coolTimeMeshRenderer.enabled = false;
-                }
+                    if (myCannon.currCoolTime <= 0)
+                    {
+                        viewMeshRenderer.material = fov_mats[0];
+                        coolTimeMeshRenderer.enabled = true;
+                        myCannon.currChargeAmount += Time.deltaTime * 3f;
+                    }
+                    else
+                    {
+                        viewMeshRenderer.material = fov_mats[1];
+                        coolTimeMeshRenderer.enabled = false;
+                    }
 
+                    viewMeshRenderer.enabled = true;
+                }
+            }
+            else
+            {
                 viewMeshRenderer.enabled = true;
+                coolTimeMeshRenderer.enabled = false;
+                myCannon.currChargeAmount =3;
+                if (currTarget == null)
+                {
+                    viewMeshRenderer.material = fov_mats[0];
+                }
+                else
+                {
+                    viewMeshRenderer.material = fov_mats[2];
+                }
             }
             myCannon.currChargeAmount = Mathf.Clamp(myCannon.currChargeAmount, 0, myCannon.maxChargetAmount);
         }

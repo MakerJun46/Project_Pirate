@@ -8,7 +8,8 @@ public enum GameMode
     PassTheBomb,
     Survivor,
     HitTheTarget,
-    Treasure
+    Treasure,
+    GhostShip
 }
 
 public class RoomData : MonoBehaviourPunCallbacks
@@ -95,6 +96,9 @@ public class RoomData : MonoBehaviourPunCallbacks
                 break;
             case GameMode.Treasure:
                 info = "보물찾기는 가장 많은 보물을 얻은 플레이어가 승리하는 게임입니다.";
+                break;
+            case GameMode.GhostShip:
+                info = "유령선은 유령선을 피해 끝까지 도망친 플레이어가 승리하는 게임입니다.";
                 break;
         }
         return info;

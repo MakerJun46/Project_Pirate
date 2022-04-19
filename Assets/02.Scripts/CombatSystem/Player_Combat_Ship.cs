@@ -39,6 +39,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
     CinemachineImpulseSource impulseSource;
 
+    [SerializeField] Material GhostMat;
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
 
@@ -126,6 +127,15 @@ public class Player_Combat_Ship : MonoBehaviourPun
         mySails = SailSpots.GetChild(0).gameObject;
     }
 
+    public void SetToGhost()
+    {
+        MeshRenderer[] mr = myShipObjects.GetComponentsInChildren<MeshRenderer>();
+        for (int i=0;i< mr.Length;i++)
+        {
+            mr[i].material = GhostMat;
+        }
+    }
+
 
     [PunRPC]
     public void PlayAttackPS(int _spotIndex, bool _isSpecial = false)
@@ -150,6 +160,12 @@ public class Player_Combat_Ship : MonoBehaviourPun
         {
             if ((int)param[2] != photonView.ViewID)
                 passTheBombGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
+        }
+        GhostShipGameManager ghostShipGameManager = FindObjectOfType<GhostShipGameManager>();
+        if (ghostShipGameManager && ghostShipGameManager.IsGhost && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
+        {
+            if ((int)param[2] != photonView.ViewID)
+                ghostShipGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
         }
 
         bool canAttack = false;
@@ -270,7 +286,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void EquipSail(int _spotIndex, int _sailIndex)
+    public void EquipSail()
     {
         Player_Controller_Ship myShip = GetComponent<Player_Controller_Ship>();
         if (mySails.activeInHierarchy)

@@ -78,6 +78,7 @@ public class CombatManager : MonoBehaviour
                 randomRoullet.Add(new Vector2(2, 1));
                 randomRoullet.Add(new Vector2(2, 2));
                 randomRoullet.Add(new Vector2(2, 3));
+                randomRoullet.Add(new Vector2(2, 4));
             }
 
 
