@@ -103,7 +103,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                         readyCount++;
                 }
                 ReadyCountText.text = "Ready : " + readyCount + " / " + PhotonNetwork.CurrentRoom.PlayerCount;
-                if (readyCount >= 2 && readyCount >= PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
+                if (readyCount >= 3 && readyCount >= PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
                 {
                     GetComponent<PhotonView>().RPC("StartGame", RpcTarget.All);
                 }
@@ -129,7 +129,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
             PhotonNetwork.CurrentRoom.IsOpen = false;
             //PhotonNetwork.CurrentRoom.IsVisible = false;
-            RoomPlayerCount.playerCount = PhotonNetwork.CountOfPlayers;
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" } });
 
@@ -384,7 +383,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             {
                 //roomList에 쓸모없는 list가 있다면
 
-                int index = RoomListBtnLists.FindIndex(x => x.roomName == info.Name);
+                int index = RoomListBtnLists.FindIndex(x => x.TitleEqualTo(info.Name));
                 if (index != -1)
                 {
                     //쓸모없는 roomList가 내 리스트에 있다면 지움
@@ -395,29 +394,22 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             else
             {
                 // 유효한 room LIst
-
-                int index = RoomListBtnLists.FindIndex(x => x.roomName == info.Name);
+                int index = RoomListBtnLists.FindIndex(x => x.TitleEqualTo(info.Name));
                 if (index == -1)
                 {
                     //roomList에 있는 것이 내 리스트에 없다면 방을 생성함
                     RoomListBtn tmp = Instantiate(RoomListBtnPrefab, RoomListContainer).GetComponent<RoomListBtn>();
-                    tmp.titleTxt.text = info.Name;
-                    tmp.roomName = info.Name;
-                    tmp.memberCountTxt.text = "[" + info.PlayerCount + "/" + info.MaxPlayers + "]";
+                    tmp.InitializeRoomLIstInfo(info.Name, info.PlayerCount, info.MaxPlayers);
                     RoomListBtnLists.Add(tmp);
                 }
                 else
                 {
                     //roomList에 있는 것이 내 리스트에 있다면 Update
-                    if (info.PlayerCount != RoomListBtnLists[index].playerCount)
-                    {
-                        RoomListBtnLists[index].playerCount = info.PlayerCount;
-                        RoomListBtnLists[index].memberCountTxt.text = "[" + info.PlayerCount + "/" + info.MaxPlayers + "]";
-                    }
+                    RoomListBtnLists[index].InitializeRoomLIstInfo(info.Name, info.PlayerCount, info.MaxPlayers);
                 }
             }
 
-            int btnIndex = RoomListBtnLists.FindIndex(x => x.roomName == info.Name);
+            int btnIndex = RoomListBtnLists.FindIndex(x => x.TitleEqualTo(info.Name));
             if (btnIndex >= 0)
             {
                 RoomListBtn tmpBtn = RoomListBtnLists[btnIndex];

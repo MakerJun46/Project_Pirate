@@ -35,9 +35,7 @@ public class RoomGameManager : GameManager
         RoomData currRoomData = RoomData.GetInstance();
         Scene tmpScene = SceneManager.GetSceneByName("GameScene_" + currRoomData.GetCurrSceneString());
         if (tmpScene != null)
-        {
             SceneManager.LoadScene("GameScene_" + currRoomData.GetCurrSceneString());
-        }
         else
             SceneManager.LoadScene(0);
     }

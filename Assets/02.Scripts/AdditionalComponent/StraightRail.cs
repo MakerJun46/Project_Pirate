@@ -29,7 +29,6 @@ public class StraightRail : MonoBehaviour
                 Vector3 dist = (target.position - this.transform.position);
 
                 target.GetComponent<Player_Controller_Ship>().additionalForce += this.transform.forward * power *Time.deltaTime;
-                //target.GetComponent<Rigidbody>().AddTorque (cross * Time.deltaTime * power * dist.magnitude / viewRadius,ForceMode.Impulse);
             }
         }
     }

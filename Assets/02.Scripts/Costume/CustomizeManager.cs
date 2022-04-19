@@ -64,7 +64,7 @@ public class CustomizeManager : MonoBehaviour
     }
     private void Update()
     {
-        bool inLobby = (PhotonNetwork.IsConnected && PhotonNetwork.InRoom && SceneManager.GetActiveScene().name == "Lobby");
+        bool inLobby = (PhotonNetwork.IsConnected && SceneManager.GetActiveScene().name == "Lobby");
         if (inLobby == false)
         {
             costumePanelOpenBtn.SetActive(false);

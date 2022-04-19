@@ -14,7 +14,6 @@ public class FloatingTextController : MonoBehaviour
         if (!popupText)
         {
             popupText = Resources.Load<FloatingText>("PopupTextParent");
-            //popupText = popupText.GetComponent<FloatingText>();
         }
     }
     public static void CreateFloatingText(string text, Transform location, Color color)

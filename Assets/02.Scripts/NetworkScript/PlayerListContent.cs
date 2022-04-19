@@ -8,13 +8,13 @@ using Photon.Pun.UtilityScripts;
 
 public class PlayerListContent : MonoBehaviour, IPunObservable 
 {
-    public Text nameTxt;
-    public Toggle readyToggle;
-    public Button KickBtn;
-    public Image teamColor;
+    [SerializeField] private Text nameTxt;
+    [SerializeField] private Toggle readyToggle;
+    [SerializeField] private Button KickBtn;
 
     public Photon.Realtime.Player myPlayer;
     private LobbyManager lobbyManager;
+
     private void Start()
     {
         myPlayer = GetComponent<PhotonView>().Owner;
@@ -28,16 +28,26 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
             KickBtn.gameObject.SetActive(false);
         }
         GetComponent<PhotonView>().RPC("doEnable", RpcTarget.AllBuffered);
-
-
     }
+
+
+    [PunRPC]
+    public void doEnable()
+    {
+        if (lobbyManager == null)
+            lobbyManager = FindObjectOfType<LobbyManager>();
+
+        transform.SetParent(lobbyManager.PlayerListContainer);
+    }
+
     private void Update()
     {
-        this.transform.localScale = new Vector3(.9f, .9f, 1);
+        this.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
+
         if (myPlayer != null)
         {
             nameTxt.text = "["+ myPlayer.ActorNumber+ "]" + myPlayer.NickName;
-            //teamColor.color = GameManager.GetInstance().ColorByIndex(PhotonTeamExtensions.GetPhotonTeam(myPlayer).Code);
+
             if ((string)myPlayer.CustomProperties["Ready"] == "0")
                 readyToggle.isOn = false;
             else
@@ -57,15 +67,6 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
                     PhotonNetwork.Destroy(GetComponent<PhotonView>());
             }
         }
-    }
-
-    [PunRPC]
-    public void doEnable()
-    {
-        if(lobbyManager==null)
-            lobbyManager = FindObjectOfType<LobbyManager>();
-
-        transform.SetParent(lobbyManager.PlayerListContainer);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

@@ -52,32 +52,9 @@ public class SpecialCannon : Cannon
 
         if (attackingState == 0)
         {
-            switch (mySpecialCannonType)
+            if (currCoolTime <= 0)
             {
-                case SpecialCannonType.Hook:
-                    if (currCoolTime <=0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
-                case SpecialCannonType.Sniper:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
-                case SpecialCannonType.OakBarrel:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
-                case SpecialCannonType.Rain:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
+                attackingState = 1;
             }
         }
     }
@@ -154,8 +131,8 @@ public class SpecialCannon : Cannon
     }
     protected void LaunchSniper()
     {
-        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", cursor.transform.position + Vector3.up* 50f, Quaternion.identity,
-            0, new object[] { 20.0f, 1.2f });
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall_Rain", cursor.transform.position + Vector3.up* 50f, Quaternion.identity,
+            0, new object[] {50.0f, 1.5f });
         tmp.GetComponent<CannonBall>().gravity = Vector3.up * gravity*4f;
 
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, true);
@@ -188,7 +165,7 @@ public class SpecialCannon : Cannon
         for (int i = 0; i < 30; i++)
         {
             GameObject tmp = PhotonNetwork.Instantiate(
-                "CannonBall",
+                "CannonBall_Rain",
                 cursor.transform.position + new Vector3(Random.Range(-1, 1f) * 30f, Random.Range(50f, 60f), Random.Range(-1, 1f) * 30f),
                 Quaternion.identity,
                 0, new object[] { 1.0f, 0.5f });

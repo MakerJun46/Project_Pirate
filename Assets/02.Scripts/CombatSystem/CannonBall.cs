@@ -25,11 +25,11 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     {
         rb = GetComponent<Rigidbody>();
     }
-    void Update()
+    protected virtual void Update()
     {
         transform.GetChild(0).Rotate(new Vector3(rb.velocity.z, 0, -rb.velocity.x) * Time.deltaTime * 60f, Space.World);
 
-        if(this.transform.position.y < -50)
+        if(this.transform.position.y < -30)
         {
             Destroy(this.gameObject);
         }
@@ -60,11 +60,9 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     {
         if (stream.IsWriting)
         {
-            //stream.SendNext(this.transform.position);
         }
         else
         {
-            //this.transform.position = (Vector3)stream.ReceiveNext();
         }
     }
 }

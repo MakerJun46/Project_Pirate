@@ -11,9 +11,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public static NetworkManager instance;
 
-    [SerializeField]private GameObject DisconnetPanel;
     private PhotonView PV;
 
+    [SerializeField] private GameObject DisconnetPanel;
     [SerializeField] GameObject LoadingPanel;
     [SerializeField]private int loading_sec=3;
 
@@ -29,12 +29,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         PV = GetComponent<PhotonView>();
-        if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsConnected)
         {
-            DisconnetPanel.SetActive(false);
-            Invoke("Spawn",1f);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                DisconnetPanel.SetActive(false);
+                Invoke("Spawn", 1f);
+            }
         }
-        else if(!PhotonNetwork.IsConnected)
+        else
         {
             Connect();
         }
@@ -75,23 +78,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (RoomData.GetInstance() && _start)
         {
             // 첫 번째 판이 아니거나, 첫 번째 판인데 random을 고른 경우 -> 랜덤
-            if (RoomData.GetInstance().PlayedGameCount > 0 || (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode==5))
+            if (RoomData.GetInstance().PlayedGameCount > 0 || (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
             {
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
             }
-            /*
-            if(FindObjectOfType<RoomGameManager>())
-            {
-                RoomData.GetInstance().AddGameModeIndex(1);
-            }
-            */
         }
 
         while (_start)
         {
             yield return new WaitForEndOfFrame();
-            // 모든 플레이어가 씬에 로드되어야지만 while문 벗어나서 게임 시작
-            if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount) // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음_0327
+            // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
+            // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
+            if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount) 
             {
                 break;
             }
@@ -145,24 +143,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Spawn()
     {
-        Debug.Log("Spawn Ship");
-
         GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 
         if (go.GetComponent<PhotonView>().IsMine)
         {
             GameManager.GetInstance().SetMyShip(go.GetComponent<Player_Controller_Ship>());
-            if (GameManager.GetInstance().GetComponent<BattleRoyalGameManager>())
-            {
-                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
-                GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().SpawnSailor(1, go.transform);
-            }
-            if (FindObjectOfType<CombatManager>())
-                FindObjectOfType<CombatManager>().SetMyShip(go.GetComponent<Player_Combat_Ship>());
+            CombatManager.instance.SetMyShip(go.GetComponent<Player_Combat_Ship>());
 
             go.GetComponent<PhotonView>().RPC("InitializePlayer", RpcTarget.AllBuffered);
         }
-        //FindObjectOfType<CustomizeManager>().EquipCostume(go.GetComponent<PhotonView>().ViewID);
     }
 
     [SerializeField] float PlayerSpawnRadius = 100f;
@@ -218,14 +207,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         DisconnetPanel.SetActive(false);
         if (RoomData.GetInstance() == null)
             PhotonNetwork.Instantiate("RoomData", Vector3.zero, Quaternion.identity);
-
-        //if(!PhotonNetwork.IsMasterClient) // masterClient는 Observer 이므로 제외하고 Spawn - 0324
-            Spawn();
     }
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
-        //RoomData.GetInstance().DestroyRoomData();
     }
 
     /// <summary>

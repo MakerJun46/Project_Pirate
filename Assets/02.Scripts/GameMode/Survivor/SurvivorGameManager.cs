@@ -23,6 +23,12 @@ public class SurvivorGameManager : GameManager
     float scoreTime;
 
     [SerializeField] WaveData waveData;
+
+    public override void StartGame()
+    {
+        base.StartGame();
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -33,14 +39,10 @@ public class SurvivorGameManager : GameManager
         }
     }
 
-    public override void StartGame()
-    {
-        base.StartGame();
-    }
-
     private void WaveStart()
     {
         StartCoroutine("WaveSpawnCoroutine");
+        StartCoroutine("NaturalDisastersCoroutine");
     }
 
     IEnumerator WaveSpawnCoroutine()
@@ -68,7 +70,6 @@ public class SurvivorGameManager : GameManager
         }
         yield return new WaitForSeconds(waveData.waves[waveIndex].waitTime);
 
-
         // 다음 wave가 없으면 마지막 wave를 재사용
         waveIndex++;
         if (waveData.waves.Count <= waveIndex)
@@ -77,6 +78,22 @@ public class SurvivorGameManager : GameManager
         if (GameStarted)
             StartCoroutine("WaveSpawnCoroutine");
     }
+
+    IEnumerator NaturalDisastersCoroutine()
+    {
+        int spawnCount = Random.Range(2, 5);
+        for (int i = 0; i < spawnCount; i++)
+        {
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall_Rain", new Vector3(Random.Range(-30,30),50f, Random.Range(-30,30)), Quaternion.identity,
+                0, new object[] { 50.0f, 1.5f });
+            tmp.GetComponent<CannonBall>().gravity = Vector3.up * -9.8f * 4f;
+            yield return new WaitForSeconds(Random.Range(0.1f,1f));
+        }
+        yield return new WaitForSeconds(Random.Range(0.5f,2f));
+        if (GameStarted)
+            StartCoroutine("NaturalDisastersCoroutine");
+    }
+
     public override void JudgeWinLose()
     {
         List<Player_Controller_Ship> survivedShips = new List<Player_Controller_Ship>();
@@ -97,7 +114,6 @@ public class SurvivorGameManager : GameManager
         
         if (GameStarted)
         {
-
             bool shouldGameEnd = false;
 
             if (currPlayTime >= maxPlayTime)
@@ -117,7 +133,6 @@ public class SurvivorGameManager : GameManager
             {
                 FindObjectOfType<NetworkManager>().StartEndGame(false);
             }
-
 
             scoreTime += Time.deltaTime;
             if (scoreTime>=1 && PhotonNetwork.IsMasterClient == false)

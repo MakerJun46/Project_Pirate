@@ -6,19 +6,13 @@ using Photon.Pun;
 public class Octopus : SurvivorMonster
 {
     Animator anim;
-    [SerializeField] Transform IKHandler;
-    [SerializeField] Transform IKHint;
+
+    [SerializeField] List<ParticleSystem> AttackParticle;
+
 
     private float attackCooltime = 5f;
 
-    Vector3 hintPos;
-    Vector3 handlePos;
-    Vector3 TargetPos;
-
-    int index;
     bool attacking = false;
-
-    Vector3 offset;
 
     public override void ResetEnemy(SurvivorMonster _data)
     {
@@ -32,14 +26,8 @@ public class Octopus : SurvivorMonster
         anim = GetComponent<Animator>();
         anim.speed = Random.Range(0.8f, 1.2f);
         attackCooltime = Random.Range(1, 5f);
-        StartCoroutine("ChangeOffsetCoroutine");
     }
-    IEnumerator ChangeOffsetCoroutine()
-    {
-        yield return new WaitForSeconds(Random.Range(0.5f,2f));
-        offset = new Vector3(Random.Range(-1, 1f), Random.Range(0, 1f), Random.Range(-1, 1f)) * 10f;
-        StartCoroutine("ChangeOffsetCoroutine");
-    }
+
 
     protected override void Update()
     {
@@ -49,16 +37,15 @@ public class Octopus : SurvivorMonster
             attackCooltime -= Time.deltaTime;
             if (attackCooltime <= 0)
             {
-                if (index >= 0 && !attacking && target && Vector3.Distance(target.position, transform.position) <= viewRadius)
+                if (!attacking && target && Vector3.Distance(target.position, transform.position) <= viewRadius)
                 {
-                    TargetPos = target.transform.position;
                     if (Photon.Pun.PhotonNetwork.IsConnected)
                         GetComponent<PhotonView>().RPC("AttackFunc", RpcTarget.AllBuffered);
                     else
                         AttackFunc();
                 }
             }
-            if (index >= 0 && !attacking && attackCooltime <= 4 && target)
+            if (!attacking && attackCooltime <= 4 && target)
             {
                 this.transform.LookAt(new Vector3(target.position.x, 0, target.transform.position.z));
             }
@@ -80,6 +67,7 @@ public class Octopus : SurvivorMonster
     {
         anim.SetTrigger("Attack");
         attackCooltime = Random.Range(6f, 8f);
+
     }
 
 
@@ -89,6 +77,11 @@ public class Octopus : SurvivorMonster
     public void SetAttackTrue()
     {
         attacking = true;
+
+        for (int i = 0; i < AttackParticle.Count; i++)
+        {
+            AttackParticle[i].Play();
+        }
     }
 
     public void SetAttackFalse()
@@ -115,13 +108,9 @@ public class Octopus : SurvivorMonster
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(IKHint.transform.localPosition);
-            stream.SendNext(IKHandler.transform.localPosition);
         }
         else
         {
-            hintPos = (Vector3)stream.ReceiveNext();
-            handlePos = (Vector3)stream.ReceiveNext();
         }
     }
 }

@@ -58,13 +58,11 @@ public class CombatManager : MonoBehaviour
         {
             List<Vector2> randomRoullet = new List<Vector2>();
             Player_Combat_Ship currShip = myShip;
-            int spotIndex = currShip.GetLastSailIndex();
-            if (spotIndex >= 0)
+            if (currShip.GetSailActivated()==false)
             {
                 randomRoullet.Add(new Vector2(0, 0));
-                randomRoullet.Add(new Vector2(0, 1));
             }
-            spotIndex = currShip.GetLastAutoCannonIndex();
+            int spotIndex = currShip.GetLastAutoCannonIndex();
             if (spotIndex >= 0)
             {
                 randomRoullet.Add(new Vector2(1, 0));
@@ -72,20 +70,14 @@ public class CombatManager : MonoBehaviour
                 randomRoullet.Add(new Vector2(1, 2));
                 randomRoullet.Add(new Vector2(1, 3));
             }
-            if (myShip.GetComponent<Player_Controller_Ship>().upgradeIndex <= 1)
+
+            spotIndex = currShip.GetLastmySpecialCannonsIndex();
+            if (spotIndex >= 0)
             {
-                randomRoullet.Add(new Vector2(3, 0));
-            }
-            if (myShip.GetComponent<Player_Controller_Ship>().upgradeIndex >= 1)
-            {
-                spotIndex = currShip.GetLastmySpecialCannonsIndex();
-                if (spotIndex >= 0)
-                {
-                    randomRoullet.Add(new Vector2(2, 0));
-                    randomRoullet.Add(new Vector2(2, 1));
-                    randomRoullet.Add(new Vector2(2, 2));
-                    randomRoullet.Add(new Vector2(2, 3));
-                }
+                randomRoullet.Add(new Vector2(2, 0));
+                randomRoullet.Add(new Vector2(2, 1));
+                randomRoullet.Add(new Vector2(2, 2));
+                randomRoullet.Add(new Vector2(2, 3));
             }
 
 
@@ -111,7 +103,7 @@ public class CombatManager : MonoBehaviour
                     {
                         case 0:
                             levelUpBtn.GetComponentInChildren<Text>().text = "Get Sail " + levelUpIndex;
-                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => EquipSail(currShip.GetLastSailIndex(), levelUpIndex));
+                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => EquipSail());
                             break;
                         case 1:
                             levelUpBtn.GetComponentInChildren<Text>().text = "Get Cannon " + levelUpIndex;
@@ -120,10 +112,6 @@ public class CombatManager : MonoBehaviour
                         case 2:
                             levelUpBtn.GetComponentInChildren<Text>().text = "Get SpecialCannon " + levelUpIndex;
                             levelUpBtn.GetComponent<Button>().onClick.AddListener(() => EquipSpecialCannon(currShip.GetLastmySpecialCannonsIndex(), levelUpIndex));
-                            break;
-                        case 3:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Upgrade";
-                            levelUpBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.GetInstance().TryUpgradeShip());
                             break;
                     }
                     levelUpBtn.GetComponent<Button>().onClick.AddListener(() => LevelUpPanel.SetActive(false));
@@ -143,20 +131,18 @@ public class CombatManager : MonoBehaviour
         myShip = _ship;
     }
 
-    public void EquipSail(int _spotIndex, int _sailIndex)
+    public void EquipSail()
     {
         if(myShip)
-            myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipSail", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _sailIndex });
+            myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipSail", Photon.Pun.RpcTarget.AllBuffered);
     }
     public void EquipCannon(int _spotIndex, int _cannonIndex)
     {
-        //Cannon tmpCannon = myShip.EquipCannon(_spotIndex, _cannonIndex);
         if (myShip)
             myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipCannon", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _cannonIndex });
     }
     public void EquipSpecialCannon(int _spotIndex, int _cannonIndex)
     {
-        //Cannon tmpCannon = myShip.EquipCannon(_spotIndex, _cannonIndex);
         if (myShip)
             myShip.GetComponent<Photon.Pun.PhotonView>().RPC("EquipSpecialCannon", Photon.Pun.RpcTarget.AllBuffered, new object[] { _spotIndex, _cannonIndex });
     }

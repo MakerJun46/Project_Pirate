@@ -41,6 +41,7 @@ public class AutoCannon : Cannon
                 fov.targetMask = SurvivorLayer;
                 break;
             default:
+                fov.targetMask = BattleRoyaleLayer;
                 break;
         }
     }
@@ -110,32 +111,9 @@ public class AutoCannon : Cannon
 
         if (attackingState == 0)
         {
-            switch (myCannonType)
+            if (currCoolTime <= 0)
             {
-                case CannonType.Trajectory:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
-                case CannonType.Straight:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
-                case CannonType.ThreeWay:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
-                case CannonType.Soybean:
-                    if (currCoolTime <= 0)
-                    {
-                        attackingState = 1;
-                    }
-                    break;
+                attackingState = 1;
             }
         }
     }

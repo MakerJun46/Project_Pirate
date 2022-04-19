@@ -10,16 +10,38 @@ public class PlayerScoreList : MonoBehaviour
     [SerializeField] Image WinnerImg;
     [SerializeField] Text addScoreTxt;
     Animator anim;
-    public int actorNum;
-    public int score;
+    public int score { get; set; }
 
-    public int addScore;
-    public float currAddScore=0;
-    public float addScoreEffectTime;
+    private int addScore;
+    private float currAddScore=0;
+    private float addScoreEffectTime;
+
     private void Start()
     {
         anim = GetComponent<Animator>();
     }
+    public void SetInfoUI(Color _infoImgColor, Color _infoTxtColor, string _infoTxt)
+    {
+        infoImg.color = _infoImgColor;
+        infoTxt.color = _infoTxtColor;
+        infoTxt.text = _infoTxt;
+    }
+
+    public void SetScore(int _score)
+    {
+        score = _score;
+    }
+    public void AddScoreEffect(int _score)
+    {
+        addScore += _score;
+        addScoreEffectTime = 2f;
+        anim.SetTrigger("Active");
+    }
+    public void SetWinnerImg(bool _active)
+    {
+        WinnerImg.gameObject.SetActive(_active);
+    }
+
     private void Update()
     {
         if (addScoreEffectTime <= 0)
@@ -38,27 +60,5 @@ public class PlayerScoreList : MonoBehaviour
             }
             addScoreTxt.text = "+ "+((int)currAddScore).ToString();
         }
-    }
-    public void SetScore(int _score)
-    {
-        score = _score;
-    }
-    public void AddScoreEffect(int _score)
-    {
-        print("AddScoreEffect " + _score);
-        addScore += _score;
-        addScoreEffectTime = 2f;
-        anim.SetTrigger("Active");
-    }
-    public void SetWinnerImg(bool _active)
-    {
-        WinnerImg.gameObject.SetActive(_active);
-    }
-    public void SetInfoUI(Color _infoImgColor, Color _infoTxtColor, string _infoTxt)
-    {
-        infoImg.color = _infoImgColor;
-
-        infoTxt.color = _infoTxtColor;
-        infoTxt.text = _infoTxt;
     }
 }

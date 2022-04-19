@@ -7,10 +7,6 @@ public class Player_UI_Ship : MonoBehaviour
 {
     [SerializeField] private Canvas myCanvas;
     [SerializeField] private Image healthImage;
-    /// <summary>
-    /// 카메라 시점 및 닉네임/체력 바 canvas 고정을 위한 코드
-    /// </summary>
-
 
     void Update()
     {

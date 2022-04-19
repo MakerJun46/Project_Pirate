@@ -329,11 +329,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102628724}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -43, z: 0}
+  m_LocalPosition: {x: 0, y: -30, z: 0}
   m_LocalScale: {x: 500, y: 1, z: 500}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &105117100
 PrefabInstance:
@@ -1285,7 +1285,7 @@ Transform:
   - {fileID: 1469104139}
   - {fileID: 1730362216}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &395057537
 GameObject:
@@ -1393,7 +1393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 483576997207186299, guid: fe72fff7af17118449bd448c349a77c8, type: 3}
       propertyPath: m_LocalScale.x
@@ -2436,7 +2436,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1791
+    m_Bits: 7935
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -3312,7 +3312,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3014258686909411143, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3014258686909411143, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4003,7 +4003,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1561859351}
   m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 50, y: 1, z: 50}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5915,6 +5915,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1241222759}
     m_Modifications:
+    - target: {fileID: 7783536428326601078, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -57.168457
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783536428326601078, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -21.43689
+      objectReference: {fileID: 0}
     - target: {fileID: 7783536428326601079, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_IsActive
       value: 0

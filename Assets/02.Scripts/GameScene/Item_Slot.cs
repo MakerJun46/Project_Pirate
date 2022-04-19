@@ -31,7 +31,7 @@ public class Item_Slot : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
                 if(isShipSlot)
                 {
                     if(slotIndex>=20 && 32 <= item.itemCode && item.itemCode <= 33)
-                        CombatManager.instance.EquipSail(slotIndex-20, item.itemCode - 32);
+                        CombatManager.instance.EquipSail();
                     else if (11 <= item.itemCode && item.itemCode <= 14)
                         CombatManager.instance.EquipCannon(slotIndex, item.itemCode-11);
                     else if (slotIndex >= 10 && slotIndex< 20 && 15 <= item.itemCode && item.itemCode <= 18)

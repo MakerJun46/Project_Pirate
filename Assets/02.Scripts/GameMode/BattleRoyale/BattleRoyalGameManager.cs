@@ -48,8 +48,10 @@ public class BattleRoyalGameManager : GameManager
         Resource_Rock_Count = 0;
         My_Sailor_Count = 0;
 
-        getStartResource();
+        //getStartResource();
     }
+
+    [System.Obsolete]
     public void getStartResource()
     {
         Item_Inventory _item = Item_Manager.GetInstance().Resource_item_list[0];
@@ -90,9 +92,6 @@ public class BattleRoyalGameManager : GameManager
     protected override void Update()
     {
         base.Update();
-
-        //UI_Resources_Text_Update();
-        //UI_Panel_Update();
 
         if (GameStarted)
         {

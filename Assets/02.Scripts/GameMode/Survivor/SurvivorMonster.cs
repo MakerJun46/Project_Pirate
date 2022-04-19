@@ -32,8 +32,6 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
     protected virtual void Start()
     {
         rb = GetComponentInChildren<Rigidbody>();
-
-
         health = maxHealth;
     }
 
@@ -117,7 +115,6 @@ public class SurvivorMonster : MonoBehaviourPunCallbacks, IPunObservable
         if (canAttack)
         {
             health -= (float)param[0];
-            //additionalForce = (Vector3)param[1];
 
             AttackedFunc(1f);
 

@@ -40,6 +40,7 @@ public class Cannon : MonoBehaviourPun
     protected int spotIndex;
 
     protected GameMode gameMode;
+    Vector3 cursorAddPos;
 
     public virtual void Initialize(Player_Combat_Ship _myShip,int _spotIndex,int _gameModeIndex)
     {
@@ -89,7 +90,6 @@ public class Cannon : MonoBehaviourPun
     public virtual void ChangeCannonType(int _typeIndex, bool _isSet)
     {
     }
-    Vector3 tmpPos;
     protected void ChargeCannon(float cursorSpeed = -1f,float _currCannonDistance = -1f)
     {
         cursor.gameObject.SetActive(true);
@@ -105,9 +105,9 @@ public class Cannon : MonoBehaviourPun
             cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
         else
         {
-            tmpPos += new Vector3(tmpInput.x, 0, tmpInput.y) * cursorSpeed * Time.deltaTime;
-            tmpPos = Vector3.ClampMagnitude(tmpPos, currCannonDistance);
-            cursor.transform.position = this.transform.position+ tmpPos;
+            cursorAddPos += new Vector3(tmpInput.x, 0, tmpInput.y) * cursorSpeed * Time.deltaTime;
+            cursorAddPos = Vector3.ClampMagnitude(cursorAddPos, currCannonDistance);
+            cursor.transform.position = this.transform.position+ cursorAddPos;
         }
     }
     protected void ResetAttackingState(float coolTime)

@@ -30,7 +30,6 @@ public class Piranha : SurvivorMonster
         base.Update();
         if (GetComponent<PhotonView>().IsMine)
         {
-            print("GetComponent<PhotonView>().IsMine");
             for (int i = 0; i < colls.Length; i++)
             {
                 if (Vector3.Distance(colls[i].transform.position, transform.position) <= attackRadius)
@@ -40,23 +39,10 @@ public class Piranha : SurvivorMonster
                 }
             }
 
-            //if (target != null)
-            //{
-            //    targetFollowTime -= Time.deltaTime;
-            //    if (targetFollowTime <= 0)
-            //    {
-            //        targetFollowTime = 3f;
-            //        target = null;
-            //    }
-            //}
-
-
             if (!attacked)
             {
-                print("!attacked");
                 if (target)
                 {
-                    print("target");
                     toTargetDir = (target.position - this.transform.position);
                     toTargetDir.y = 0;
                     toTargetDir.Normalize();

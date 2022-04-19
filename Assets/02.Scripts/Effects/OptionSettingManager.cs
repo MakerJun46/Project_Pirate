@@ -37,14 +37,8 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
     public Slider masterAudioSlider;
     public Slider backgroundAudioSlider;
     public Slider effectAudioSlider;
-    //public float EffectAudioVolumeMul;
 
     public int MainAudioIndex = 0;
-    //public AudioClip[] mainBackgroundClips0;
-    //public AudioClip[] mainBackgroundClips1;
-    //public AudioClip[] mainBackgroundClips2;
-    //public AudioClip[] mainBackgroundClips3;
-    //public AudioClip[] mainBackgroundClips4;
 
     public List<MainBackgroundClips> mainBackgroundClipList = new List<MainBackgroundClips>();
 
@@ -113,30 +107,6 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
         backgroundAudioSlider.value = tmpVal;
         MasterAudioMixer.GetFloat("effectVol", out tmpVal);
         effectAudioSlider.value = tmpVal;
-
-        /*
-        resolutions = Screen.resolutions;
-        resolutionDropdown.ClearOptions();
-        List<string> options = new List<string>();
-        int currentResolutionIndex = 0;
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
-            if (!options.Contains(option))
-                options.Add(option);
-
-            if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height)
-            {
-                currentResolutionIndex = i;
-            }
-        }
-        
-        resolutionDropdown.AddOptions(options);
-        //resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.value = 0;
-        resolutionDropdown.RefreshShownValue();
-        */
     }
 
     public void PlayBackgroundAudio(bool random)
@@ -157,28 +127,6 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
         MainBackgroundAudio.Play();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Slash))
-        {
-            MainAudioIndex++;
-            PlayBackgroundAudio(false);
-        }
-
-        /*
-        if (MainBackgroundAudioAdjustTime > 0)
-        {
-            MainBackgroundAudioAdjustTime -= Time.deltaTime;
-            MainBackgroundAudio.volume = Mathf.Lerp(MainBackgroundAudio.volume, MainBackgroundVolumeValue, Time.deltaTime);
-        }
-        else
-        {
-            MainBackgroundAudio.volume = backgroundAudioSlider.value;
-            //MainBackgroundAudio.volume = Mathf.Lerp(MainBackgroundAudio.volume, 0.1f* backgroundAudioSlider.value, Time.deltaTime);
-        }
-        */
-    }
-
     public void SetMasterVolume(float val)
     {
         MasterAudioMixer.SetFloat("masterVol", val);
@@ -197,19 +145,7 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
         MainBackgroundAudioAdjustTime = Time;
         MainBackgroundVolumeValue = val;
     }
-
-    /*
-    public void SetFullScreen(bool isFullScreen)
-    {
-        Screen.fullScreen = isFullScreen;
-    }
-    public void SetResolution(int resolutionIndex)
-    {
-        Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-    }
-    */
-
+    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
     }

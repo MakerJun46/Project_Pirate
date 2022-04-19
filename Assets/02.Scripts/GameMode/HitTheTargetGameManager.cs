@@ -26,13 +26,6 @@ public class HitTheTargetGameManager : GameManager
         CombatManager.instance.SetLevelUpCount(3);
     }
 
-    public override void JudgeWinLose()
-    {
-        int rank= RoomData.GetInstance().GetPlayerCurrentRank(PhotonNetwork.LocalPlayer.ActorNumber);
-        IsWinner = rank <= 0 ? true : false;
-        base.JudgeWinLose();
-    }
-
     private void WaveStart()
     {
         StartCoroutine("WaveSpawnCoroutine");
@@ -54,6 +47,13 @@ public class HitTheTargetGameManager : GameManager
 
         if (GameStarted)
             StartCoroutine("WaveSpawnCoroutine");
+    }
+
+    public override void JudgeWinLose()
+    {
+        int rank = RoomData.GetInstance().GetPlayerCurrentRank(PhotonNetwork.LocalPlayer.ActorNumber);
+        IsWinner = rank <= 0 ? true : false;
+        base.JudgeWinLose();
     }
 
     protected override void Update()

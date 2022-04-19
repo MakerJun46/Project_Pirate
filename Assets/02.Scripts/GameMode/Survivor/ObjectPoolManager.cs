@@ -62,7 +62,6 @@ public class ObjectPoolManager : MonoBehaviour
             }
         }
 
-
         if (index < 0)
         {
             print("There is no Pool");
@@ -96,7 +95,6 @@ public class ObjectPoolManager : MonoBehaviour
                 break;
             }
         }
-
 
         if (index < 0)
         {

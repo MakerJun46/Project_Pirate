@@ -22,8 +22,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<GameObject> shipObjects;
     private GameObject myShipObjects;
 
-    // level 1: 1, level 2: 1, level 3: 2, level4 : 3 
-    [SerializeField] private List<Transform> SailSpots;
+    [SerializeField] private Transform SailSpots;
 
     // level 1: 0, level 2: 1, level 3: 1, level4 : 2 
     [SerializeField] private List<Transform> SpecialCannonSpots;
@@ -33,9 +32,10 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     [SerializeField] private List<Cannon> mySpecialCannons;
     [SerializeField] private List<Cannon> myAutoCannons;
-    [SerializeField] private List<GameObject> mySails;
+    [SerializeField] private GameObject mySails;
 
     [SerializeField] private ParticleSystem AttackedPS;
+    [SerializeField] private ParticleSystem DiePS;
     [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
     CinemachineImpulseSource impulseSource;
 
@@ -45,7 +45,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     private void Start()
     {
         health = maxHealth;
-        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, 0);
+        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered,  RoomData.GetInstance().GetPlayerFinalRank(GetComponent<PhotonView>().OwnerActorNr));
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
@@ -62,30 +62,34 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void InitializeCombat(int param)
     {
-        if (shipObjects.Count <= (int)param)
-            return;
+        int upgradeIndex = 0;
+        if (param <= 0)
+        {
+            upgradeIndex = 2;
+        }else if (param == 1)
+        {
+            upgradeIndex = 1;
+        }
+        else
+        {
+            upgradeIndex = 0;
+        }
 
         for (int i = 0; i < shipObjects.Count; i++)
         {
             shipObjects[i].gameObject.SetActive(false);
         }
-        myShipObjects = shipObjects[(int)param];
+        myShipObjects = shipObjects[upgradeIndex];
         myShipObjects.SetActive(true);
-
-        // upgrade
-        maxHealth += (int)param * 25f;
-        health += (int)param * 25f;
 
         AutoCannonSpots.Clear();
         SpecialCannonSpots.Clear();
-        SailSpots.Clear();
 
         for (int i = 0; i < myShipObjects.transform.Find("CannonSpots").childCount; i++)
             AutoCannonSpots.Add(myShipObjects.transform.Find("CannonSpots").GetChild(i));
         for (int i = 0; i < myShipObjects.transform.Find("SpecialCannonSpots").childCount; i++)
             SpecialCannonSpots.Add(myShipObjects.transform.Find("SpecialCannonSpots").GetChild(i));
-        for (int i = 0; i < myShipObjects.transform.Find("SailSpots").childCount; i++)
-            SailSpots.Add(myShipObjects.transform.Find("SailSpots").GetChild(i));
+        SailSpots = myShipObjects.transform.Find("SailSpots");
 
 
         for (int i = 0; i < myAutoCannons.Count; i++)
@@ -106,15 +110,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 mySpecialCannons[i].transform.localRotation = Quaternion.identity;
             }
         }
-        for (int i = 0; i < mySails.Count; i++)
-        {
-            if (mySails[i] != null)
-            {
-                mySails[i].transform.SetParent(SailSpots[i]);
-                mySails[i].transform.localPosition = Vector3.zero;
-                mySails[i].transform.localRotation = Quaternion.identity;
-            }
-        }
 
         for (int i = 0; i < AutoCannonSpots.Count; i++)
         {
@@ -126,22 +121,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             if (mySpecialCannons.Count < SpecialCannonSpots.Count)
                 mySpecialCannons.Add(null);
         }
-        for (int i = 0; i < SailSpots.Count; i++)
-        {
-            if (mySails.Count < SailSpots.Count)
-                mySails.Add(null);
-        }
-    }
-
-    public float GetSailSpeed()
-    {
-        float tmp = 0;
-        for (int i = 0; i < mySails.Count; i++)
-        {
-            if (mySails[i] != null)
-                tmp += 5f;
-        }
-        return tmp;
+        mySails= SailSpots.GetChild(0).gameObject;
     }
 
 
@@ -214,6 +194,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
                 if (health <= 0)
                 {
+                    DiePS.Play();
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
@@ -228,18 +209,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
         impulseSource.GenerateImpulse(_force);
     }
 
-    public int GetLastSailIndex()
+    public bool GetSailActivated()
     {
-        int index = -1;
-        for (int i = 0; i < mySails.Count; i++)
-        {
-            if (mySails[i] == null)
-            {
-                index = i;
-                break;
-            }
-        }
-        return index;
+        return mySails.activeInHierarchy;
     }
     public int GetLastAutoCannonIndex()
     {
@@ -275,11 +247,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
         switch (_supplyType)
         {
             case SupplyType.Sail:
-                spotIndex = GetLastSailIndex();
-                if(spotIndex>=0)
-                {
-                    pv.RPC("EquipSail", RpcTarget.AllBuffered, spotIndex, _supplyIndex);
-                }
+                pv.RPC("EquipSail", RpcTarget.AllBuffered);
                 break;
             case SupplyType.Cannon:
                 spotIndex = GetLastAutoCannonIndex();
@@ -299,41 +267,21 @@ public class Player_Combat_Ship : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void EquipSail(int _spotIndex, int _sailIndex)
+    public void EquipSail()
     {
         Player_Controller_Ship myShip = GetComponent<Player_Controller_Ship>();
-        if (_spotIndex >= mySails.Count)
-            return;
-
-        if (_sailIndex == -1)
-        {
-            if (mySails[_spotIndex] != null)
-            {
-                myShip.MaxSpeed -= 5f;
-                myShip.MoveSpeed -= 5f;
-                Destroy(mySails[_spotIndex].gameObject);
-            }
-            return;
-        }
-
-        if (mySails[_spotIndex] != null)
+        if (mySails.activeInHierarchy)
         {
             myShip.MaxSpeed -= 5f;
             myShip.MoveSpeed -= 5f;
-            Destroy(mySails[_spotIndex].gameObject);
+            mySails.SetActive(false);
         }
-
-        myShip.MaxSpeed += 5f;
-        myShip.MoveSpeed += 5f;
-
-        GameObject tmpCannon = null;
-        tmpCannon = Instantiate(Resources.Load("Sail_" + _sailIndex) as GameObject, Vector3.zero, Quaternion.identity);
-
-        tmpCannon.transform.SetParent(SailSpots[_spotIndex]);
-        tmpCannon.transform.localPosition = Vector3.zero;
-        tmpCannon.transform.localScale = Vector3.one;
-        tmpCannon.transform.localRotation = Quaternion.identity;
-        mySails[_spotIndex] = tmpCannon;
+        else
+        {
+            myShip.MaxSpeed += 5f;
+            myShip.MoveSpeed += 5f;
+            mySails.SetActive(true);
+        }
     }
 
     [PunRPC]

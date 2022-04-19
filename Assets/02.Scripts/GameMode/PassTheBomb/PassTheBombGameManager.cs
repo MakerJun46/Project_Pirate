@@ -58,7 +58,7 @@ public class PassTheBombGameManager : GameManager
         base.StartGame();
         if (PhotonNetwork.IsMasterClient)
         {
-            int randomPlayerIndex = selectBomb();
+            int randomPlayerIndex = AllShip[Random.Range(0, AllShip.Count)].GetComponent<PhotonView>().OwnerActorNr;
             print("BOMB : " + randomPlayerIndex);
             PV.RPC("FirstHasBomb", RpcTarget.AllBuffered, randomPlayerIndex);
         }
@@ -70,7 +70,6 @@ public class PassTheBombGameManager : GameManager
 
     public void InitializeGame()
     {
-        print("InitializeGame");
         bomb_Second = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
         for (int i = 0; i < AllShip.Count; i++)
@@ -80,8 +79,8 @@ public class PassTheBombGameManager : GameManager
             canvas.Find("Health").gameObject.SetActive(false);
             canvas.Find("Count_Text").gameObject.SetActive(false);
         }
-        TryUpgradeShip();
-        CombatManager.instance.EquipSail(0, 1);
+        //TryUpgradeShip();
+        CombatManager.instance.EquipSail();
         CombatManager.instance.EquipSpecialCannon(0, 0);
 
         VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = statue.transform;
@@ -151,16 +150,8 @@ public class PassTheBombGameManager : GameManager
         PhotonView.Find(ViewID).transform.Find("PassTheBomb").GetChild(1).gameObject.SetActive(true);
         // Fire VFX
         PhotonView.Find(ViewID).transform.Find("PassTheBomb").GetChild(0).gameObject.SetActive(false);
-
-        //FindObjectOfType<NetworkManager>().StartEndGame(false);
     }
 
-    private int selectBomb()
-    {
-        Debug.Log("플레이어 수 : " + RoomPlayerCount.playerCount);
-        //return random.Next(RoomPlayerCount.playerCount);
-        return AllShip[Random.Range(0, AllShip.Count)].GetComponent<PhotonView>().OwnerActorNr;
-    }
 
     [PunRPC]
     public void FirstHasBomb(int PlayerIndex)

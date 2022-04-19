@@ -36,7 +36,6 @@ public class SpinRail : MonoBehaviour
                 cross= Quaternion.AngleAxis(innerAngle, Vector3.up) * cross;
                 Debug.DrawLine(target.position, target.position + cross * power* (1 - dist.magnitude / realRadius) * (1 - dist.magnitude / realRadius));
                 target.GetComponent<Player_Controller_Ship>().additionalForce += cross * Time.deltaTime * power * (1 - dist.magnitude / realRadius) ;
-                //target.GetComponent<Rigidbody>().AddTorque (cross * Time.deltaTime * power * dist.magnitude / viewRadius,ForceMode.Impulse);
             }
         }
     }
