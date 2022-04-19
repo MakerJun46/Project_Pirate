@@ -35,6 +35,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private GameObject mySails;
 
     [SerializeField] private ParticleSystem AttackedPS;
+    [SerializeField] private ParticleSystem DiePS;
     [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
     CinemachineImpulseSource impulseSource;
 
@@ -44,7 +45,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     private void Start()
     {
         health = maxHealth;
-        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, 0);
+        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, RoomData.GetInstance().GetPlayerFinalRank(GetComponent<PhotonView>().OwnerActorNr));
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
@@ -61,19 +62,26 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void InitializeCombat(int param)
     {
-        if (shipObjects.Count <= (int)param)
-            return;
+        int upgradeIndex = 0;
+        if (param <= 0)
+        {
+            upgradeIndex = 2;
+        }
+        else if (param == 1)
+        {
+            upgradeIndex = 1;
+        }
+        else
+        {
+            upgradeIndex = 0;
+        }
 
         for (int i = 0; i < shipObjects.Count; i++)
         {
             shipObjects[i].gameObject.SetActive(false);
         }
-        myShipObjects = shipObjects[(int)param];
+        myShipObjects = shipObjects[upgradeIndex];
         myShipObjects.SetActive(true);
-
-        // upgrade
-        maxHealth += (int)param * 25f;
-        health += (int)param * 25f;
 
         AutoCannonSpots.Clear();
         SpecialCannonSpots.Clear();
@@ -188,6 +196,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
                 if (health <= 0)
                 {
+                    DiePS.Play();
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
