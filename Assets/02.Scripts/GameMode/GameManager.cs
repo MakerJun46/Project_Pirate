@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
     [SerializeField] protected GameObject ObserverModePanel;
+    [SerializeField] protected GameObject BoosterButton;
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
@@ -85,6 +86,10 @@ public class GameManager : MonoBehaviour, IPunObservable
                     ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
                 }
             }
+
+
+            BestPlayerContent.SetActive(false);
+            RefreshPlayeScore(true);
         }
     }
     public virtual void SetMyShip(Player_Controller_Ship _myShip, bool _setMyShip = true)
@@ -115,6 +120,10 @@ public class GameManager : MonoBehaviour, IPunObservable
         FindObjectOfType<NetworkManager>().GoToLobby();
     }
 
+    public virtual void MasterChanged(bool _isMaster)
+    {
+    }
+
     /// <summary>
     /// 맨 마지막에 딱 한 번 실행되어야함
     /// </summary>
@@ -125,6 +134,7 @@ public class GameManager : MonoBehaviour, IPunObservable
         LosePanel.SetActive(!IsWinner);
         print("End : " + IsWinner);
         GameStarted = false;
+
 
         if (MyShip)
         {
@@ -140,6 +150,17 @@ public class GameManager : MonoBehaviour, IPunObservable
         //    }
         //}
     }
+    public Cinemachine.CinemachineVirtualCamera VC_Winner;
+    public void Change_VC_Lookat(int ViewID)
+    {
+        VC_Winner.Priority = 15;
+        if (PhotonView.Find(ViewID) && PhotonView.Find(ViewID).gameObject)
+        {
+            VC_Winner.LookAt = PhotonView.Find(ViewID).gameObject.transform;
+            VC_Winner.Follow = PhotonView.Find(ViewID).gameObject.transform;
+        }
+    }
+
     protected virtual void Update()
     {
         if (TimeText)
@@ -162,6 +183,10 @@ public class GameManager : MonoBehaviour, IPunObservable
                 steeringRot = Mathf.Clamp(steeringRot, -720, 720);
                 SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
             }
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ToggleGameView();
         }
     }
     #endregion
@@ -189,6 +214,16 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         MyShip.goOrStop = !MyShip.goOrStop;
     }
+    public void Booster_Button()
+    {
+        MyShip.startBooster();
+    }
+
+    public void TryUpgradeShip()
+    {
+        if (MyShip)
+            MyShip.UpgradeShip();
+    }
 
     #endregion
 
@@ -213,18 +248,22 @@ public class GameManager : MonoBehaviour, IPunObservable
             else
                 score = RoomData.GetInstance().currGameScores[PhotonNetwork.PlayerList[i].ActorNumber];
             bestPlayerListBox[i - 1].SetScore(score);
-            
+            //bestPlayerListBox[currIndex].GetComponentInChildren<Text>().color = (tmpA.myIndex < 0 || !tmpA.gameObject.activeInHierarchy) ? Color.red : Color.black;
             bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[i - 1], Color.black, (i) + " : " + PhotonNetwork.PlayerList[i].NickName + "||  Score :" + score);
 
             if (maxScore < score)
+            {
                 maxScore = score;
+            }
         }
         for (int i = 0; i < bestPlayerListBox.Count; i++)
         {
             bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore);
 
             if (PhotonNetwork.PlayerList.Length-1 <= i)
+            {
                 bestPlayerListBox[i].SetInfoUI(Color.black, Color.white, "XXX");
+            }
         }
     }
 
@@ -236,18 +275,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     #endregion
 
     #region Camera
-
-    public Cinemachine.CinemachineVirtualCamera VC_Winner;
-    public void Change_VC_Lookat(int ViewID)
-    {
-        VC_Winner.Priority = 15;
-        if (PhotonView.Find(ViewID) && PhotonView.Find(ViewID).gameObject)
-        {
-            VC_Winner.LookAt = PhotonView.Find(ViewID).gameObject.transform;
-            VC_Winner.Follow = PhotonView.Find(ViewID).gameObject.transform;
-        }
-    }
-
     public void ToggleGameView()
     {
         topView = !topView;
@@ -276,9 +303,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     }
     #endregion
 
-    public virtual void MasterChanged(bool _isMaster)
-    {
-    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

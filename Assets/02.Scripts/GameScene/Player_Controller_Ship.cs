@@ -14,6 +14,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public float deadTime;
     public static int characterIndex;
 
+    public int upgradeIndex;
 
     public float MoveSpeed;
     public float MaxSpeed;
@@ -26,6 +27,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public bool is_Turn_Left;
     public bool is_Turn_Right;
     public bool is_Landing;
+    public bool isBoosting;
 
     public float motorFoamMultiplier;
     public float moterFoamBase;
@@ -34,6 +36,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     private Rigidbody RB;
     private PhotonView PV;
     public Text NickNameText;
+    public GameObject MyShip_Canvas;
     public int Landed_island_ID;
 
     ParticleSystem.EmissionModule motor, front;
@@ -42,8 +45,9 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public Vector3 currPos;
     public Quaternion currRot;
 
-    public List<ParticleSystem> WinnerEffectPrefab;
+    public ParticleSystem WinnerEffectPrefab;
     public ParticleSystem LoseEffectPrefab;
+    public GameObject BoosterEffect;
 
     public TextMeshProUGUI Count_Text;
     private void Awake()
@@ -56,14 +60,18 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
 
+        MyShip_Canvas = transform.Find("Canvas").gameObject;
+
         goOrStop = false;
         is_Turn_Left = false;
         is_Turn_Right = false;
         is_Landing = false;
+
     }
     private void Start()
     {
         GameManager.GetInstance().AllShip.Add(this);
+        Reset_Ship_Status();
     }
 
     [PunRPC]
@@ -74,8 +82,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         characterIndex++;
         deadTime = 0;
         GameManager.GetInstance().AddThisPlayerToPlayerList(this.gameObject);
-
-        CustomizeManager.GetInstance().EquipCostume(GetComponent<PhotonView>().ViewID);
     }
 
     [PunRPC]
@@ -88,16 +94,18 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (_isWinner)
         {
-            for(int i=0;i< WinnerEffectPrefab.Count;i++)
-                WinnerEffectPrefab[i].Play();
+            WinnerEffectPrefab.Play();
         }
         else
+        {
             LoseEffectPrefab.Play();
+        }
     }
 
     private void FixedUpdate()
     {
         Move();
+        GetInput();
     }
 
     public void Move()
@@ -106,10 +114,13 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         {
             additionalForce = Vector3.Lerp(additionalForce, Vector3.zero, Time.deltaTime);
             if (goOrStop)
+            {
                 inputVel = Vector3.Lerp(inputVel, this.transform.forward * MoveSpeed, Time.deltaTime);
+            }
             else
+            {
                 inputVel = Vector3.Lerp(inputVel, Vector3.zero, Time.deltaTime);
-
+            }
             RB.velocity = inputVel + additionalForce;
             currVel = RB.velocity;
 
@@ -131,6 +142,35 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         // 에러떠서 임시로 주석처리 => 배가 지나간 잔상 파티클 부분
         //motor.rate = motorFoamMultiplier * Input.GetAxis("Vertical") + moterFoamBase;
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
+    }
+
+    public void startBooster()
+    {
+        if(!isBoosting)
+            StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
+    }
+
+    public IEnumerator Ship_Booster(float sec, float addMoveSpeed, float addTrunSpeed)
+    {
+        //isBoosting = true;
+        BoosterEffect.SetActive(true);
+        MoveSpeed += addMoveSpeed;
+        turningSpeed += addTrunSpeed;
+
+        yield return new WaitForSecondsRealtime(sec);
+
+        BoosterEffect.SetActive(false);
+        MoveSpeed -= addMoveSpeed;
+        turningSpeed -= addTrunSpeed;
+
+
+        yield return new WaitForSecondsRealtime(7f); // cooltime
+        isBoosting = false;
+    }
+
+
+    public void GetInput()
+    {
     }
 
     public void Turn_Left()
@@ -156,6 +196,18 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+    public void Reset_Ship_Status()
+    {
+        //motor = transform.GetChild(3).GetComponent<ParticleSystem>().emission;
+        //front = transform.GetChild(4).GetComponent<ParticleSystem>().emission;
+    }
+    public void UpgradeShip()
+    {
+        upgradeIndex++;
+        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, upgradeIndex);
+        Reset_Ship_Status();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("SeaResource"))
@@ -172,7 +224,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (GetComponent<PhotonView>().IsMine)
             {
-                Treasure_GameManager.instance.Update_TreasureCount(GetComponent<PhotonView>().ViewID);
+                Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
             }
 
             Destroy(other.gameObject);
