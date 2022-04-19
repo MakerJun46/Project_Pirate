@@ -29,11 +29,13 @@ public class BattleRoyalGameManager : GameManager
     public GameObject Landing_Button_Blur;
     public Text LandingEscape_Button_Text;
 
+    /*
     [Header("[MiniMap]")]
     [SerializeField] GameObject miniMap;
     [SerializeField] protected GameObject WorldMap;
     [SerializeField] MinimapCamera minimapCam;
     [SerializeField] Material MyshipColor;
+    */
 
     /* 벽 투명하게 보이도록
     [SerializeField] Material WallMaterial;
@@ -80,11 +82,12 @@ public class BattleRoyalGameManager : GameManager
     {
         base.SetMyShip(_myShip, _SetMyShip);
 
+        /* Minimap
         if (_SetMyShip)
         {
             minimapCam.Player = _myShip.gameObject;
-            MyShip.transform.Find("MinimapCircle").GetComponent<Renderer>().sharedMaterial = MyshipColor;
         }
+        */
     }
 
     #endregion
@@ -116,11 +119,13 @@ public class BattleRoyalGameManager : GameManager
             }
         }
 
+        /* Minimap
         if (Input.GetKeyDown(KeyCode.M))
         {
             miniMap.SetActive(WorldMap.activeInHierarchy);
             WorldMap.SetActive(!WorldMap.activeInHierarchy);
         }
+        */
 
         /* See Through Wall  
         if (MyShip)
