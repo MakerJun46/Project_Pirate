@@ -37,7 +37,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     private PhotonView PV;
     public Text NickNameText;
     public GameObject MyShip_Canvas;
-    public int Landed_island_ID;
 
     ParticleSystem.EmissionModule motor, front;
 
@@ -210,20 +209,13 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("SeaResource"))
-        {
-            Debug.Log("get Resource on Sea");
-
-            int resourceCode = (int)other.GetComponent<Resource>().type;
-
-            Item_Manager.instance.AddItem(Item_Manager.instance.Resource_item_list[resourceCode]);
-
-            Destroy(other.gameObject);
-        }
-        else if(other.gameObject.CompareTag("Treasure") && other.GetComponent<Treasure>().isPickable)
+        if(other.gameObject.CompareTag("Treasure") && other.GetComponent<Treasure>().isPickable)
         {
             if (GetComponent<PhotonView>().IsMine)
             {
+                Debug.LogError("GetTreasure");
+                Debug.LogError(Treasure_GameManager.instance.Player_TreasureCount_Value);
+                Treasure_GameManager.instance.Player_TreasureCount_Value++;
                 Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
             }
 
@@ -233,23 +225,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             other.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 5, Vector3.zero, GetComponent<PhotonView>().ViewID });
         }
     }
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("anchoragePoint"))
-        {
-            //Debug.Log("On anchoragePoint");
-            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = true;
-            Landed_island_ID = other.GetComponentInParent<Island_Info>().Island_ID;
-        }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("anchoragePoint"))
-        {
-            GameManager.GetInstance().GetComponent<BattleRoyalGameManager>().MyShip_On_Landing_Point = false;
-        }
-    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)

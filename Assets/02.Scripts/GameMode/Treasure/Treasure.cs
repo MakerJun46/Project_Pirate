@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class Treasure : MonoBehaviour
 {
@@ -8,8 +9,11 @@ public class Treasure : MonoBehaviour
     public float rotateSpeed;
     public int Score;
 
+    PhotonView PV;
+
     void Start()
     {
+        PV = this.GetComponent<PhotonView>();
         isPickable = false;
     }
 
@@ -38,6 +42,12 @@ public class Treasure : MonoBehaviour
 
         yield return null;
 
+        PV.RPC("Set_Pickable", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    public void Set_Pickable()
+    {
         isPickable = true;
     }
 }

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class BattleRoyalGameManager : GameManager
 {
     #region Variables & Initializer
-    public List<Island_Info> All_Island;
     public List<GameObject> MySailors;
 
     public int Resource_Wood_Count;
@@ -53,23 +52,6 @@ public class BattleRoyalGameManager : GameManager
         //getStartResource();
     }
 
-    [System.Obsolete]
-    public void getStartResource()
-    {
-        Item_Inventory _item = Item_Manager.GetInstance().Resource_item_list[0];
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-
-        _item = Item_Manager.GetInstance().Resource_item_list[1];
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-        Item_Manager.GetInstance().AddItem(_item);
-    }
     public override void StartGame()
     {
         base.StartGame();
@@ -173,83 +155,4 @@ public class BattleRoyalGameManager : GameManager
             go.transform.localPosition = Vector3.zero;
         }
     }
-
-    #region UI
-    /// <summary>
-    /// 플레이어 자원 표시 업데이트
-    /// </summary>
-    public void UI_Resources_Text_Update()
-    {
-        GameObject[] temp = GameObject.FindGameObjectsWithTag("Sailor");
-        List<GameObject> my_Sailors = new List<GameObject>();
-
-        foreach (GameObject go in temp)
-        {
-            if (go.GetComponent<PhotonView>().IsMine)
-            {
-                my_Sailors.Add(go);
-            }
-        }
-
-        My_Sailor_Count = my_Sailors.Count;
-        MySailors = my_Sailors;
-
-        Resource_Wood_Count = 0;
-        Resource_Rock_Count = 0;
-
-        foreach (Item_Inventory _item in Item_Manager.GetInstance().Player_items)
-        {
-            if (_item.name == "Wood")
-                Resource_Wood_Count++;
-            else if (_item.name == "Rock")
-                Resource_Rock_Count++;
-        }
-
-        UI_Wood_Count.text = Resource_Wood_Count.ToString();
-        UI_Rock_Count.text = Resource_Rock_Count.ToString();
-        UI_Sailor_Count.text = My_Sailor_Count.ToString();
-    }
-    public void UI_Panel_Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab) && !TreasureChest_UI_Panel.activeInHierarchy)
-        {
-            PlayerInfo_UI_Opened = !PlayerInfo_UI_Opened;
-            Item_Manager.instance.ResetCombineTable();
-        }
-
-        PlayerInfo_UI_Panel.SetActive(PlayerInfo_UI_Opened);
-        Landing_Button_Blur.SetActive(!MyShip_On_Landing_Point);
-    }
-    #endregion
-
-    #region Island Landing
-    public void island_LandingEscape_Button()
-    {
-        if (MyShip_On_Landing_Point && !MyShip.is_Landing)
-        {
-            Island_Landing_UI.SetActive(true);
-            Island_Landing_UI.GetComponent<Island_Landing_UI>().Load_island_Info(All_Island[MyShip.Landed_island_ID]);
-            MyShip.Ship_Stop();
-        }
-        else if (MyShip.is_Landing)
-        {
-            foreach (GameObject go in MySailors)
-            {
-                go.GetComponent<Sailor>().status = Sailor.Sailor_Status.Escaping;
-            }
-
-            MyShip.is_Landing = false;
-            LandingEscape_Button_Text.text = "Landing";
-        }
-    }
-
-    public void island_Landing_Accept_Button()
-    {
-        Island_Landing_UI.GetComponent<Island_Landing_UI>().Landing();
-        Island_Landing_UI.SetActive(false);
-        MyShip.is_Landing = true;
-        LandingEscape_Button_Text.text = "Escape";
-    }
-    #endregion
-
 }

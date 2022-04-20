@@ -52,9 +52,12 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject LosePanel;
     [SerializeField] protected GameObject ObserverModePanel;
     [SerializeField] protected GameObject BoosterButton;
+    [SerializeField] protected GameObject Loading_FadeInPanel;
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
+
+
 
     protected virtual void Start()
     {
@@ -70,6 +73,8 @@ public class GameManager : MonoBehaviour, IPunObservable
 
         RefreshPlayeScore(false);
     }
+
+
 
     public virtual void SetObserverCamera()
     {
@@ -106,9 +111,30 @@ public class GameManager : MonoBehaviour, IPunObservable
     #region GameFlow
     public virtual void StartGame()
     {
-        GameStarted = true;
+        StartCoroutine(FadeIn());
+
         IsWinner = false;
     }
+    IEnumerator FadeIn()
+    {
+        Loading_FadeInPanel.SetActive(true);
+
+        Color c = Loading_FadeInPanel.GetComponent<Image>().color;
+
+        while (c.a > 0)
+        {
+            c.a -= 0.01f;
+
+            Loading_FadeInPanel.GetComponent<Image>().color = c;
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        Loading_FadeInPanel.SetActive(false);
+
+        GameStarted = true;
+    }
+
     public virtual void EndGame()
     {
         if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
@@ -123,6 +149,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     public virtual void MasterChanged(bool _isMaster)
     {
     }
+
 
     /// <summary>
     /// 맨 마지막에 딱 한 번 실행되어야함

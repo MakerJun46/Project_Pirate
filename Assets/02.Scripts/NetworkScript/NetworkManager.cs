@@ -123,6 +123,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (_start == false)
             GameManager.GetInstance().JudgeWinLose();
 
+        //StartCoroutine(LoadingFadeOut()); // 0420 게임시작 할 때 FadeOut 효과 추가
+
         for (int i = loading_sec; i > 0; i--)
         {
             LoadingPanel.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
@@ -135,6 +137,39 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GameManager.GetInstance().StartGame();
         else
             GameManager.GetInstance().EndGame();
+    }
+
+    public void FadeIn()
+    {
+        StartCoroutine(LoadingFadeIn());
+    }
+
+    IEnumerator LoadingFadeIn()
+    {
+        Color c = LoadingPanel.GetComponent<Image>().color;
+
+        while (c.a > 0)
+        {
+            c.a -= 0.01f;
+
+            LoadingPanel.GetComponent<Image>().color = c;
+
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+    IEnumerator LoadingFadeOut()
+    {
+        Color c = LoadingPanel.GetComponent<Image>().color;
+
+        while (c.a < 1)
+        {
+            c.a += 0.01f;
+
+            LoadingPanel.GetComponent<Image>().color = c;
+
+            yield return new WaitForSeconds(0.01f);
+        }
     }
 
 

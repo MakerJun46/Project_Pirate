@@ -49,6 +49,8 @@ public class Treasure_GameManager : GameManager
             VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
 
             Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
+
+            PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
         }
     }
 
@@ -65,6 +67,7 @@ public class Treasure_GameManager : GameManager
 
     public void initialize()
     {
+
         PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
 
         VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
@@ -88,10 +91,10 @@ public class Treasure_GameManager : GameManager
     protected override void Update()
     {
         base.Update();
-        if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
-        {
-            initialize();
-        }
+        //if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
+        //{
+        //    initialize();
+        //}
 
         if (GameStarted)
         {
@@ -119,11 +122,13 @@ public class Treasure_GameManager : GameManager
 
     public void Update_TreasureCount(int _viewID)
     {
-        Player_TreasureCount_Value++;
+        Debug.LogError("UpdateText");
+
         Player_TreasureCount_Text.text = Player_TreasureCount_Value.ToString();
 
-        RoomData.GetInstance().SetCurrScore(PhotonView.Find(_viewID).OwnerActorNr, 1);
         PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, _viewID });
+
+        RoomData.GetInstance().SetCurrScore(PhotonView.Find(_viewID).OwnerActorNr, 1);
     }
 
 
@@ -134,12 +139,13 @@ public class Treasure_GameManager : GameManager
     {
         Debug.Log("DropTreasure");
 
-        for(int i = 0; i < Player_TreasureCount_Value; i++)
+        for (int i = 0; i < Player_TreasureCount_Value; i++)
         {
             Vector3 randomPos = MyShip.transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
 
             GameObject go = PhotonNetwork.Instantiate("Treasure", MyShip.transform.position + new Vector3(0, 1, 0), Quaternion.identity);
-            go.GetComponent<Treasure>().startMove(randomPos);
+
+            PV.RPC("TreasureMove", RpcTarget.AllBuffered, new object[] { go.GetPhotonView().ViewID, randomPos });
         }
 
         Player_TreasureCount_Value = 0;
@@ -149,6 +155,7 @@ public class Treasure_GameManager : GameManager
     [PunRPC]
     public void Set_Count(int value, int ViewID)
     {
+        Debug.Log("SetCount");
         PhotonView.Find(ViewID).GetComponent<Player_Controller_Ship>().Count_Text.text = value.ToString();
     }
 
@@ -159,6 +166,17 @@ public class Treasure_GameManager : GameManager
         base.JudgeWinLose();
     }
 
+    [PunRPC]
+    public void ChestAnimation()
+    {
+        chestAnimator.SetTrigger("Open");
+    }
+
+    [PunRPC]
+    public void TreasureMove(int ViewID, Vector3 Pos)
+    {
+        PhotonView.Find(ViewID).GetComponent<Treasure>().startMove(Pos);
+    }
 
     IEnumerator TreasureSpawner()
     {
@@ -173,9 +191,11 @@ public class Treasure_GameManager : GameManager
                 treasureSpawn_Time = 1.0f - 0.1f * (TreasureSpawnCount / 10); // 시간이 지날수록 점점 빠르게 생성
             }
 
-            chestAnimator.SetTrigger("Open");
             GameObject go = PhotonNetwork.Instantiate("Treasure", TreasureSpawner_Object.transform.position + new Vector3(0, 2, 0), Quaternion.identity);
             go.GetComponent<Treasure>().startMove(NetworkManager.instance.CalculateSpawnPos());
+            Vector3 pos = NetworkManager.instance.CalculateSpawnPos();
+
+            PV.RPC("ChestAnimation", RpcTarget.AllBuffered);
 
             TreasureSpawnCount++;
 

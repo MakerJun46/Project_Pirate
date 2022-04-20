@@ -45,6 +45,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject MainPanel;
     [SerializeField] GameObject LobbyPanel;
     [SerializeField] GameObject RoomPanel;
+    [SerializeField] GameObject LoadingFadeOutPanel;
 
     [SerializeField] Text ReadyCountText;
     [SerializeField] GameObject OptionBlindForClient;
@@ -132,9 +133,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" } });
 
-            // 게임 대기 씬 로드
-            SceneManager.LoadScene("GameScene_Room");
+            StartCoroutine(FadeOut_beforeLoadScene());
         }
+    }
+
+    IEnumerator FadeOut_beforeLoadScene()
+    {
+        LoadingFadeOutPanel.SetActive(true);
+
+        Color c = LoadingFadeOutPanel.GetComponent<Image>().color;
+
+        while(c.a < 1)
+        {
+            c.a += 0.01f;
+
+            LoadingFadeOutPanel.GetComponent<Image>().color = c;
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        // 게임 대기 씬 로드
+        SceneManager.LoadScene("GameScene_Room");
     }
 
     /// <summary>
