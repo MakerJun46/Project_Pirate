@@ -125,6 +125,9 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
 
         mySails = SailSpots.GetChild(0).gameObject;
+
+        if(photonView.IsMine)
+            FindObjectOfType<CustomizeManager>().EquipCostume(photonView.ViewID);
     }
 
     public void SetToGhost()

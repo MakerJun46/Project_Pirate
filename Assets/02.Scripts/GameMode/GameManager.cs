@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject LosePanel;
     [SerializeField] protected GameObject ObserverModePanel;
     [SerializeField] protected GameObject BoosterButton;
-    [SerializeField] protected GameObject Loading_FadeInPanel;
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
@@ -111,28 +110,8 @@ public class GameManager : MonoBehaviour, IPunObservable
     #region GameFlow
     public virtual void StartGame()
     {
-        StartCoroutine(FadeIn());
-
-        IsWinner = false;
-    }
-    IEnumerator FadeIn()
-    {
-        Loading_FadeInPanel.SetActive(true);
-
-        Color c = Loading_FadeInPanel.GetComponent<Image>().color;
-
-        while (c.a > 0)
-        {
-            c.a -= 0.01f;
-
-            Loading_FadeInPanel.GetComponent<Image>().color = c;
-
-            yield return new WaitForSeconds(0.01f);
-        }
-
-        Loading_FadeInPanel.SetActive(false);
-
         GameStarted = true;
+        IsWinner = false;
     }
 
     public virtual void EndGame()

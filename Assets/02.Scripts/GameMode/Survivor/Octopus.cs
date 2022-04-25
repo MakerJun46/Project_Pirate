@@ -5,6 +5,12 @@ using Photon.Pun;
 
 public class Octopus : SurvivorMonster
 {
+    [SerializeField] SkinnedMeshRenderer SMR;
+
+    public  MeshFilter MR;
+    public Mesh bakedMesh;
+    private Transform ghostContainer;
+
     Animator anim;
 
     [SerializeField] List<ParticleSystem> AttackParticle;
@@ -26,6 +32,9 @@ public class Octopus : SurvivorMonster
         anim = GetComponent<Animator>();
         anim.speed = Random.Range(0.8f, 1.2f);
         attackCooltime = Random.Range(1, 5f);
+
+        bakedMesh = new Mesh();
+        MR.sharedMesh = bakedMesh;
     }
 
 
@@ -59,6 +68,12 @@ public class Octopus : SurvivorMonster
                         tmpColl[i].transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { damage, Vector3.zero, GetComponent<PhotonView>().ViewID });
                 }
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SMR.BakeMesh(bakedMesh);
+
         }
     }
 

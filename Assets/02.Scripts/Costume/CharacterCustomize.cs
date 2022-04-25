@@ -3,19 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class CharacterCustomize : MonoBehaviour
+public class CharacterCustomize : MonoBehaviourPun
 {
     [SerializeField] GameObject HatObj;
-    [SerializeField] GameObject AccessoryObj;
     [SerializeField] GameObject ClothObj;
     [SerializeField] GameObject[] SkinObjs;
 
+    [PunRPC]
     public void EquipCostume(int typeIndex, int index)
     {
         Costume tmpCostume=null;
         if (index >= 0)
-            tmpCostume = CustomizeManager.GetInstance().costumeDictionary.costumes[index];
-            
+        {
+            switch ((Costume.CostumeType)typeIndex)
+            {
+                case Costume.CostumeType.Hat:
+                    tmpCostume = CustomizeManager.GetInstance().costumeDictionary.HatCostumes.Find(s => s.itemID == index);
+                    break;
+                case Costume.CostumeType.Cloth:
+                    tmpCostume = CustomizeManager.GetInstance().costumeDictionary.ClothCostumes.Find(s => s.itemID == index);
+                    break;
+                case Costume.CostumeType.Skin:
+                    tmpCostume = CustomizeManager.GetInstance().costumeDictionary.SkinCostumes.Find(s => s.itemID == index);
+                    break;
+            }
+        }
         switch ((Costume.CostumeType)typeIndex)
         {
             case Costume.CostumeType.Hat:
@@ -28,16 +40,6 @@ public class CharacterCustomize : MonoBehaviour
                 {
                     HatObj.GetComponent<MeshFilter>().mesh = null;
                     HatObj.GetComponent<MeshRenderer>().material = null;
-                }
-                break;
-            case Costume.CostumeType.Accessory:
-                if (index >= 0)
-                {
-                    AccessoryObj.GetComponent<MeshFilter>().mesh = tmpCostume.itemMesh[0];
-                    AccessoryObj.GetComponent<MeshRenderer>().material = tmpCostume.itemMaterial[0];
-                }else{
-                    AccessoryObj.GetComponent<MeshFilter>().mesh = null;
-                    AccessoryObj.GetComponent<MeshRenderer>().material = null;
                 }
                 break;
             case Costume.CostumeType.Cloth:

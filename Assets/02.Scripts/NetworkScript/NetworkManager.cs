@@ -15,13 +15,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject DisconnetPanel;
     [SerializeField] GameObject LoadingPanel;
+    [SerializeField] GameObject FadeScreenPanel;
     [SerializeField]private int loading_sec=3;
 
 
     private void Awake()
     {
         instance = this;
-        Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
     }
@@ -139,6 +139,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GameManager.GetInstance().EndGame();
     }
 
+    /*
     public void FadeIn()
     {
         StartCoroutine(LoadingFadeIn());
@@ -171,7 +172,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(0.01f);
         }
     }
-
+    */
 
     /// <summary>
     /// 플레이어 배 생성

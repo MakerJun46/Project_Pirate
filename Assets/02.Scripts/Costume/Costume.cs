@@ -7,7 +7,6 @@ public class Costume : ScriptableObject
 {
     public enum CostumeType { 
         Hat,
-        Accessory,
         Cloth,
         Skin
     }

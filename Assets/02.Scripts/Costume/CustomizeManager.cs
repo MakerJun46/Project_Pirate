@@ -26,7 +26,6 @@ public class CustomizeManager : MonoBehaviour
     [SerializeField] GameObject UnEquipBtn;
 
     public int myHatIndex;
-    public int myAccessoryIndex;
     public int myClothIndex;
     public int mySkinndex;
 
@@ -41,24 +40,38 @@ public class CustomizeManager : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
 
-        myHatIndex = Random.Range(0, 3);
-        myAccessoryIndex = Random.Range(3, 6);
-        myClothIndex = Random.Range(6, 9);
-        mySkinndex = Random.Range(9, 12);
+        selectedCostumeType = Costume.CostumeType.Skin;
+        selectedIndex = ((int)selectedCostumeType)*10 + Random.Range(0, 4);
+        SetCostumeIndex();
 
-        characterCustomize.EquipCostume(0, myHatIndex);
-        characterCustomize.EquipCostume(1, myAccessoryIndex);
-        characterCustomize.EquipCostume(2, myClothIndex);
-        characterCustomize.EquipCostume(3, mySkinndex);
-
-        for (int i = 0; i < costumeDictionary.costumes.Count; i++)
+        for (int i = 0; i < costumeDictionary.HatCostumes.Count; i++)
         {
             GameObject costuemBtn = Instantiate(costumeContainer.GetChild(0).gameObject, costumeContainer);
-            costuemBtn.transform.name = costumeDictionary.costumes[i].itemID + "_" + costumeDictionary.costumes[i].costumeType.ToString() + "_" + costumeDictionary.costumes[i].itemName;
-            int itemID = costumeDictionary.costumes[i].itemID;
-            Costume.CostumeType type = costumeDictionary.costumes[i].costumeType;
-            costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(),type, itemID));
-            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.costumes[i].itemName;
+            costuemBtn.transform.name = costumeDictionary.HatCostumes[i].itemID + "_" + costumeDictionary.HatCostumes[i].costumeType.ToString() + "_" + costumeDictionary.HatCostumes[i].itemName;
+            int itemID = costumeDictionary.HatCostumes[i].itemID;
+            Costume.CostumeType type = costumeDictionary.HatCostumes[i].costumeType;
+            costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
+            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.HatCostumes[i].itemName;
+            costuemBtn.gameObject.SetActive(true);
+        }
+        for (int i = 0; i < costumeDictionary.ClothCostumes.Count; i++)
+        {
+            GameObject costuemBtn = Instantiate(costumeContainer.GetChild(0).gameObject, costumeContainer);
+            costuemBtn.transform.name = costumeDictionary.ClothCostumes[i].itemID + "_" + costumeDictionary.ClothCostumes[i].costumeType.ToString() + "_" + costumeDictionary.ClothCostumes[i].itemName;
+            int itemID = costumeDictionary.ClothCostumes[i].itemID;
+            Costume.CostumeType type = costumeDictionary.ClothCostumes[i].costumeType;
+            costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
+            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.ClothCostumes[i].itemName;
+            costuemBtn.gameObject.SetActive(true);
+        }
+        for (int i = 0; i < costumeDictionary.SkinCostumes.Count; i++)
+        {
+            GameObject costuemBtn = Instantiate(costumeContainer.GetChild(0).gameObject, costumeContainer);
+            costuemBtn.transform.name = costumeDictionary.SkinCostumes[i].itemID + "_" + costumeDictionary.SkinCostumes[i].costumeType.ToString() + "_" + costumeDictionary.SkinCostumes[i].itemName;
+            int itemID = costumeDictionary.SkinCostumes[i].itemID;
+            Costume.CostumeType type = costumeDictionary.SkinCostumes[i].costumeType;
+            costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
+            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.SkinCostumes[i].itemName;
             costuemBtn.gameObject.SetActive(true);
         }
     }
@@ -80,14 +93,14 @@ public class CustomizeManager : MonoBehaviour
     {
         selectedCostumeType = type;
         selectedIndex = _index;
-
+        print("selected :" + selectedCostumeType+" / "+ selectedIndex);
         if(selectedCostumeItem)
             selectedCostumeItem.GetComponent<Image>().color = Color.white;
         selectedCostumeItem = _btn.gameObject;
         selectedCostumeItem.GetComponent<Image>().color = Color.grey;
         
 
-        if (selectedIndex==myHatIndex || selectedIndex==myClothIndex || selectedIndex == myAccessoryIndex || selectedIndex == mySkinndex)
+        if (selectedIndex==myHatIndex || selectedIndex==myClothIndex || selectedIndex == mySkinndex)
         {
             EquipBtn.SetActive(false);
             UnEquipBtn.SetActive(true);
@@ -104,9 +117,6 @@ public class CustomizeManager : MonoBehaviour
         {
             case Costume.CostumeType.Hat:
                 myHatIndex = -1;
-                break;
-            case Costume.CostumeType.Accessory:
-                myAccessoryIndex = -1;
                 break;
             case Costume.CostumeType.Cloth:
                 myClothIndex = -1;
@@ -128,9 +138,6 @@ public class CustomizeManager : MonoBehaviour
             case Costume.CostumeType.Hat:
                 myHatIndex = selectedIndex;
                 break;
-            case Costume.CostumeType.Accessory:
-                myAccessoryIndex = selectedIndex;
-                break;
             case Costume.CostumeType.Cloth:
                 myClothIndex = selectedIndex;
                 break;
@@ -150,8 +157,7 @@ public class CustomizeManager : MonoBehaviour
     {
         GameObject tmpObj = PhotonView.Find(viewID).gameObject;
         tmpObj.GetComponent<PhotonView>().RPC("EquipCostume", RpcTarget.AllBuffered, 0,myHatIndex);
-        tmpObj.GetComponent<PhotonView>().RPC("EquipCostume", RpcTarget.AllBuffered, 1,myAccessoryIndex);
-        tmpObj.GetComponent<PhotonView>().RPC("EquipCostume", RpcTarget.AllBuffered, 2, myClothIndex);
-        tmpObj.GetComponent<PhotonView>().RPC("EquipCostume", RpcTarget.AllBuffered, 3, mySkinndex);
+        tmpObj.GetComponent<PhotonView>().RPC("EquipCostume", RpcTarget.AllBuffered, 1, myClothIndex);
+        tmpObj.GetComponent<PhotonView>().RPC("EquipCostume", RpcTarget.AllBuffered, 2, mySkinndex);
     }
 }
