@@ -84,8 +84,8 @@ public class SurvivorGameManager : GameManager
         int spawnCount = Random.Range(2, 5);
         for (int i = 0; i < spawnCount; i++)
         {
-            GameObject tmp = PhotonNetwork.Instantiate("CannonBall_Rain", new Vector3(Random.Range(-30,30),50f, Random.Range(-30,30)), Quaternion.identity,
-                0, new object[] { 50.0f, 1.5f });
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall_Rain", new Vector3(Random.Range(-40,40),50f, Random.Range(-40,40)), Quaternion.identity,
+                0, new object[] { 25.0f,3f });
             tmp.GetComponent<CannonBall>().gravity = Vector3.up * -9.8f * 4f;
             yield return new WaitForSeconds(Random.Range(0.1f,1f));
         }

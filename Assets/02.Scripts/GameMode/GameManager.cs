@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Cinemachine;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour, IPunObservable
 {
@@ -31,7 +32,8 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected Text TimeText;
 
     private float steeringRot;
-    [SerializeField] private Image SteeringImg;
+    private Image SteeringImg;
+    [SerializeField] private GameObject ControllerUI;
 
     public GameObject BestPlayerContent;
     private List<GameObject> BestPlayerLists = new List<GameObject>();
@@ -51,7 +53,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject WinPanel;
     [SerializeField] protected GameObject LosePanel;
     [SerializeField] protected GameObject ObserverModePanel;
-    [SerializeField] protected GameObject BoosterButton;
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
@@ -71,6 +72,30 @@ public class GameManager : MonoBehaviour, IPunObservable
         }
 
         RefreshPlayeScore(false);
+
+        // SetButtonEvent
+        EventTrigger.Entry entry_PointerDown = new EventTrigger.Entry();
+        entry_PointerDown.eventID = EventTriggerType.PointerDown;
+        entry_PointerDown.callback.AddListener((data) => { Turn_Right_Button_Down((PointerEventData)data); });
+        ControllerUI.transform.GetChild(0).GetComponent<EventTrigger>().triggers.Add(entry_PointerDown);
+        EventTrigger.Entry entry_PointerUp = new EventTrigger.Entry();
+        entry_PointerUp.eventID = EventTriggerType.PointerUp;
+        entry_PointerUp.callback.AddListener((data) => { Turn_Right_Button_Up((PointerEventData)data); });
+        ControllerUI.transform.GetChild(0).GetComponent<EventTrigger>().triggers.Add(entry_PointerUp);
+
+        EventTrigger.Entry entry_PointerDown2 = new EventTrigger.Entry();
+        entry_PointerDown2.eventID = EventTriggerType.PointerDown;
+        entry_PointerDown2.callback.AddListener((data) => { Turn_Left_Button_Down((PointerEventData)data); });
+        ControllerUI.transform.GetChild(1).GetComponent<EventTrigger>().triggers.Add(entry_PointerDown2);
+        EventTrigger.Entry entry_PointerUp2 = new EventTrigger.Entry();
+        entry_PointerUp2.eventID = EventTriggerType.PointerUp;
+        entry_PointerUp2.callback.AddListener((data) => { Turn_Left_Button_Up((PointerEventData)data); });
+        ControllerUI.transform.GetChild(1).GetComponent<EventTrigger>().triggers.Add(entry_PointerUp2);
+
+        ControllerUI.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(GoOrStop_Button);
+        ControllerUI.transform.GetChild(4).GetComponent<Button>().onClick.AddListener(Booster_Button);
+        
+        SteeringImg = ControllerUI.transform.GetChild(3).GetComponent<Image>();
     }
 
 
@@ -112,6 +137,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         GameStarted = true;
         IsWinner = false;
+        ControllerUI.SetActive(true);
     }
 
     public virtual void EndGame()
@@ -171,48 +197,48 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         if (TimeText)
             TimeText.text = ((int)(currPlayTime / 60)) + ":" + ((int)(currPlayTime % 60));
-        if (PhotonNetwork.IsMasterClient)
+        if (GameStarted)
         {
-            currPlayTime += Time.deltaTime;
-        }else
-        {
-            // 방향 조정
-            if (MyShip)
+            if (PhotonNetwork.IsMasterClient)
             {
-                if (MyShip.is_Turn_Left)
-                    steeringRot += 180 * Time.deltaTime;
-                else if (MyShip.is_Turn_Right)
-                    steeringRot += -180 * Time.deltaTime;
-                else
-                    steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
-
-                steeringRot = Mathf.Clamp(steeringRot, -720, 720);
-                SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+                currPlayTime += Time.deltaTime;
             }
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ToggleGameView();
+            else
+            {
+                // 방향 조정
+                if (MyShip)
+                {
+                    if (MyShip.is_Turn_Left)
+                        steeringRot += 180 * Time.deltaTime;
+                    else if (MyShip.is_Turn_Right)
+                        steeringRot += -180 * Time.deltaTime;
+                    else
+                        steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+
+                    steeringRot = Mathf.Clamp(steeringRot, -720, 720);
+                    SteeringImg.transform.rotation = Quaternion.Euler(0, 0, steeringRot);
+                }
+            }
         }
     }
     #endregion
 
     #region UI Control Button
-    public void Turn_Left_Button_Down()
+    public void Turn_Left_Button_Down(PointerEventData data)
     {
         MyShip.is_Turn_Left = true;
     }
 
-    public void Turn_Left_Button_Up()
+    public void Turn_Left_Button_Up(PointerEventData data)
     {
         MyShip.is_Turn_Left = false;
     }
 
-    public void Turn_Right_Button_Down()
+    public void Turn_Right_Button_Down(PointerEventData data)
     {
         MyShip.is_Turn_Right = true;
     }
-    public void Turn_Right_Button_Up()
+    public void Turn_Right_Button_Up(PointerEventData data)
     {
         MyShip.is_Turn_Right = false;
     }

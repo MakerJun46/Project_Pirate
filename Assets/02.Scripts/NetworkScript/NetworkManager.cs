@@ -15,8 +15,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject DisconnetPanel;
     [SerializeField] GameObject LoadingPanel;
-    [SerializeField] GameObject CountDownPanel;
-    [SerializeField] GameObject FadeScreenPanel;
+    GameObject CountDownPanel;
+    GameObject FadeScreenPanel;
+
     [SerializeField]private int loading_sec=3;
 
 
@@ -132,12 +133,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             GameManager.GetInstance().JudgeWinLose();
         }
+
+
+        if (FindObjectOfType<CutSceneManager>()&& _start)
+            yield return new WaitForSeconds(Mathf.Max(0f,(float)FindObjectOfType<CutSceneManager>().director.duration-6f));
+
         CountDownPanel.SetActive(true);
         for (int i = loading_sec; i > 0; i--)
         {
             CountDownPanel.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
             yield return new WaitForSecondsRealtime(1.0f);
         }
+        if(FindObjectOfType<CutSceneManager>())
+            FindObjectOfType<CutSceneManager>().director.Stop();
+
         CountDownPanel.SetActive(false);
 
         if (_start==false)

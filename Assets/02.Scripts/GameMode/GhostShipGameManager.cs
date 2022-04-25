@@ -97,6 +97,21 @@ public class GhostShipGameManager : GameManager
             {
                 FindObjectOfType<NetworkManager>().StartEndGame(false);
             }
+            else
+            {
+                int taggedPlayer = 0;
+                Player_Combat_Ship[] ships = FindObjectsOfType<Player_Combat_Ship>();
+                for(int i = 0; i < ships.Length; i++)
+                {
+                    if (ships[i].isTagger)
+                        taggedPlayer++;
+                }
+
+                if (taggedPlayer >= ships.Length)
+                {
+                    FindObjectOfType<NetworkManager>().StartEndGame(false);
+                }
+            }
 
             if (IsGhost == false)
                 scoreTime += Time.deltaTime;
@@ -188,6 +203,7 @@ public class GhostShipGameManager : GameManager
         }
         if (canAttack)
         {
+            RoomData.GetInstance().SetCurrScore(PhotonView.Find(FromViewID).GetComponent<PhotonView>().Owner.ActorNumber, 100);
             PV.RPC("On_Second", RpcTarget.AllBuffered, toViewID);
 
             GameObject to_Ship = PhotonView.Find(toViewID).gameObject;

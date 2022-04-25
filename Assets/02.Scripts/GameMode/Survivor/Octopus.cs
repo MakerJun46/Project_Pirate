@@ -5,10 +5,6 @@ using Photon.Pun;
 
 public class Octopus : SurvivorMonster
 {
-    [SerializeField] SkinnedMeshRenderer SMR;
-
-    public  MeshFilter MR;
-    public Mesh bakedMesh;
     private Transform ghostContainer;
 
     Animator anim;
@@ -23,7 +19,6 @@ public class Octopus : SurvivorMonster
     public override void ResetEnemy(SurvivorMonster _data)
     {
         base.ResetEnemy(_data);
-        GetComponentInChildren<SkinnedMeshRenderer>().materials[1].color = Color.white;
     }
 
     protected override void Start()
@@ -33,8 +28,6 @@ public class Octopus : SurvivorMonster
         anim.speed = Random.Range(0.8f, 1.2f);
         attackCooltime = Random.Range(1, 5f);
 
-        bakedMesh = new Mesh();
-        MR.sharedMesh = bakedMesh;
     }
 
 
@@ -70,11 +63,6 @@ public class Octopus : SurvivorMonster
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SMR.BakeMesh(bakedMesh);
-
-        }
     }
 
     [PunRPC]

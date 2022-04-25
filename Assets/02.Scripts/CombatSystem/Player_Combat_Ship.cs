@@ -39,6 +39,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
     CinemachineImpulseSource impulseSource;
 
+    public bool isTagger { get; set; }
     [SerializeField] Material[] GhostMats;
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
@@ -133,11 +134,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     public void SetToGhost()
     {
-        MeshRenderer[] mr = myShipObjects.GetComponentsInChildren<MeshRenderer>();
-        for (int i=0;i< mr.Length;i++)
-        {
-            mr[i].material = GhostMats[i];
-        }
+        isTagger = true;
+        myShipObjects.GetComponent<ShipCustom>().SetToGhost();
     }
 
 
