@@ -51,6 +51,8 @@ public class Treasure_GameManager : GameManager
             Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
             PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+
+            CombatManager.instance.EquipSpecialCannon(0, (int)SpecialCannon.SpecialCannonType.KnockBack);
         }
     }
 
