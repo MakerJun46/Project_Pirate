@@ -39,7 +39,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
     CinemachineImpulseSource impulseSource;
 
-    [SerializeField] Material GhostMat;
+    [SerializeField] Material[] GhostMats;
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
 
@@ -83,6 +83,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
         myShipObjects = shipObjects[upgradeIndex];
         myShipObjects.SetActive(true);
+        //myShipObjects.GetComponent<MotionTrail>().StartMotionTrail();
 
         AutoCannonSpots.Clear();
         SpecialCannonSpots.Clear();
@@ -135,7 +136,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
         MeshRenderer[] mr = myShipObjects.GetComponentsInChildren<MeshRenderer>();
         for (int i=0;i< mr.Length;i++)
         {
-            mr[i].material = GhostMat;
+            mr[i].material = GhostMats[i];
         }
     }
 
