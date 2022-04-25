@@ -15,6 +15,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject DisconnetPanel;
     [SerializeField] GameObject LoadingPanel;
+    [SerializeField] GameObject CountDownPanel;
     [SerializeField] GameObject FadeScreenPanel;
     [SerializeField]private int loading_sec=3;
 
@@ -29,6 +30,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         PV = GetComponent<PhotonView>();
+        CountDownPanel = LoadingPanel.transform.GetChild(0).gameObject;
+        FadeScreenPanel = LoadingPanel.transform.GetChild(1).gameObject;
+        FadeScreenPanel.GetComponent<Image>().color = Color.black;
+
         if (PhotonNetwork.IsConnected)
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -119,60 +124,63 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator LoadingCoroutine(bool _start)
     {
         LoadingPanel.SetActive(true);
-
-        if (_start == false)
+        if (_start)
+        {
+            yield return StartCoroutine("LoadingFadeInOut", true);
+        }
+        else
+        {
             GameManager.GetInstance().JudgeWinLose();
-
-        //StartCoroutine(LoadingFadeOut()); // 0420 게임시작 할 때 FadeOut 효과 추가
-
+        }
+        CountDownPanel.SetActive(true);
         for (int i = loading_sec; i > 0; i--)
         {
-            LoadingPanel.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
+            CountDownPanel.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
             yield return new WaitForSecondsRealtime(1.0f);
         }
+        CountDownPanel.SetActive(false);
+
+        if (_start==false)
+            yield return StartCoroutine("LoadingFadeInOut",false); // 0420 게임시작 할 때 FadeOut 효과 추가
+
 
         LoadingPanel.SetActive(false);
-
-        if(_start)
+        if (_start)
             GameManager.GetInstance().StartGame();
         else
             GameManager.GetInstance().EndGame();
     }
-
-    /*
-    public void FadeIn()
+    IEnumerator LoadingFadeInOut(bool FadeIn)
     {
-        StartCoroutine(LoadingFadeIn());
-    }
 
-    IEnumerator LoadingFadeIn()
-    {
-        Color c = LoadingPanel.GetComponent<Image>().color;
-
-        while (c.a > 0)
+        while (true)
         {
-            c.a -= 0.01f;
+            Color c = FadeScreenPanel.GetComponent<Image>().color;
+            if (FadeIn)
+            {
+                c.a -= Time.deltaTime;
+                if (c.a <= 0)
+                {
+                    c.a = 0;
+                    break;
+                }
+            }
+            else
+            {
+                c.a += Time.deltaTime;
+                if (c.a >= 1)
+                {
+                    c.a = 1;
+                    break;
+                }
+            }
 
-            LoadingPanel.GetComponent<Image>().color = c;
+            FadeScreenPanel.GetComponent<Image>().color = c;
 
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(Time.deltaTime);
         }
     }
 
-    IEnumerator LoadingFadeOut()
-    {
-        Color c = LoadingPanel.GetComponent<Image>().color;
-
-        while (c.a < 1)
-        {
-            c.a += 0.01f;
-
-            LoadingPanel.GetComponent<Image>().color = c;
-
-            yield return new WaitForSeconds(0.01f);
-        }
-    }
-    */
 
     /// <summary>
     /// 플레이어 배 생성
