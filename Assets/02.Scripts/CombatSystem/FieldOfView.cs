@@ -8,7 +8,10 @@ public class FieldOfView : MonoBehaviourPun
     [Range(0, 360)]
     public float viewAngle;
 
-    public LayerMask targetMask;
+    [SerializeField] private LayerMask Enemy_Ship_Mask;
+    [SerializeField] private LayerMask Ship_Mask;
+    [SerializeField] private LayerMask Enemy_Mask;
+    public int targetMaskType;
     public LayerMask obstacleMask;
 
     public List<Transform> visibleTargets = new List<Transform>();
@@ -54,6 +57,8 @@ public class FieldOfView : MonoBehaviourPun
 
     private void Update()
     {
+        viewMeshFilter.transform.position = new Vector3(viewMeshFilter.transform.position.x, 1f, viewMeshFilter.transform.position.z);
+        coolTimeMeshFilter.transform.position = new Vector3(coolTimeMeshFilter.transform.position.x, 1f, coolTimeMeshFilter.transform.position.z);
         if (myCannon.myShip.photonView.IsMine || PhotonNetwork.IsConnected==false)
         {
             DrawFieldOfView(viewMesh, viewRadius);
@@ -138,10 +143,26 @@ public class FieldOfView : MonoBehaviourPun
     void FindVisibleTargets()
     {
         visibleTargets.Clear();
-        Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius , targetMask);
-        for (int i = 0; i < targetsInViewRadius.Length; i++)
+        Collider[] targetsInViewColliders;
+        switch (targetMaskType)
         {
-            Transform target = targetsInViewRadius[i].transform;
+            case 0:
+                targetsInViewColliders = Physics.OverlapSphere(transform.position, viewRadius, Enemy_Ship_Mask);
+                break;
+            case 1:
+                targetsInViewColliders = Physics.OverlapSphere(transform.position, viewRadius, Ship_Mask);
+                break;
+            case 2:
+                targetsInViewColliders = Physics.OverlapSphere(transform.position, viewRadius, Enemy_Mask);
+                break;
+            default:
+                targetsInViewColliders = Physics.OverlapSphere(transform.position, viewRadius, Enemy_Ship_Mask);
+                break;
+        }
+
+        for (int i = 0; i < targetsInViewColliders.Length; i++)
+        {
+            Transform target = targetsInViewColliders[i].transform;
             if (target == GetComponentInParent<Player_Combat_Ship>().transform)
             {
                 continue;
@@ -192,11 +213,14 @@ public class FieldOfView : MonoBehaviourPun
         Vector3[] verticies = new Vector3[vertexCount];
         int[] triangles = new int[(vertexCount - 2) * 3];
 
+        Vector2[] uvs = new Vector2[vertexCount];
+
         verticies[0] = Vector3.zero;
+        uvs[0] = Vector2.zero;
+
         for (int i = 0; i < vertexCount - 1; i++)
         {
             verticies[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
-
             if (i < vertexCount - 2)
             {
                 triangles[i * 3] = 0;
@@ -204,9 +228,20 @@ public class FieldOfView : MonoBehaviourPun
                 triangles[i * 3 + 2] = i + 2;
             }
         }
+
+        for(int i=1;i< vertexCount / 2; i++)
+        {
+            uvs[i] = new Vector2( (i) / (vertexCount / 2f), 1f);
+        }
+        for(int i = vertexCount / 2; i < vertexCount; i++)
+        {
+            uvs[i] = new Vector2(1f,1- (((i+1)- (vertexCount / 2)) / (vertexCount / 2f)));
+        }
+
         _viewMesh.Clear();
         _viewMesh.vertices = verticies;
         _viewMesh.triangles = triangles;
+        _viewMesh.uv = uvs;
         _viewMesh.RecalculateNormals();
     }
     

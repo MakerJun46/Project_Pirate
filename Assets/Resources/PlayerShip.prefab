@@ -322,13 +322,13 @@ GameObject:
   m_Component:
   - component: {fileID: 3747029417005301444}
   - component: {fileID: 3433671627736073804}
-  - component: {fileID: 6770132877759959346}
   - component: {fileID: 3073172608852465319}
   - component: {fileID: -8333245995007593276}
   - component: {fileID: -2406257447604646091}
   - component: {fileID: -9014573942241425512}
   - component: {fileID: -2435333863657373093}
   - component: {fileID: 9107333405015472117}
+  - component: {fileID: 8368141020911508659}
   m_Layer: 6
   m_Name: PlayerShip
   m_TagString: Player
@@ -376,19 +376,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!65 &6770132877759959346
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3567507026925108279}
-  m_Material: {fileID: 13400000, guid: 61fd4342ab81c174693b36ed9f0678ce, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5, y: 4.019557, z: 5}
-  m_Center: {x: 0, y: 1.9902215, z: 0}
 --- !u!114 &3073172608852465319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,6 +419,7 @@ MonoBehaviour:
   MoveSpeed: 12
   MaxSpeed: 12
   turningSpeed: 1
+  boosterCoolTime: 5
   inputVel: {x: 0, y: 0, z: 0}
   additionalForce: {x: 0, y: 0, z: 0}
   goOrStop: 0
@@ -477,12 +465,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef1028d2f16d55a46b6ad1bf0540b70d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 50
-  maxHealth: 50
+  health: 100
+  maxHealth: 100
   shipObjects:
   - {fileID: 7203593810883141544}
   - {fileID: 4711351119795801941}
   - {fileID: 731911735911833180}
+  myShipObjects: {fileID: 0}
   SailSpots: {fileID: 0}
   SpecialCannonSpots: []
   AutoCannonSpots: []
@@ -561,6 +550,20 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 1000
     m_PropagationSpeed: 343
+--- !u!136 &8368141020911508659
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3567507026925108279}
+  m_Material: {fileID: 13400000, guid: 61fd4342ab81c174693b36ed9f0678ce, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 2
+  m_Height: 10
+  m_Direction: 2
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &4577764039669100595
 GameObject:
   m_ObjectHideFlags: 0
@@ -35038,16 +35041,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9162186285163954650, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+      propertyPath: GhostBackColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162186285163954650, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+      propertyPath: GhostBackColor.b
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162186285163954650, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+      propertyPath: GhostBackColor.g
+      value: 0.7529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162186285163954650, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+      propertyPath: GhostFrontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162186285163954650, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+      propertyPath: GhostFrontColor.b
+      value: 4.329412
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162186285163954650, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+      propertyPath: GhostFrontColor.g
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
---- !u!4 &8244392335671289396 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8194130401051581893, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
-  m_PrefabInstance: {fileID: 278819696819272689}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4711351119795801941 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4808865737007051940, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
+  m_PrefabInstance: {fileID: 278819696819272689}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8244392335671289396 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8194130401051581893, guid: 3cb02fa0f5db35540bfa6b7cba14b873, type: 3}
   m_PrefabInstance: {fileID: 278819696819272689}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1074751319089366844
@@ -35290,11 +35317,39 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3747029417005301444}
     m_Modifications:
+    - target: {fileID: 5596271623679585382, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: GhostBackColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596271623679585382, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: GhostBackColor.b
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596271623679585382, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: GhostBackColor.g
+      value: 0.7529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596271623679585382, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: GhostFrontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596271623679585382, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: GhostFrontColor.b
+      value: 4.329412
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596271623679585382, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: GhostFrontColor.g
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6236070153126803610, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
       propertyPath: m_Name
       value: PirateShip
       objectReference: {fileID: 0}
     - target: {fileID: 6236070153126803610, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517448137793477087, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -35647,6 +35702,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostBackColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostBackColor.b
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostBackColor.g
+      value: 0.7529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostBackColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostFrontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostFrontColor.b
+      value: 4.329412
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostFrontColor.g
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3375575680953207862, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
+      propertyPath: GhostFrontColor.r
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
 --- !u!4 &9178114567107541007 stripped
@@ -35659,21 +35746,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 739146280825180425, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
   m_PrefabInstance: {fileID: 7618322313393901217}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3532987166012929104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7203593810883141544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aa4f39ee4896bd46ad0307e522bbf4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shipMRs: []
-  originalMaterials: []
-  GhostMaterials: []
 --- !u!1001 &7762899877982956538
 PrefabInstance:
   m_ObjectHideFlags: 0

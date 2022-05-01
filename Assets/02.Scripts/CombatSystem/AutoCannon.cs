@@ -7,6 +7,8 @@ using Photon.Pun;
 public class AutoCannon : Cannon
 {
     #region Variables & Initializer
+    
+
     public enum CannonType
     {
         Trajectory,
@@ -17,10 +19,6 @@ public class AutoCannon : Cannon
     public CannonType myCannonType;
 
     protected Rigidbody ball;
-    [SerializeField] FieldOfView fov;
-
-    [SerializeField] LayerMask BattleRoyaleLayer;
-    [SerializeField] LayerMask SurvivorLayer;
     public override void Initialize(Player_Combat_Ship _myShip, int _spotIndex, int _gameModeIndex)
     {
         myShip = _myShip;
@@ -32,18 +30,8 @@ public class AutoCannon : Cannon
             cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
             cursor.gameObject.SetActive(false);
         }
-        switch (gameMode)
-        {
-            case GameMode.BattleRoyale:
-                fov.targetMask = BattleRoyaleLayer;
-                break;
-            case GameMode.Survivor:
-                fov.targetMask = SurvivorLayer;
-                break;
-            default:
-                fov.targetMask = BattleRoyaleLayer;
-                break;
-        }
+        CannonLayer cannonLayer = CannonLayers.Find(s => s.GameMode == gameMode);
+        fov.targetMaskType = cannonLayer.layerType;
     }
     #endregion
 
@@ -109,12 +97,10 @@ public class AutoCannon : Cannon
         if (tmpInput.magnitude <= 0)
             return;
 
-        if (attackingState == 0)
+        // 입력이 존재하는데, coolTime이 다 지나갔으면, 
+        if (attackingState == 0 && currCoolTime <= 0)
         {
-            if (currCoolTime <= 0)
-            {
-                attackingState = 1;
-            }
+            attackingState = AttackState.Aiming;
         }
     }
 
@@ -133,7 +119,7 @@ public class AutoCannon : Cannon
                     lrs[0].enabled = true;
                     DrawPath();
                 }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
                     lrs[0].enabled = false;
 
@@ -150,7 +136,7 @@ public class AutoCannon : Cannon
                     lrs[0].SetPosition(0, this.transform.position);
                     lrs[0].SetPosition(1, cursor.transform.position);
                 }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
                     lrs[0].enabled = false;
                     LaunchStraight(0,cursor.transform.position);
@@ -169,7 +155,7 @@ public class AutoCannon : Cannon
                         lrs[i].SetPosition(1, this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
                     }
                 }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
                     for (int i = 0; i < 3; i++)
                     {
@@ -189,7 +175,7 @@ public class AutoCannon : Cannon
                     lrs[0].enabled = true;
                     DrawPath();
                 }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
                     lrs[0].enabled = false;
 

@@ -8,13 +8,26 @@ using Random = UnityEngine.Random;
 
 public class Cannon : MonoBehaviourPun
 {
+    [System.Serializable]
+    public struct CannonLayer
+    {
+        public GameMode GameMode;
+        public int layerType;
+    }
+
     public Player_Combat_Ship myShip;
 
     public AttackJoyStick tmpJoyStick;
 
     protected Vector2 tmpInput;
 
-    protected int attackingState = 0;
+    protected enum AttackState { 
+        Waiting,
+        Aiming,
+        Launcing
+    }
+
+    protected AttackState attackingState = AttackState.Waiting;
 
     public Transform cursor;
     public float height = 25;
@@ -42,6 +55,8 @@ public class Cannon : MonoBehaviourPun
     protected GameMode gameMode;
     Vector3 cursorAddPos;
 
+    [SerializeField] protected FieldOfView fov;
+    [SerializeField] protected List<CannonLayer> CannonLayers;
     public virtual void Initialize(Player_Combat_Ship _myShip,int _spotIndex,int _gameModeIndex)
     {
         myShip = _myShip;
@@ -93,13 +108,14 @@ public class Cannon : MonoBehaviourPun
     protected void ChargeCannon(float cursorSpeed = -1f,float _currCannonDistance = -1f)
     {
         cursor.gameObject.SetActive(true);
-        attackingState = 2;
+        attackingState = AttackState.Launcing;
 
         if (_currCannonDistance > 0)
             currCannonDistance = _currCannonDistance;
 
         attackAreaImage.enabled = true;
         attackAreaImage.transform.localScale = Vector3.one * currCannonDistance*0.2f;
+        attackAreaImage.transform.position = new Vector3(attackAreaImage.transform.position.x, 0f, attackAreaImage.transform.position.z);
 
         if (cursorSpeed == -1)
             cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
@@ -112,7 +128,8 @@ public class Cannon : MonoBehaviourPun
     }
     protected void ResetAttackingState(float coolTime)
     {
-        maxChargetAmount = coolTime;
+        maxCoolTime = coolTime;
+        currCoolTime = coolTime;
         //attackingState = 3;
         attackAreaImage.enabled = false;
 

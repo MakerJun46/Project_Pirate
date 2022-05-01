@@ -72,8 +72,21 @@ MonoBehaviour:
   - {fileID: 1754375242554357815}
   - {fileID: 8212442084219493475}
   - {fileID: 3226857029834601955}
-  mySpecialCannonType: 0
   fov: {fileID: 5793383941058890704}
+  CannonLayers:
+  - GameMode: 0
+    layerType: 0
+  - GameMode: 1
+    layerType: 2
+  - GameMode: 2
+    layerType: 1
+  - GameMode: 3
+    layerType: 1
+  - GameMode: 4
+    layerType: 2
+  - GameMode: 5
+    layerType: 2
+  mySpecialCannonType: 0
 --- !u!114 &2293822772917819333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,9 +123,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRadius: 20
   viewAngle: 90
-  targetMask:
+  Enemy_Ship_Mask:
     serializedVersion: 2
     m_Bits: 1088
+  Ship_Mask:
+    serializedVersion: 2
+    m_Bits: 64
+  Enemy_Mask:
+    serializedVersion: 2
+    m_Bits: 1024
+  targetMaskType: 0
   obstacleMask:
     serializedVersion: 2
     m_Bits: 520
@@ -125,7 +145,7 @@ MonoBehaviour:
   useCoolTime: 1
   coolTimeMeshFilter: {fileID: 3528272116455040704}
   fov_mats:
-  - {fileID: 2100000, guid: 721a845fd923a114e8d83c89d25bca12, type: 2}
+  - {fileID: 2100000, guid: c03ee798e447c6f45bf3e0dd61405f5f, type: 2}
   - {fileID: 2100000, guid: 5646405979e0d23468b8bfe752302fd2, type: 2}
   - {fileID: 2100000, guid: 66caed81821e5ca469e08f8d31766117, type: 2}
 --- !u!1 &1198664727124294323

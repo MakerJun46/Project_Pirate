@@ -20,7 +20,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private float maxHealth;
 
     [SerializeField] private List<GameObject> shipObjects;
-    private GameObject myShipObjects;
+    public GameObject myShipObjects;
 
     [SerializeField] private Transform SailSpots;
 
@@ -136,6 +136,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     {
         isTagger = true;
         myShipObjects.GetComponent<ShipCustom>().SetToGhost();
+        myShipObjects.GetComponent<MotionTrail>().ChangeGhostColor();
     }
 
 

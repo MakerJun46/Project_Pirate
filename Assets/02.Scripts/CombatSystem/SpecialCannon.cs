@@ -25,6 +25,9 @@ public class SpecialCannon : Cannon
         fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
         fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
         fov.useCoolTime = false;
+
+        CannonLayer cannonLayer = CannonLayers.Find(s => s.GameMode == gameMode);
+        fov.targetMaskType = cannonLayer.layerType;
     }
 
     protected override void Update()
@@ -35,7 +38,7 @@ public class SpecialCannon : Cannon
         {
             InitializeBullet();
 
-            if (attackingState > 0)
+            if (currCoolTime <= 0)
             {
                 launchingBullet();
             }
@@ -56,12 +59,9 @@ public class SpecialCannon : Cannon
         if (tmpInput.magnitude <= 0)
             return;
 
-        if (attackingState == 0)
+        if (attackingState == 0&& currCoolTime <= 0)
         {
-            if (currCoolTime <= 0)
-            {
-                attackingState = 1;
-            }
+            attackingState = AttackState.Aiming;
         }
     }
 
@@ -70,7 +70,12 @@ public class SpecialCannon : Cannon
         switch (mySpecialCannonType)
         {
             case SpecialCannonType.Hook:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
+                {
+                    lrs[0].enabled = false;
+                    LaunchHook(cursor.transform.position);
+                }
+                else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
                     ChargeCannon(-1, 30);
 
@@ -80,54 +85,51 @@ public class SpecialCannon : Cannon
                     lrs[0].SetPosition(0, this.transform.position);
                     lrs[0].SetPosition(1, cursor.transform.position);
                 }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
-                {
-                    lrs[0].enabled = false;
-                    LaunchHook(cursor.transform.position);
-                }
                 break;
             case SpecialCannonType.KnockBack:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
+                {
+                    LaunchKnockBack();
+                }
+                else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
                     fov.enabled = true;
                     fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = true;
                     fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = true;
-                    fov.transform.rotation = Quaternion.LookRotation(new Vector3(tmpInput.x,0, tmpInput.y));
-                    attackingState = 2;
-                }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
-                {
-                    LaunchKnockBack();
-                    fov.enabled = false;
-                    fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
-                    fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
-                    attackingState = 1;
+                    fov.transform.rotation = Quaternion.LookRotation(new Vector3(tmpInput.x, 0, tmpInput.y));
+                    attackingState = AttackState.Launcing;
                 }
                 break;
             case SpecialCannonType.Rain:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
-                {
-                    cursor.transform.localScale = Vector3.one *6f;
-                    ChargeCannon(20,80);
-                }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
                     LaunchRain();
                     cursor.transform.localScale = Vector3.one;
                 }
-                break;
-            case SpecialCannonType.Sniper:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
+                    cursor.transform.localScale = Vector3.one *6f;
                     ChargeCannon(20,80);
                 }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
+                break;
+            case SpecialCannonType.Sniper:
+                if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
                     LaunchSniper();
                 }
+                else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                {
+                    ChargeCannon(20,80);
+                }
                 break;
             case SpecialCannonType.OakBarrel:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
+                {
+                    lrs[0].enabled = false;
+
+                    LaunchBarrel();
+                }
+                else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
                     ChargeCannon();
 
@@ -136,12 +138,6 @@ public class SpecialCannon : Cannon
 
                     lrs[0].enabled = true;
                     DrawPath();
-                }
-                else if (Input.GetMouseButtonUp(0) && attackingState == 2)
-                {
-                    lrs[0].enabled = false;
-
-                    LaunchBarrel();
                 }
                 break;
         }
@@ -154,7 +150,6 @@ public class SpecialCannon : Cannon
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, true);
     }
 
-    [SerializeField] FieldOfView fov;
     protected void LaunchKnockBack()
     {
         for(int i=0;i< fov.visibleTargets.Count; i++)
@@ -164,6 +159,12 @@ public class SpecialCannon : Cannon
             power *= fov.viewRadius*20f;
             fov.visibleTargets[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 3.0f, power*dist.normalized, myShip.photonView.ViewID });
         }
+        fov.visibleTargets.Clear();
+        fov.enabled = false;
+        fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+        fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = false;
+        ResetAttackingState(5f);
+
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, true);
     }
 
@@ -198,6 +199,11 @@ public class SpecialCannon : Cannon
     }
     IEnumerator RainCoroutine()
     {
+        maxCoolTime = 15f;
+        currCoolTime = maxCoolTime;
+        currCannonDistance = 0;
+        currChargeAmount = 0;
+
         yield return new WaitForSeconds(0.5f);
 
         for (int i = 0; i < 30; i++)
@@ -210,7 +216,6 @@ public class SpecialCannon : Cannon
             tmp.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
             yield return new WaitForSeconds(0.05f);
         }
-
         ResetAttackingState(15f);
     }
 }

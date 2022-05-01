@@ -19,6 +19,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public float MoveSpeed;
     public float MaxSpeed;
     public float turningSpeed;
+    [SerializeField] float boosterCoolTime=5f;
 
     public Vector3 inputVel;
     public Vector3 additionalForce;
@@ -28,6 +29,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public bool is_Turn_Right;
     public bool is_Landing;
     public bool isBoosting;
+    private bool isBoostingSynced;
+    float steeringRot;
 
     public float motorFoamMultiplier;
     public float moterFoamBase;
@@ -100,7 +103,43 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             LoseEffectPrefab.Play();
         }
     }
+    private void Update()
+    {
+        GameObject myShipObjects = GetComponent<Player_Combat_Ship>().myShipObjects;
+        if (photonView.IsMine)
+        {
+            if (is_Turn_Left)
+                steeringRot = Mathf.Lerp(steeringRot, 24, Time.deltaTime);
+            else if (is_Turn_Right)
+                steeringRot = Mathf.Lerp(steeringRot, -24, Time.deltaTime);
+            else
+                steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+        }
+        myShipObjects.transform.localEulerAngles = new Vector3
+            (myShipObjects.transform.localEulerAngles.x,
+            myShipObjects.transform.localEulerAngles.y,
+            steeringRot
+            );
 
+        if (isBoosting)
+        {
+            if (isBoostingSynced == false)
+            {
+                isBoostingSynced = true;
+                BoosterEffect.SetActive(true);
+                GetComponent<Player_Combat_Ship>().myShipObjects.GetComponent<MotionTrail>().StartMotionTrail();
+            }
+        }
+        else
+        {
+            if (isBoostingSynced == true)
+            {
+                isBoostingSynced = false;
+                BoosterEffect.SetActive(false);
+                GetComponent<Player_Combat_Ship>().myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
+            }
+        }
+    }
     private void FixedUpdate()
     {
         Move();
@@ -145,25 +184,29 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
     public void startBooster()
     {
-        if(!isBoosting)
+        if (!isBoosting)
+        {
+            if(goOrStop==false)
+                GoOrStop_Button();
             StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
+        }
     }
 
     public IEnumerator Ship_Booster(float sec, float addMoveSpeed, float addTrunSpeed)
     {
-        //isBoosting = true;
-        BoosterEffect.SetActive(true);
+        isBoosting = true;
+
         MoveSpeed += addMoveSpeed;
         turningSpeed += addTrunSpeed;
 
         yield return new WaitForSecondsRealtime(sec);
 
-        BoosterEffect.SetActive(false);
         MoveSpeed -= addMoveSpeed;
         turningSpeed -= addTrunSpeed;
 
+        GetComponent<Player_Combat_Ship>().myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
 
-        yield return new WaitForSecondsRealtime(7f); // cooltime
+        yield return new WaitForSecondsRealtime(boosterCoolTime); // cooltime
         isBoosting = false;
     }
 
@@ -207,6 +250,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         Reset_Ship_Status();
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Terrain"))
+        {
+            additionalForce += collision.GetContact(0).normal * 30f;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Treasure") && other.GetComponent<Treasure>().isPickable)
@@ -231,10 +282,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(RB.velocity);
+            stream.SendNext(steeringRot);
+            stream.SendNext(isBoosting);
         }
         else
         {
             currVel = (Vector3)stream.ReceiveNext();
+            steeringRot = (float)stream.ReceiveNext();
+            isBoosting = (bool)stream.ReceiveNext();
         }
     }
 }

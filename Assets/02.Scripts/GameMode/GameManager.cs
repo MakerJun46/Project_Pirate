@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour, IPunObservable
 
     [SerializeField] protected Text TimeText;
 
-    private float steeringRot;
+    public float steeringRot { get; set; }
     private Image SteeringImg;
     [SerializeField] private GameObject ControllerUI;
 

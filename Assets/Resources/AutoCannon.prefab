@@ -425,9 +425,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRadius: 60
   viewAngle: 90
-  targetMask:
+  Enemy_Ship_Mask:
     serializedVersion: 2
     m_Bits: 1088
+  Ship_Mask:
+    serializedVersion: 2
+    m_Bits: 64
+  Enemy_Mask:
+    serializedVersion: 2
+    m_Bits: 1024
+  targetMaskType: 0
   obstacleMask:
     serializedVersion: 2
     m_Bits: 520
@@ -440,7 +447,7 @@ MonoBehaviour:
   useCoolTime: 1
   coolTimeMeshFilter: {fileID: 5189767563236534575}
   fov_mats:
-  - {fileID: 2100000, guid: 721a845fd923a114e8d83c89d25bca12, type: 2}
+  - {fileID: 2100000, guid: c03ee798e447c6f45bf3e0dd61405f5f, type: 2}
   - {fileID: 2100000, guid: 5646405979e0d23468b8bfe752302fd2, type: 2}
   - {fileID: 2100000, guid: 66caed81821e5ca469e08f8d31766117, type: 2}
 --- !u!114 &4527148397681954628
@@ -475,14 +482,21 @@ MonoBehaviour:
   - {fileID: 3066880925983922172}
   - {fileID: 4197256909732631045}
   - {fileID: 5498525502404228787}
-  myCannonType: 0
   fov: {fileID: 4226405253350269953}
-  BattleRoyaleLayer:
-    serializedVersion: 2
-    m_Bits: 1088
-  SurvivorLayer:
-    serializedVersion: 2
-    m_Bits: 1024
+  CannonLayers:
+  - GameMode: 0
+    layerType: 0
+  - GameMode: 1
+    layerType: 2
+  - GameMode: 2
+    layerType: 1
+  - GameMode: 3
+    layerType: 1
+  - GameMode: 4
+    layerType: 2
+  - GameMode: 5
+    layerType: 2
+  myCannonType: 0
 --- !u!1 &5489865075867599674
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,7 +860,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 721a845fd923a114e8d83c89d25bca12, type: 2}
+  - {fileID: 2100000, guid: c03ee798e447c6f45bf3e0dd61405f5f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
