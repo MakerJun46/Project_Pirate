@@ -79,7 +79,7 @@ public class HitTheTargetGameManager : GameManager
 
             if (shouldGameEnd)
             {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                FindObjectOfType<NetworkManager>().EndGame();
             }
         }
     }

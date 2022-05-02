@@ -193,12 +193,20 @@ public class GameManager : MonoBehaviour, IPunObservable
         }
     }
 
+    bool endTimeTirgger = false;
     protected virtual void Update()
     {
         if (TimeText)
             TimeText.text = ((int)(currPlayTime / 60)) + ":" + ((int)(currPlayTime % 60));
         if (GameStarted)
         {
+            int countDownTime = 5;
+            if (endTimeTirgger == false && maxPlayTime - countDownTime <= currPlayTime)
+            {
+                endTimeTirgger = true;
+                FindObjectOfType<NetworkManager>().StartCountDown(countDownTime);
+            }
+
             if (PhotonNetwork.IsMasterClient)
             {
                 currPlayTime += Time.deltaTime;

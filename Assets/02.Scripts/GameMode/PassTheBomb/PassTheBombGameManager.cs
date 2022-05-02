@@ -113,7 +113,7 @@ public class PassTheBombGameManager : GameManager
         {
             if (currPlayTime >= maxPlayTime)
             {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                FindObjectOfType<NetworkManager>().EndGame();
             }
 
             if(hasBomb==false)

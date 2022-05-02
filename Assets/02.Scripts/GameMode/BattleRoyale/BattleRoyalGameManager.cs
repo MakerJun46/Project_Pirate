@@ -97,7 +97,7 @@ public class BattleRoyalGameManager : GameManager
 
             if (shouldGameEnd)
             {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                FindObjectOfType<NetworkManager>().EndGame();
             }
         }
 

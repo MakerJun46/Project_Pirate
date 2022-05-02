@@ -840,6 +840,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 641162822113941522, guid: b2470574c43d6ed47b45e7aaf35e134d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b2470574c43d6ed47b45e7aaf35e134d, type: 3}
 --- !u!224 &259520956 stripped
@@ -925,6 +929,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ObserverCameras
       objectReference: {fileID: 0}
+    - target: {fileID: 3014258686909411142, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3014258686909411143, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -968,6 +976,30 @@ PrefabInstance:
     - target: {fileID: 3014258686909411143, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014258686943429833, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1e-45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014258687688011094, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 16.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014258687688011094, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014258687688011094, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -65.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014258687688011094, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -1e-45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014258687688011094, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 1e-45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
@@ -2424,7 +2456,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DisconnetPanel: {fileID: 143139236}
   LoadingPanel: {fileID: 1968976710}
-  loading_sec: 3
   PlayerSpawnRadius: 100
 --- !u!4 &1510809183
 Transform:
@@ -2637,17 +2668,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08121384, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08120143, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12611765, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.1261029, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07576174, b: 0.25390378, a: 0}
+  shoreColor: {r: 0, g: 0.07575057, b: 0.2538882, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058425434, g: 0.11283291, b: 0.14026856, a: 1}
-  underwaterColor: {r: 0.23756874, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05841376, g: 0.112817355, b: 0.14025381, a: 1}
+  underwaterColor: {r: 0.23755318, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -2655,7 +2686,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.097428195, g: 0.3392926, b: 0.3225271, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09741426, g: 0.33927703, b: 0.32251155, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0

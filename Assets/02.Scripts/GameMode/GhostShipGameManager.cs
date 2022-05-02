@@ -95,7 +95,7 @@ public class GhostShipGameManager : GameManager
         {
             if (currPlayTime >= maxPlayTime)
             {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                FindObjectOfType<NetworkManager>().EndGame();
             }
             else
             {
@@ -109,7 +109,7 @@ public class GhostShipGameManager : GameManager
 
                 if (taggedPlayer >= ships.Length)
                 {
-                    FindObjectOfType<NetworkManager>().StartEndGame(false);
+                    FindObjectOfType<NetworkManager>().EndGame();
                 }
             }
 

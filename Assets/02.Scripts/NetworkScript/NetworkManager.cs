@@ -13,13 +13,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private PhotonView PV;
 
-    [SerializeField] private GameObject DisconnetPanel;
     [SerializeField] GameObject LoadingPanel;
     GameObject CountDownPanel;
     GameObject FadeScreenPanel;
-
-    [SerializeField]private int loading_sec=3;
-
 
     private void Awake()
     {
@@ -35,25 +31,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         FadeScreenPanel = LoadingPanel.transform.GetChild(1).gameObject;
         FadeScreenPanel.GetComponent<Image>().color = Color.black;
 
-        if (PhotonNetwork.IsConnected)
-        {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                DisconnetPanel.SetActive(false);
-                Invoke("Spawn", 1f);
-            }
-        }
-        else
-        {
-            Connect();
-        }
 
         if (RoomData.GetInstance() != null)
         {
             if (RoomData.GetInstance().PlayGameCountOvered() == false)
             {
                 // 플레이 한 게임모드가 최대가 되지 않으면 정상적으로 게임 진행
-                StartEndGame(true);
+                StartGame();
+                
                 if (SceneManager.GetActiveScene().name != "GameScene_Room")
                 {
                     RoomData.GetInstance().RemoveCurrGameMode();
@@ -71,34 +56,37 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void StartEndGame(bool _start)
+
+    public void StartGame()
     {
+        if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
+        {
+            Invoke("Spawn", 1f);
+        }
         if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine(StartEndGameCoroutine(_start));
+            StartCoroutine(StartGameCoroutine());
         }
     }
-
-    public IEnumerator StartEndGameCoroutine(bool _start)
+    public IEnumerator StartGameCoroutine()
     {
-        if (RoomData.GetInstance() && _start)
+        if (RoomData.GetInstance())
         {
             // 첫 번째 판이 아니거나, 첫 번째 판인데 random을 고른 경우 -> 랜덤
-            if (RoomData.GetInstance().PlayedGameCount > 0 || (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
+            if (RoomData.GetInstance().PlayedGameCount > 0 || 
+                (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
             {
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
             }
         }
 
-        while (_start)
+        while (true)
         {
             yield return new WaitForEndOfFrame();
             // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
             // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
-            if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount) 
-            {
+            if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount)
                 break;
-            }
         }
 
         if (PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
@@ -113,33 +101,49 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         else
         {
             // 플레이어가 남아있을 경우 정상적으로 작동
-            GetComponent<PhotonView>().RPC("LoadingFunc", RpcTarget.AllBuffered, _start);
+            GetComponent<PhotonView>().RPC("StartLoadingFunc", RpcTarget.AllBuffered);
         }
     }
 
     [PunRPC]
-    public void LoadingFunc(bool _start)
+    public void StartLoadingFunc()
     {
-        StartCoroutine(LoadingCoroutine(_start));
+        StartCoroutine(StartGameEffectCoroutine());
     }
-    IEnumerator LoadingCoroutine(bool _start)
+    IEnumerator StartGameEffectCoroutine()
     {
-        LoadingPanel.SetActive(true);
-        if (_start)
-        {
-            yield return StartCoroutine("LoadingFadeInOut", true);
-        }
-        else
-        {
-            GameManager.GetInstance().JudgeWinLose();
-        }
+        yield return StartCoroutine("LoadingFadeInOut", true);
 
+        if (FindObjectOfType<CutSceneManager>())
+            yield return new WaitForSeconds(Mathf.Max(0f, (float)FindObjectOfType<CutSceneManager>().director.duration - 6f));
 
-        if (FindObjectOfType<CutSceneManager>()&& _start)
-            yield return new WaitForSeconds(Mathf.Max(0f,(float)FindObjectOfType<CutSceneManager>().director.duration-6f));
+        yield return StartCoroutine(CountDownCoroutine(3));
 
+        GameManager.GetInstance().StartGame();
+    }
+
+    public void EndGame()
+    {
+        StartCoroutine("EndGameCoroutine");
+    }
+    IEnumerator EndGameCoroutine()
+    {
+        GameManager.GetInstance().JudgeWinLose();
+
+        yield return StartCoroutine("LoadingFadeInOut", false);
+
+        GameManager.GetInstance().EndGame();
+    }
+
+    public void StartCountDown(int loadingSec)
+    {
+        StartCoroutine(CountDownCoroutine(loadingSec));
+    }
+
+    IEnumerator CountDownCoroutine(int loadingSec)
+    {
         CountDownPanel.SetActive(true);
-        for (int i = loading_sec; i > 0; i--)
+        for (int i = loadingSec; i > 0; i--)
         {
             CountDownPanel.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
             yield return new WaitForSecondsRealtime(1.0f);
@@ -148,20 +152,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             FindObjectOfType<CutSceneManager>().director.Stop();
 
         CountDownPanel.SetActive(false);
-
-        if (_start==false)
-            yield return StartCoroutine("LoadingFadeInOut",false); // 0420 게임시작 할 때 FadeOut 효과 추가
-
-
-        LoadingPanel.SetActive(false);
-        if (_start)
-            GameManager.GetInstance().StartGame();
-        else
-            GameManager.GetInstance().EndGame();
     }
+
+    public void StartFadeInOut(bool FadeIn)
+    {
+        StartCoroutine("LoadingFadeInOut", FadeIn);
+    }
+
     IEnumerator LoadingFadeInOut(bool FadeIn)
     {
-
         while (true)
         {
             Color c = FadeScreenPanel.GetComponent<Image>().color;
@@ -257,7 +256,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.LogError("OnJoinedRoom");
-        DisconnetPanel.SetActive(false);
+        //DisconnetPanel.SetActive(false);
         if (RoomData.GetInstance() == null)
             PhotonNetwork.Instantiate("RoomData", Vector3.zero, Quaternion.identity);
     }
@@ -272,7 +271,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// <param name="cause"></param>
     public override void OnDisconnected(DisconnectCause cause)
     {
-        DisconnetPanel.SetActive(true);
+        //DisconnetPanel.SetActive(true);
     }
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {

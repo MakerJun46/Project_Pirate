@@ -66,22 +66,14 @@ public class Player_Combat_Ship : MonoBehaviourPun
     {
         int upgradeIndex = 0;
         if (param <= 0)
-        {
             upgradeIndex = 2;
-        }
         else if (param == 1)
-        {
             upgradeIndex = 1;
-        }
         else
-        {
             upgradeIndex = 0;
-        }
 
         for (int i = 0; i < shipObjects.Count; i++)
-        {
             shipObjects[i].gameObject.SetActive(false);
-        }
         myShipObjects = shipObjects[upgradeIndex];
         myShipObjects.SetActive(true);
         //myShipObjects.GetComponent<MotionTrail>().StartMotionTrail();

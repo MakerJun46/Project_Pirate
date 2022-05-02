@@ -131,7 +131,7 @@ public class SurvivorGameManager : GameManager
 
             if (shouldGameEnd)
             {
-                FindObjectOfType<NetworkManager>().StartEndGame(false);
+                FindObjectOfType<NetworkManager>().EndGame();
             }
 
             scoreTime += Time.deltaTime;
