@@ -211,7 +211,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         for (int i = 0; i < 50; i++)
         {
-            Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)) * PlayerSpawnRadius;
+            Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), -1f, Random.Range(-1f, 1f)) * PlayerSpawnRadius;
             RaycastHit hit;
             if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
             {

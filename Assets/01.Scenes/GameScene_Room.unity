@@ -412,7 +412,7 @@ Transform:
   m_LocalScale: {x: 500, y: 1, z: 500}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &158257733
 GameObject:
@@ -1188,6 +1188,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Observer
       objectReference: {fileID: 0}
+    - target: {fileID: 908597251065630538, guid: 2dc2244f72307634a949b9a7c6772282, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 908597251065630541, guid: 2dc2244f72307634a949b9a7c6772282, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1625,7 +1629,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 483576997207186299, guid: 3cbd7dd5abef1004fbb48da307cc3472, type: 3}
       propertyPath: m_RootOrder
-      value: 18
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 483576997207186299, guid: 3cbd7dd5abef1004fbb48da307cc3472, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1794,7 +1798,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &563531903
 PrefabInstance:
@@ -2152,7 +2156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3014258686909411143, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3014258686909411143, guid: b445f396ad1d9c24bb543d3700aebabd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2555,6 +2559,10 @@ PrefabInstance:
     - target: {fileID: 4347741758394421610, guid: 6817cc49ce96cb243ab1ff2db555327a, type: 3}
       propertyPath: m_Name
       value: LoadingPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347741758394421610, guid: 6817cc49ce96cb243ab1ff2db555327a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4347741758394421611, guid: 6817cc49ce96cb243ab1ff2db555327a, type: 3}
       propertyPath: m_RootOrder
@@ -3016,7 +3024,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4148050807325884336, guid: 55ab60e0b2ae1dd41abf81ce7f4cef34, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4148050807325884336, guid: 55ab60e0b2ae1dd41abf81ce7f4cef34, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3776,7 +3784,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1510809181
 GameObject:
@@ -4036,7 +4044,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1561859353
@@ -4180,17 +4188,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08119736, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.081188, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12609804, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12608689, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07574686, b: 0.25388306, a: 0}
+  shoreColor: {r: 0, g: 0.0757383, b: 0.25387132, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05840992, g: 0.11281223, b: 0.14024895, a: 1}
-  underwaterColor: {r: 0.23754805, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.0584011, g: 0.11280047, b: 0.14023781, a: 1}
+  underwaterColor: {r: 0.23753628, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4198,7 +4206,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09740967, g: 0.3392719, b: 0.32250643, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09739914, g: 0.33926013, b: 0.32249466, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -4248,10 +4256,10 @@ MonoBehaviour:
   normalsScale: 0.528
   normalsSpeed: 0.5
   refractionStrength: 0.0882
-  waveVisuals: {x: 0.5, y: 0.5, z: 0.9}
-  waveSteepness: 0.5
-  waveLength: 0.5
-  waveSpeed: 0.9
+  waveVisuals: {x: 0.2, y: 8, z: 1}
+  waveSteepness: 0.2
+  waveLength: 8
+  waveSpeed: 1
   waveDirections: {x: 4.27, y: 1, z: 1, w: 1}
   waveDirection1: 4.27
   waveDirection2: 1
