@@ -329,6 +329,7 @@ GameObject:
   - component: {fileID: -2435333863657373093}
   - component: {fileID: 9107333405015472117}
   - component: {fileID: 8368141020911508659}
+  - component: {fileID: 9097727224315109454}
   m_Layer: 6
   m_Name: PlayerShip
   m_TagString: Player
@@ -373,9 +374,9 @@ Rigidbody:
   m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 116
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &3073172608852465319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,6 +565,22 @@ CapsuleCollider:
   m_Height: 10
   m_Direction: 2
   m_Center: {x: 0, y: 2, z: 0}
+--- !u!114 &9097727224315109454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3567507026925108279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dc8a26fc65a60d488be393b5db7978c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 0.5
+  WaveSpeed: 1
+  waveSize: 0.01
+  yOffset: -1
 --- !u!1 &4577764039669100595
 GameObject:
   m_ObjectHideFlags: 0
@@ -5435,8 +5452,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 60
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0773951582cf65a42b66c831cf59502a, type: 2}
-  m_sharedMaterial: {fileID: -6469931651735993795, guid: 0773951582cf65a42b66c831cf59502a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 11efd19c55bdd9b44bd609167cc6dc35, type: 2}
+  m_sharedMaterial: {fileID: -6250224809943754400, guid: 11efd19c55bdd9b44bd609167cc6dc35, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5466,7 +5483,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
