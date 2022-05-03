@@ -23,7 +23,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] float levelUpCoolTime=10;
     private float remainLevelUpCount = 0;
     [SerializeField] GameObject LevelUpPanel;
-    [SerializeField] Transform LevelUpBtnContainer;
+    [SerializeField] Sprite[] levelUpSprites;
 
     private void Update()
     {
@@ -82,9 +82,9 @@ public class CombatManager : MonoBehaviour
             }
 
 
-            for (int i = 0; i < LevelUpBtnContainer.childCount; i++)
+            for (int i = 0; i < LevelUpPanel.transform.GetChild(0).childCount; i++)
             {
-                GameObject levelUpBtn = LevelUpBtnContainer.GetChild(i).gameObject;
+                GameObject levelUpBtn = LevelUpPanel.transform.GetChild(0).GetChild(i).gameObject;
 
 
                 if (randomRoullet.Count > 0)
@@ -94,7 +94,7 @@ public class CombatManager : MonoBehaviour
                     randomRoullet.RemoveAt(selectIndex);
 
                     levelUpBtn.SetActive(true);
-                    levelUpBtn.GetComponentInChildren<Text>().text = "";
+                    levelUpBtn.transform.GetChild(0).GetComponent<Text>().text = "";
                     levelUpBtn.GetComponent<Button>().onClick.RemoveAllListeners();
 
 
@@ -103,15 +103,18 @@ public class CombatManager : MonoBehaviour
                     switch ((int)selectedRoullet.x)
                     {
                         case 0:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Get Sail " + levelUpIndex;
+                            levelUpBtn.transform.GetChild(0).GetComponent<Text>().text = "Get Sail " + levelUpIndex;
+                            levelUpBtn.transform.GetChild(1).GetComponent<Image>().sprite = levelUpSprites[4];
                             levelUpBtn.GetComponent<Button>().onClick.AddListener(() => EquipSail());
                             break;
                         case 1:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Get Cannon " + levelUpIndex;
+                            levelUpBtn.transform.GetChild(0).GetComponent<Text>().text = "Get Cannon " + levelUpIndex;
+                            levelUpBtn.transform.GetChild(1).GetComponent<Image>().sprite = levelUpSprites[levelUpIndex];
                             levelUpBtn.GetComponent<Button>().onClick.AddListener(() => EquipCannon(currShip.GetLastAutoCannonIndex(), levelUpIndex));
                             break;
                         case 2:
-                            levelUpBtn.GetComponentInChildren<Text>().text = "Get SpecialCannon " + levelUpIndex;
+                            levelUpBtn.transform.GetChild(0).GetComponent<Text>().text = "Get SpecialCannon " + levelUpIndex;
+                            levelUpBtn.transform.GetChild(1).GetComponent<Image>().sprite = levelUpSprites[5+levelUpIndex];
                             levelUpBtn.GetComponent<Button>().onClick.AddListener(() => EquipSpecialCannon(currShip.GetLastmySpecialCannonsIndex(), levelUpIndex));
                             break;
                     }

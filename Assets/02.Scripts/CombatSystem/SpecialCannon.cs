@@ -9,8 +9,8 @@ public class SpecialCannon : Cannon
     public enum SpecialCannonType
     {
         Hook,
-        Sniper,
         OakBarrel,
+        Sniper,
         Rain,
         KnockBack
     }
@@ -86,18 +86,22 @@ public class SpecialCannon : Cannon
                     lrs[0].SetPosition(1, cursor.transform.position);
                 }
                 break;
-            case SpecialCannonType.KnockBack:
+            case SpecialCannonType.OakBarrel:
                 if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
-                    LaunchKnockBack();
+                    lrs[0].enabled = false;
+
+                    LaunchBarrel();
                 }
                 else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    fov.enabled = true;
-                    fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = true;
-                    fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = true;
-                    fov.transform.rotation = Quaternion.LookRotation(new Vector3(tmpInput.x, 0, tmpInput.y));
-                    attackingState = AttackState.Launcing;
+                    ChargeCannon();
+
+                    currCannonDistance += Time.deltaTime * 20f;
+                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 12f);
+
+                    lrs[0].enabled = true;
+                    DrawPath();
                 }
                 break;
             case SpecialCannonType.Rain:
@@ -122,22 +126,18 @@ public class SpecialCannon : Cannon
                     ChargeCannon(20,80);
                 }
                 break;
-            case SpecialCannonType.OakBarrel:
+            case SpecialCannonType.KnockBack:
                 if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
                 {
-                    lrs[0].enabled = false;
-
-                    LaunchBarrel();
+                    LaunchKnockBack();
                 }
                 else if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
-                    ChargeCannon();
-
-                    currCannonDistance += Time.deltaTime * 20f;
-                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 12f);
-
-                    lrs[0].enabled = true;
-                    DrawPath();
+                    fov.enabled = true;
+                    fov.viewMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                    fov.coolTimeMeshFilter.GetComponent<MeshRenderer>().enabled = true;
+                    fov.transform.rotation = Quaternion.LookRotation(new Vector3(tmpInput.x, 0, tmpInput.y));
+                    attackingState = AttackState.Launcing;
                 }
                 break;
         }

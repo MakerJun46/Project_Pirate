@@ -12,9 +12,9 @@ public class AutoCannon : Cannon
     public enum CannonType
     {
         Trajectory,
+        Soybean,
         Straight,
-        ThreeWay,
-        Soybean
+        ThreeWay
     }
     public CannonType myCannonType;
 
@@ -62,18 +62,18 @@ public class AutoCannon : Cannon
                             case CannonType.Trajectory:
                                 LaunchTrajectory();
                                 break;
+                            case CannonType.Soybean:
+                                LaunchSoybean();
+                                break;
                             case CannonType.Straight:
-                                LaunchStraight(1,cursor.transform.position);
+                                LaunchStraight(1, cursor.transform.position);
                                 break;
                             case CannonType.ThreeWay:
                                 for (int i = 0; i < 3; i++)
                                 {
                                     lrs[i].enabled = false;
-                                    LaunchStraight(3,this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
+                                    LaunchStraight(3, this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
                                 }
-                                break;
-                            case CannonType.Soybean:
-                                LaunchSoybean();
                                 break;
                         }
                     }
@@ -126,44 +126,6 @@ public class AutoCannon : Cannon
                     LaunchTrajectory();
                 }
                 break;
-            case CannonType.Straight:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
-                {
-                    ChargeCannon(-1,80);
-                    lrs[0].enabled = true;
-                    int resolution = 2;
-                    lrs[0].positionCount = resolution;
-                    lrs[0].SetPosition(0, this.transform.position);
-                    lrs[0].SetPosition(1, cursor.transform.position);
-                }
-                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
-                {
-                    lrs[0].enabled = false;
-                    LaunchStraight(0,cursor.transform.position);
-                }
-                break;
-            case CannonType.ThreeWay:
-                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
-                {
-                    ChargeCannon(-1,80);
-                    int resolution = 2;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        lrs[i].enabled = true;
-                        lrs[i].positionCount = resolution;
-                        lrs[i].SetPosition(0, this.transform.position);
-                        lrs[i].SetPosition(1, this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
-                    }
-                }
-                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        lrs[i].enabled = false;
-                        LaunchStraight(3,this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
-                    }
-                }
-                break;
             case CannonType.Soybean:
                 if (attackingState > 0 && tmpInput.magnitude > 0.1f)
                 {
@@ -180,6 +142,44 @@ public class AutoCannon : Cannon
                     lrs[0].enabled = false;
 
                     LaunchSoybean();
+                }
+                break;
+            case CannonType.Straight:
+                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                {
+                    ChargeCannon(-1, 80);
+                    lrs[0].enabled = true;
+                    int resolution = 2;
+                    lrs[0].positionCount = resolution;
+                    lrs[0].SetPosition(0, this.transform.position);
+                    lrs[0].SetPosition(1, cursor.transform.position);
+                }
+                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
+                {
+                    lrs[0].enabled = false;
+                    LaunchStraight(0, cursor.transform.position);
+                }
+                break;
+            case CannonType.ThreeWay:
+                if (attackingState > 0 && tmpInput.magnitude > 0.1f)
+                {
+                    ChargeCannon(-1, 80);
+                    int resolution = 2;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        lrs[i].enabled = true;
+                        lrs[i].positionCount = resolution;
+                        lrs[i].SetPosition(0, this.transform.position);
+                        lrs[i].SetPosition(1, this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
+                    }
+                }
+                else if (Input.GetMouseButtonUp(0) && attackingState == AttackState.Launcing)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        lrs[i].enabled = false;
+                        LaunchStraight(3, this.transform.position + (Quaternion.AngleAxis(30 * (i - 1), Vector3.up) * (cursor.transform.position - this.transform.position)));
+                    }
                 }
                 break;
         }
