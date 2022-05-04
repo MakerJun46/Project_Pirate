@@ -2106,7 +2106,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 2560, y: 1600}
   m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -2677,17 +2677,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08119621, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.081186704, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12609667, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12608534, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.0757458, b: 0.25388163, a: 0}
+  shoreColor: {r: 0, g: 0.07573714, b: 0.25386968, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058408834, g: 0.11281078, b: 0.14024758, a: 1}
-  underwaterColor: {r: 0.2375466, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05839987, g: 0.11279883, b: 0.14023626, a: 1}
+  underwaterColor: {r: 0.23753467, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -2695,7 +2695,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09740838, g: 0.33927044, b: 0.322505, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09739768, g: 0.3392585, b: 0.32249305, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -2745,10 +2745,10 @@ MonoBehaviour:
   normalsScale: 0.528
   normalsSpeed: 0.5
   refractionStrength: 0.0882
-  waveVisuals: {x: 0.5, y: 0.5, z: 0.9}
-  waveSteepness: 0.5
-  waveLength: 0.5
-  waveSpeed: 0.9
+  waveVisuals: {x: 0.2, y: 8, z: 1}
+  waveSteepness: 0.2
+  waveLength: 8
+  waveSpeed: 1
   waveDirections: {x: 4.27, y: 1, z: 1, w: 1}
   waveDirection1: 4.27
   waveDirection2: 1
@@ -2872,6 +2872,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1241222759}
     m_Modifications:
+    - target: {fileID: 48998177, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7783536428326601078, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -57.168457
@@ -4214,6 +4218,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 222127369006238873, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 222127369006238873, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -4231,6 +4239,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3008452911932405838, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008452911932405838, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3008452911932405838, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
@@ -4290,6 +4302,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6390731105607847610, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6390731105607847610, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -4307,6 +4323,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805592498516484336, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8805592498516484336, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8805592498516484336, guid: 070c2d76e49eb254999e009d7b2cc57e, type: 3}
