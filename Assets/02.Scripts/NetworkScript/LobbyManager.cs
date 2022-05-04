@@ -43,6 +43,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Text contractText;
 
     [SerializeField] GameObject MainPanel;
+    [SerializeField] GameObject OptionPanel;
+    [SerializeField] GameObject TitleImg;
     [SerializeField] GameObject LobbyPanel;
     [SerializeField] GameObject RoomPanel;
     [SerializeField] GameObject LoadingFadeOutPanel;
@@ -189,7 +191,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         contractText.text = "¿¬°á µÊ";
 
         SetNickName();
+
+        OptionPanel.SetActive(true);
         MainPanel.SetActive(false);
+        TitleImg.SetActive(false);
     }
 
     /// <summary>

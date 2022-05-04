@@ -2,25 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[RequireComponent(typeof(Rigidbody))]
 public class FloatingShipEffect : MonoBehaviour
 {
-    public float amplitude = 0.5f;
-    public float WaveSpeed = 0.01f;
-    public float waveSize = 0.01f;
+    public float amplitude;          //Set in Inspector 
+    public float speed;                  //Set in Inspector 
+    private float tempVal;
+    private Vector3 tempPos;
+    public float yOffset;
 
-    public float yOffset = -1f;
-
-    private void Start()
+    void Start()
     {
-        transform.position -= new Vector3(0, yOffset, 0);
+        tempPos = transform.position;
+        tempVal = transform.position.y;
     }
 
-    private void FixedUpdate()
+    void Update()
     {
-        Vector3 pos = transform.position;
-
-        pos.y += amplitude * Mathf.Sin(WaveSpeed * Time.time) * 0.01f;
-
-        transform.position = pos;
+        tempPos.y = tempVal + amplitude * Mathf.Sin(speed * Time.time) - yOffset;
+        transform.position = tempPos;
     }
 }
