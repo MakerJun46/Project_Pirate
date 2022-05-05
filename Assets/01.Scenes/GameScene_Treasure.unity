@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.11480223, g: 0.11976789, b: 0.10575684, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2770,7 +2770,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712173840}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -98, y: -4.3, z: -48.1}
+  m_LocalPosition: {x: -98, y: -1.7, z: -48.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3411,15 +3411,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.16429138
+      value: 0.16429134
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.23488054
+      value: 0.23488049
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.040314697
+      value: -0.04031467
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933475, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LookAt
@@ -4598,17 +4598,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08116714, g: 0.5484824, b: 0.6981132, a: 1}
-  colorDepth: 9.74
-  horizonColor: {r: 0.126062, g: 1, b: 0.66924626, a: 0.7647059}
+  deepColor: {r: 0.081081204, g: 0.5484824, b: 0.6981132, a: 1}
+  colorDepth: 1.5
+  horizonColor: {r: 0.090131916, g: 0.9043005, b: 1, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07571929, b: 0.25384507, a: 0}
+  shoreColor: {r: 0, g: 0.1653843, b: 0.5660378, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05838141, g: 0.112774216, b: 0.14021292, a: 1}
-  underwaterColor: {r: 0.23751003, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05829998, g: 0.112665646, b: 0.14011002, a: 1}
+  underwaterColor: {r: 0.23740149, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4616,7 +4616,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.097375624, g: 0.33923388, b: 0.32246843, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09727811, g: 0.3391253, b: 0.32235986, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -4637,9 +4637,9 @@ MonoBehaviour:
   surfaceFoamShadowProjection: 18.22
   intersectionFoamShadowProjection: 20
   foamMovement: 0
-  intersectionFoamDepth: 1.16
+  intersectionFoamDepth: 1.3
   intersectionFoamTexture: {fileID: 2800000, guid: f0a203cf18c99cd49b6180796a78152c, type: 3}
-  intersectionFoamColor: {r: 0, g: 0.60245436, b: 0.8773585, a: 1}
+  intersectionFoamColor: {r: 0.76886797, g: 0.98810345, b: 1, a: 1}
   intersectionFoamMovement: {x: 0, y: 0}
   intersectionFoamDirection: 0
   intersectionFoamSpeed: 0
@@ -4648,13 +4648,13 @@ MonoBehaviour:
   intersectionFoamCutoff: 0
   intersectionFoamDistortion: 5
   enableIntersectionEffects: 1
-  intersectionFoamBlend: 0.093
-  intersectionWaterBlend: 0.771
-  shoreFoamSpeed: -17.15
-  shoreFoamWidth: 0
-  shoreFoamFrequency: 0
-  shoreFoamBreakupStrength: 12.1
-  shoreFoamBreakupScale: 9.37
+  intersectionFoamBlend: 0.732
+  intersectionWaterBlend: 0.899
+  shoreFoamSpeed: -1.66
+  shoreFoamWidth: 0.1
+  shoreFoamFrequency: 31.3
+  shoreFoamBreakupStrength: 0.19
+  shoreFoamBreakupScale: 3.6
   lighting: 0
   lightingSmoothness: 0.67
   lightingSpecularColor: {r: 0, g: 1, b: 0.79470205, a: 1}
