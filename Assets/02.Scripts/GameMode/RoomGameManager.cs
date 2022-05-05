@@ -57,7 +57,6 @@ public class RoomGameManager : GameManager
     public void ActiveResultPanel()
     {
         PlayerListPanel.gameObject.SetActive(true);
-        rankObjs.SetActive(true);
 
         RoomData currRoomData = RoomData.GetInstance();
 
@@ -67,6 +66,7 @@ public class RoomGameManager : GameManager
 
         if (currRoomData.PlayGameCountOvered() || ForceQuit)
         {
+            rankObjs.SetActive(true);
             WinPanel.SetActive(false);
             LosePanel.SetActive(false);
             ObserverModePanel.SetActive(false);

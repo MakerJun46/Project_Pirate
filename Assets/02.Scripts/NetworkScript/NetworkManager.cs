@@ -56,19 +56,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
 
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            Spawn();
-        }
     }
 
-
+    bool characterGened = false;
     public void StartGame()
     {
-        if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(StartGameCoroutine());
         }
+        else if(characterGened==false)
+        {
+            characterGened = true;
+            Spawn();
+        }
+
     }
     public IEnumerator StartGameCoroutine()
     {
@@ -204,6 +206,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Spawn()
     {
+        print("SPAWN");
+        Player_Controller_Ship[] currentShips = FindObjectsOfType<Player_Controller_Ship>();
+        for (int i=0;i< currentShips.Length; i++)
+        {
+            if (currentShips[i].GetComponent<PhotonView>().IsMine)
+            {
+                PhotonNetwork.Destroy(currentShips[i].GetComponent<PhotonView>());
+                if (currentShips[i] != null)
+                {
+                    Destroy(currentShips[i].gameObject);
+                }
+            }
+        }
+
         GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 
         if (go.GetComponent<PhotonView>().IsMine)

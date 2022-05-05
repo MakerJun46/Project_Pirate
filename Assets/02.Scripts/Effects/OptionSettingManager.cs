@@ -23,7 +23,6 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             instance = GameObject.FindObjectOfType<OptionSettingManager>();
             if (!instance)
-
                 Debug.LogError("There needs to be one active MyClass script on a GameObject in your scene.");
         }
 
