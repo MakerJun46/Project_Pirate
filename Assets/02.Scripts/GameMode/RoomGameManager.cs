@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Cinemachine;
 using UnityEngine.UI;
 public class RoomGameManager : GameManager
 {
@@ -13,6 +14,7 @@ public class RoomGameManager : GameManager
     [SerializeField] Transform PlayerListContainer;
 
     [SerializeField] List<Transform> rankTRs;
+    [SerializeField] GameObject rankObjs;
 
     int rank = 0;
 
@@ -55,6 +57,7 @@ public class RoomGameManager : GameManager
     public void ActiveResultPanel()
     {
         PlayerListPanel.gameObject.SetActive(true);
+        rankObjs.SetActive(true);
 
         RoomData currRoomData = RoomData.GetInstance();
 
@@ -131,7 +134,7 @@ public class RoomGameManager : GameManager
                         break;
                     }
                 }
-                PhotonNetwork.Instantiate("PlayerRankShip", rankTRs[playerIndex-1].position, rankTRs[playerIndex-1].rotation, 0, new object[] { rank});
+                PhotonNetwork.Instantiate("PlayerRankCharacter", rankTRs[playerIndex-1].position, rankTRs[playerIndex-1].rotation, 0, new object[] { rank});
             }
         }
     }

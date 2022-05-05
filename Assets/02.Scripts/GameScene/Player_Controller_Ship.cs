@@ -255,6 +255,16 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         if (collision.gameObject.CompareTag("Terrain"))
         {
             additionalForce += collision.GetContact(0).normal * 30f;
+        }else if (collision.gameObject.CompareTag("Treasure") && collision.gameObject.GetComponent<Treasure>().isPickable)
+        {
+            if (GetComponent<PhotonView>().IsMine)
+            {
+                Debug.LogError("GetTreasure");
+                Debug.LogError(Treasure_GameManager.instance.Player_TreasureCount_Value);
+                Treasure_GameManager.instance.Player_TreasureCount_Value++;
+                Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
+            }
+            Destroy(collision.gameObject);
         }
     }
 

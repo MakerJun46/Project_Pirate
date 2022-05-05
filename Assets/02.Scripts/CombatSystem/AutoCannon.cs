@@ -220,7 +220,6 @@ public class AutoCannon : Cannon
                 targetPos += fov.currTarget.GetComponent<Rigidbody>().velocity;
             }
             ball.velocity = CalculateLaunchData(targetPos).initialVelocity;
-            // 
         }
         OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, false);
@@ -236,6 +235,8 @@ public class AutoCannon : Cannon
             damage = 2f;
             scale = 0.5f;
         }
+        Vector3 spawnPos = this.transform.position;
+        spawnPos.y = 1.5f;
         GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] { damage,scale});
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.zero;
