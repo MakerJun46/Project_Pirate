@@ -19,8 +19,6 @@ public class RoomGameManager : GameManager
     protected override void Start()
     {
         base.Start();
-        
-        RefreshPlayeScore(true);
 
         Invoke("ActiveResultPanel", 1f);
         

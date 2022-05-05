@@ -20,11 +20,17 @@ public class CombatManager : MonoBehaviour
     public List<AttackJoyStick> SpecialJoySticks = new List<AttackJoyStick>();
 
     float currLevelUpTime;
+    [SerializeField] int initialLevelUpCount = 0;
     [SerializeField] float levelUpCoolTime=10;
     private float remainLevelUpCount = 0;
     [SerializeField] GameObject LevelUpPanel;
     [SerializeField] Sprite[] levelUpSprites;
 
+    public void InitialLevelUp()
+    {
+        if(initialLevelUpCount>0)
+            SetLevelUpCount(initialLevelUpCount);
+    }
     private void Update()
     {
         if (GameManager.GetInstance().GameStarted)

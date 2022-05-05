@@ -19,11 +19,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
 
     [SerializeField] string myNickName;
+    [SerializeField] int myProfileIndex;
 
     [Header("[Room Info]")]
     public string roomName;
     public bool IsVisible = true;
     public bool IsOpen = true;
+    private int selectedMaxPlayerCount=4;
 
     [SerializeField] Image GameModeImage;
     [SerializeField] Text GameModeText;
@@ -39,7 +41,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public PlayerListContent myPlayerListContent;
 
     [Header("[UI]")]
-    [SerializeField] Animator TitleAnim;
+    [SerializeField] GameObject TitleAnim;
     [SerializeField] Text contractText;
 
     [SerializeField] GameObject MainPanel;
@@ -48,10 +50,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject LobbyPanel;
     [SerializeField] GameObject RoomPanel;
     [SerializeField] GameObject LoadingFadeOutPanel;
+    [SerializeField] GameObject CreateRoomPanel;
 
     [SerializeField] Text ReadyCountText;
-    [SerializeField] GameObject OptionBlindForClient;
+    [SerializeField] List<GameObject> gameModeAdjustBtns;
     [SerializeField] InputField SetNickNameInputField;
+
+    [Header("[Player]")]
+    [SerializeField] List<string> playerNameExamples;
+    [SerializeField] List<Color> playerProfileExamples;
+
+    [SerializeField] Transform playerProfileBtnContainer;
+    [SerializeField] Transform playerProfileBtnContainer2;
+    [SerializeField] Text NickNameText;
+    [SerializeField] Image profileColorImg;
 
     [Header("[Chat]")]
     [SerializeField] GameObject ChatUI;
@@ -63,9 +75,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+#if UNITY_EDITOR_WIN
         Screen.SetResolution(960, 540, false);
+#endif
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     private void Start()
@@ -78,12 +93,35 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             RoomPanel.SetActive(false);
             LeaveRoom();
         }
-        SetNickNameInputField.text = PhotonNetwork.IsConnected ? PhotonNetwork.LocalPlayer.NickName : "Guest" + Random.Range(0, 1000);
+        SetNickNameInputField.text = PhotonNetwork.IsConnected ? PhotonNetwork.LocalPlayer.NickName : playerNameExamples[Random.Range(0, playerNameExamples.Count)]+ Random.Range(0, 100);
+        NickNameText.text = SetNickNameInputField.text;
+
+        for (int i = 0; i < playerProfileExamples.Count; i++)
+        {
+
+            GameObject tmpBtn = Instantiate(playerProfileBtnContainer.GetChild(0).gameObject, playerProfileBtnContainer);
+            int tmpIndex = i;
+            tmpBtn.SetActive(true);
+            tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
+            tmpBtn.transform.GetChild(0).GetComponent<Image>().color = playerProfileExamples[tmpIndex];
+        }
+        for (int i = 0; i < playerProfileExamples.Count; i++)
+        {
+
+            GameObject tmpBtn = Instantiate(playerProfileBtnContainer2.GetChild(0).gameObject, playerProfileBtnContainer2);
+            int tmpIndex = i;
+            tmpBtn.SetActive(true);
+            tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
+            tmpBtn.transform.GetChild(0).GetComponent<Image>().color = playerProfileExamples[tmpIndex];
+        }
+        SetProfileIndex(Random.Range(0, playerProfileExamples.Count));
+
+
     }
-    #endregion
+#endregion
 
 
-    #region Networking
+#region Networking
     private void Update()
     {
         if (PhotonNetwork.IsConnected && PhotonNetwork.LocalPlayer != null)
@@ -156,7 +194,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
 
         // 게임 대기 씬 로드
-        SceneManager.LoadScene("GameScene_Room");
+        if(PhotonNetwork.IsMasterClient)
+            SceneManager.LoadScene("GameScene_Room");
     }
 
     /// <summary>
@@ -247,18 +286,24 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         contractText.text = "로비 나가기";
     }
 
+    public void ActiveCreateRoomPanel()
+    {
+        CreateRoomPanel.SetActive(true);
+    }
     // 방 생성, 입장, 랜덤 방 입장
     public void CreateRoom()
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
-        roomOptions.MaxPlayers = (byte)5;
+        roomOptions.MaxPlayers = (byte)(selectedMaxPlayerCount+1);
         roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         roomOptions.CleanupCacheOnLeave = false;
-        SetRoomName(PhotonNetwork.LocalPlayer.NickName + "'s Room");
+        SelectCreatingRoomName(roomName);
         PhotonNetwork.CreateRoom(roomName, roomOptions);
+
+        CreateRoomPanel.SetActive(false);
     }
     public void JoinRoom()
     {
@@ -291,7 +336,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         contractText.text = "방 만들기 성공";
 
         // 방이 생성되면 생성한 플레이어가 마스터가 되어서 RoomData를 생성
-        PhotonNetwork.Instantiate("RoomData",  Vector3.zero, Quaternion.identity);
+        GameObject tmpRoomData = PhotonNetwork.Instantiate("RoomData",  Vector3.zero, Quaternion.identity);
         // UI 업데이트를 위해 GameMode에 0을 더해줌
         AddGameModeIndex(0);
     }
@@ -328,14 +373,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         // 마스터에게만 Option Setting 권한 부여
         if (PhotonNetwork.IsConnected)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ActiveOptionBlind(false);
-            }
-            else
-            {
-                ActiveOptionBlind(true);
-            }
+            ActiveGameModeAdjustBtns(PhotonNetwork.IsMasterClient);
         }
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -388,14 +426,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
         if (PhotonNetwork.IsConnected)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ActiveOptionBlind(false);
-            }
-            else
-            {
-                ActiveOptionBlind(true);
-            }
+            ActiveGameModeAdjustBtns(PhotonNetwork.IsMasterClient);
         }
     }
 
@@ -458,16 +489,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region Room Setting
-    public void SetNickName()
+    public void SelectMaxPlayer(int val)
     {
-        myNickName = SetNickNameInputField.text;
-        if (PhotonNetwork.IsConnected)
-            PhotonNetwork.NickName = myNickName;
+        selectedMaxPlayerCount = val;
     }
-    public void SetRoomName(string name)
+    public void SelectCreatingRoomName(string val)
     {
-        if (name != null && name != "")
-            roomName = name;
+        if (string.IsNullOrEmpty(val))
+        {
+            roomName = PhotonNetwork.LocalPlayer.NickName + "'s Room";
+        }
+        else
+        {
+            roomName = val;
+        }
     }
     public void SetVisible(bool visible)
     {
@@ -501,9 +536,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// 마스터 이외의 다른 플레이어가 Option을 건드리지 못하도록 Raycast Block Image로 가림  
     /// </summary>
-    public void ActiveOptionBlind(bool active)
+    public void ActiveGameModeAdjustBtns(bool active)
     {
-        OptionBlindForClient.SetActive(active);
+        for(int i=0;i< gameModeAdjustBtns.Count; i++)
+        {
+            gameModeAdjustBtns[i].gameObject.SetActive(active);
+        }
     }
 
     public void AddGameModeIndex(int addAmount)
@@ -553,6 +591,25 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region PlayerSetting
+    public void SetNickName()
+    {
+        myNickName = SetNickNameInputField.text;
+        NickNameText.text = myNickName;
+        if (PhotonNetwork.IsConnected)
+            PhotonNetwork.NickName = myNickName;
+    }
+    public void SetProfileIndex(int _index)
+    {
+        playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
+        playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
+        myProfileIndex = _index;
+        profileColorImg.color = playerProfileExamples[myProfileIndex];
+        playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
+        playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
+    }
+    #endregion
+
     #region Chat
     public void ChattedByPlayer()
     {
@@ -596,7 +653,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             ChatTexts[ChatTexts.Count - 1].text = msg;
         }
     }
-    #endregion
+#endregion
 
 
     void OnGUI() { GUILayout.Label(debugLog); }

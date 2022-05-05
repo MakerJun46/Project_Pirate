@@ -10,6 +10,7 @@ public class DeathField : MonoBehaviour
     [SerializeField] private Vector2 deathFieldMinMaxRadius;
     [SerializeField] private float deathFieldDamage = 5;
     [SerializeField] private float deathFieldAttackCooltime = 1;
+    [SerializeField] private float deathFieldReduceSpeed = 3;
     [SerializeField] private LayerMask deathFieldLayer;
     private void Start()
     {
@@ -43,7 +44,7 @@ public class DeathField : MonoBehaviour
 
     private void Update()
     {
-        deathFieldRadius -= Time.deltaTime * 3;
+        deathFieldRadius -= Time.deltaTime * deathFieldReduceSpeed;
         deathFieldRadius = Mathf.Clamp(deathFieldRadius, deathFieldMinMaxRadius.x, deathFieldMinMaxRadius.y);
         this.transform.localScale = Vector3.one * deathFieldRadius / 200;
     }

@@ -34,7 +34,6 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
     public float MainBackgroundVolumeValue;
     public float MainBackgroundAudioAdjustTime;
 
-    public Slider masterAudioSlider;
     public Slider backgroundAudioSlider;
     public Slider effectAudioSlider;
 
@@ -47,6 +46,11 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
     public AudioMixer MasterAudioMixer;
     public AudioMixerGroup EffectAudioMixer;
 
+
+    [SerializeField] Transform backgroundVolIcons;
+    [SerializeField] Transform effectVolIcons;
+
+    [SerializeField] GameObject CustomizePanelBtn;
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -60,6 +64,10 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
             s.source.loop = s.loop;
             s.source.outputAudioMixerGroup = EffectAudioMixer;
         }
+    }
+    public void ActiveCustomPanelOpenBtn(bool _active)
+    {
+        CustomizePanelBtn.SetActive(_active);
     }
     private void SoundPlay(string name, bool stop)
     {
@@ -102,7 +110,6 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         float tmpVal = 0;
         MasterAudioMixer.GetFloat("masterVol", out tmpVal);
-        masterAudioSlider.value = tmpVal;
         MasterAudioMixer.GetFloat("backgroundVol", out tmpVal);
         backgroundAudioSlider.value = tmpVal;
         MasterAudioMixer.GetFloat("effectVol", out tmpVal);
@@ -134,10 +141,19 @@ public class OptionSettingManager : MonoBehaviourPunCallbacks, IPunObservable
     public void SetBackgroundVolume(float val)
     {
         MasterAudioMixer.SetFloat("backgroundVol", val);
+
+        for(int i=1;i< backgroundVolIcons.childCount; i++)
+        {
+            backgroundVolIcons.GetChild(i).gameObject.SetActive((float)(i)/(backgroundVolIcons.childCount-1) <= (80+val) / 90f);
+        }
     }
     public void SetEffectVolume(float val)
     {
         MasterAudioMixer.SetFloat("effectVol", val);
+        for (int i = 1; i < effectVolIcons.childCount; i++)
+        {
+            effectVolIcons.GetChild(i).gameObject.SetActive((float)(i) / (effectVolIcons.childCount - 1) <= (80 + val) / 90f);
+        }
     }
 
     public void SetBackgroundVolume(float val, float Time)
