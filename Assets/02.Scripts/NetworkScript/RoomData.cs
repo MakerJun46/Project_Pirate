@@ -35,7 +35,7 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     [SerializeField] int MaxPlayGameCount = 3;
 
-    public Color[] playerColor;
+    public List<Color> playerColor;
 
     // Scores
     public List<int> FinalScores = new List<int>(10000);
@@ -43,7 +43,6 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     void Start()
     {
-
         PV = GetComponent<PhotonView>();
         PV.RPC("InitializePlayerScoreRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
         PlayedGameCount = 0;

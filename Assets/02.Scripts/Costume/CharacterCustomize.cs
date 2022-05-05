@@ -58,15 +58,7 @@ public class CharacterCustomize : MonoBehaviourPun
                 // Body Tail Ear Face
                 for(int i = 0; i < 4; i++)
                 {
-                    if (index >= 0)
-                    {
-                        //SkinObjs[i].GetComponent<MeshFilter>().mesh = tmpCostume.itemMesh[i];
-                        SkinObjs[i].GetComponent<MeshRenderer>().material = tmpCostume.itemMaterial[i];
-                    }
-                    else
-                    {
-                        SkinObjs[i].GetComponent<MeshRenderer>().material = null;
-                    }
+                    SkinObjs[i].GetComponent<MeshRenderer>().material = index >= 0 ? tmpCostume.itemMaterial[i] : null;
                 }
                 break;
             default:

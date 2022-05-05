@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 using System.Linq;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour, IPunObservable
@@ -44,7 +43,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     public List<Player_Controller_Ship> AllShip;
     public Player_Controller_Ship MyShip;
     public CinemachineVirtualCamera VC_Top;
-    public CinemachineVirtualCamera VC_TPS;
     protected bool topView = true;
 
     [SerializeField] private Vector3 camOffset = new Vector3(0, 372, -290);
@@ -57,21 +55,21 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
 
-
+    public void InitializePlayerScore()
+    {
+        bestPlayerListBox.Clear();
+        for (int i = 0; i < BestPlayerContent.transform.childCount; i++)
+        {
+            bestPlayerListBox.Add(BestPlayerContent.transform.GetChild(i).GetComponent<PlayerScoreList>());
+        }
+        RefreshPlayeScore(false);
+    }
 
     protected virtual void Start()
     {
         instance = this;
         IsWinner = false;
         currPlayTime = 0;
-
-        bestPlayerListBox.Clear();
-        for (int i=0;i< BestPlayerContent.transform.childCount; i++)
-        {
-            bestPlayerListBox.Add(BestPlayerContent.transform.GetChild(i).GetComponent<PlayerScoreList>());
-        }
-
-        RefreshPlayeScore(false);
 
         // SetButtonEvent
         EventTrigger.Entry entry_PointerDown = new EventTrigger.Entry();
@@ -96,8 +94,8 @@ public class GameManager : MonoBehaviour, IPunObservable
         ControllerUI.transform.GetChild(4).GetComponent<Button>().onClick.AddListener(Booster_Button);
         
         SteeringImg = ControllerUI.transform.GetChild(3).GetComponent<Image>();
-    }
 
+    }
 
 
     public virtual void SetObserverCamera()
@@ -116,7 +114,6 @@ public class GameManager : MonoBehaviour, IPunObservable
                 }
             }
 
-
             BestPlayerContent.SetActive(false);
             RefreshPlayeScore(true);
         }
@@ -127,8 +124,6 @@ public class GameManager : MonoBehaviour, IPunObservable
             MyShip = _myShip;
         VC_Top.m_Follow = _myShip.transform;
         VC_Top.m_LookAt = _myShip.transform;
-        VC_TPS.m_Follow = _myShip.transform;
-        VC_TPS.m_LookAt = _myShip.transform;
     }
     #endregion
 
@@ -138,6 +133,8 @@ public class GameManager : MonoBehaviour, IPunObservable
         GameStarted = true;
         IsWinner = false;
         ControllerUI.SetActive(true);
+
+        CombatManager.instance.InitialLevelUp();
     }
 
     public virtual void EndGame()
@@ -146,9 +143,9 @@ public class GameManager : MonoBehaviour, IPunObservable
         {
             RoomData.GetInstance().SetFinalScore();
             RoomData.GetInstance().AddPlayedGameCount();
-        }
 
-        FindObjectOfType<NetworkManager>().GoToLobby();
+            FindObjectOfType<NetworkManager>().GoToLobby();
+        }
     }
 
     public virtual void MasterChanged(bool _isMaster)
@@ -282,14 +279,14 @@ public class GameManager : MonoBehaviour, IPunObservable
         int maxScore = -1;
         for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            int score;
-            if (isFinal)
+            int score=0;
+            if (isFinal && RoomData.GetInstance().FinalScores.Count> PhotonNetwork.PlayerList[i].ActorNumber && PhotonNetwork.PlayerList[i].ActorNumber>=0)
                 score = RoomData.GetInstance().FinalScores[PhotonNetwork.PlayerList[i].ActorNumber];
-            else
+            else if (RoomData.GetInstance().currGameScores.Count > PhotonNetwork.PlayerList[i].ActorNumber && PhotonNetwork.PlayerList[i].ActorNumber >= 0)
                 score = RoomData.GetInstance().currGameScores[PhotonNetwork.PlayerList[i].ActorNumber];
+
             bestPlayerListBox[i - 1].SetScore(score);
-            //bestPlayerListBox[currIndex].GetComponentInChildren<Text>().color = (tmpA.myIndex < 0 || !tmpA.gameObject.activeInHierarchy) ? Color.red : Color.black;
-            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[i - 1], Color.black, (i) + " : " + PhotonNetwork.PlayerList[i].NickName + "||  Score :" + score);
+            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[i - 1], Color.black, PhotonNetwork.PlayerList[i].NickName + "  Á¡¼ö :" + score);
 
             if (maxScore < score)
             {
@@ -315,11 +312,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     #endregion
 
     #region Camera
-    public void ToggleGameView()
-    {
-        topView = !topView;
-        VC_TPS.m_Priority = topView ? 9 : 11;
-    }
 
     public void Observe(int _shipIndex, bool _isSet = true)
     {

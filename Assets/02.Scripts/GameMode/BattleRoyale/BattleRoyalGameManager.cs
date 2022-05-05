@@ -56,7 +56,6 @@ public class BattleRoyalGameManager : GameManager
     {
         base.StartGame();
 
-        CombatManager.instance.SetLevelUpCount(3);
     }
 
 

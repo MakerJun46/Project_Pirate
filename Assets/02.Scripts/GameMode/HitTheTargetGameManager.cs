@@ -22,8 +22,6 @@ public class HitTheTargetGameManager : GameManager
     public override void StartGame()
     {
         base.StartGame();
-
-        CombatManager.instance.SetLevelUpCount(3);
     }
 
     private void WaveStart()

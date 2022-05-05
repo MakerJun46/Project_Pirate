@@ -22,6 +22,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         instance = this;
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     private void Start()
@@ -54,15 +55,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 }
             }
         }
+
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            Spawn();
+        }
     }
 
 
     public void StartGame()
     {
-        if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
-        {
-            Invoke("Spawn", 1f);
-        }
         if (PhotonNetwork.IsConnected == false || PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(StartGameCoroutine());
@@ -79,21 +81,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
             }
         }
-
+        
         while (true)
         {
             yield return new WaitForEndOfFrame();
             // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
             // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
             if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount)
+            {
                 break;
+            }
         }
-
-        if (PhotonNetwork.IsMasterClient)    // 마스터 클라이언트인 경우 옵저버
-        {
-            GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
-        }
-
+        
         if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
         {
             // 플레이어 혼자만 남으면 Loading하지 않음 -> RoomGameManager에서 RoomExit하는 Panel Active
@@ -112,6 +111,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     IEnumerator StartGameEffectCoroutine()
     {
+        yield return new WaitForSeconds(1f);
+
+        GameManager.GetInstance().InitializePlayerScore();
+        // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
+        // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
+        }
+
         yield return StartCoroutine("LoadingFadeInOut", true);
 
         if (FindObjectOfType<CutSceneManager>())
@@ -209,19 +218,22 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [SerializeField] float PlayerSpawnRadius = 100f;
     public Vector3 CalculateSpawnPos()
     {
+        Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)) * PlayerSpawnRadius;
         for (int i = 0; i < 50; i++)
         {
-            Vector3 radomPos = new Vector3(Random.Range(-1f, 1f), -1f, Random.Range(-1f, 1f)) * PlayerSpawnRadius;
+            radomPos = new Vector3(Random.Range(-1f, 1f) * PlayerSpawnRadius, 0f, Random.Range(-1f, 1f) * PlayerSpawnRadius);
             RaycastHit hit;
             if (Physics.SphereCast(radomPos + Vector3.up * 100, 10f, Vector3.down, out hit, 200f))
             {
                 if (hit.transform.CompareTag("Sea"))
                 {
+                    radomPos.y = 0;
                     return radomPos;
                 }
             }
         }
-        return new Vector3(10, 0, 10);
+        radomPos.y = 0;
+        return radomPos;
     }
 
 
