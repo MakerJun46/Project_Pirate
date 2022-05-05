@@ -3233,17 +3233,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08114513, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08114467, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12603572, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12603515, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07569922, b: 0.25381732, a: 0}
+  shoreColor: {r: 0, g: 0.075698785, b: 0.25381672, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058360614, g: 0.112746485, b: 0.14018664, a: 1}
-  underwaterColor: {r: 0.23748231, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05836016, g: 0.11274589, b: 0.14018607, a: 1}
+  underwaterColor: {r: 0.23748171, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3251,7 +3251,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.097350754, g: 0.33920616, b: 0.32244068, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09735022, g: 0.33920556, b: 0.3224401, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -4830,6 +4830,10 @@ PrefabInstance:
     - target: {fileID: 7783536429845922402, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_Name
       value: OptionPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783536429845922402, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429845922406, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: sceneViewId

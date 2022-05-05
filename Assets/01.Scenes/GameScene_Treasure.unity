@@ -775,7 +775,6 @@ MonoBehaviour:
   AllShip: []
   MyShip: {fileID: 0}
   VC_Top: {fileID: 1315902773}
-  VC_TPS: {fileID: 1384850262}
   camOffset: {x: 0, y: 372, z: -290}
   WinPanel: {fileID: 427328049}
   LosePanel: {fileID: 1586053362}
@@ -2055,6 +2054,7 @@ MonoBehaviour:
   SpecialJoySticks:
   - {fileID: 331557744}
   - {fileID: 59652596}
+  initialLevelUpCount: 0
   levelUpCoolTime: -1
   LevelUpPanel: {fileID: 389122050}
   levelUpSprites:
@@ -3411,15 +3411,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.16429134
+      value: 0.16429138
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.23488049
+      value: 0.23488054
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.04031467
+      value: -0.040314697
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933475, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LookAt
@@ -3913,6 +3913,10 @@ PrefabInstance:
     - target: {fileID: 7783536429845922402, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_Name
       value: OptionPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783536429845922402, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429845922406, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: sceneViewId
@@ -4598,17 +4602,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.081081204, g: 0.5484824, b: 0.6981132, a: 1}
-  colorDepth: 1.5
-  horizonColor: {r: 0.090131916, g: 0.9043005, b: 1, a: 0.7647059}
+  deepColor: {r: 0.08114479, g: 0.5484824, b: 0.6981132, a: 1}
+  colorDepth: 9.74
+  horizonColor: {r: 0.1260353, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.1653843, b: 0.5660378, a: 0}
+  shoreColor: {r: 0, g: 0.07569889, b: 0.2538169, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05829998, g: 0.112665646, b: 0.14011002, a: 1}
-  underwaterColor: {r: 0.23740149, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05836028, g: 0.11274604, b: 0.14018622, a: 1}
+  underwaterColor: {r: 0.23748186, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4616,7 +4620,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09727811, g: 0.3391253, b: 0.32235986, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09735035, g: 0.3392057, b: 0.32244024, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -4637,9 +4641,9 @@ MonoBehaviour:
   surfaceFoamShadowProjection: 18.22
   intersectionFoamShadowProjection: 20
   foamMovement: 0
-  intersectionFoamDepth: 1.3
+  intersectionFoamDepth: 1.16
   intersectionFoamTexture: {fileID: 2800000, guid: f0a203cf18c99cd49b6180796a78152c, type: 3}
-  intersectionFoamColor: {r: 0.76886797, g: 0.98810345, b: 1, a: 1}
+  intersectionFoamColor: {r: 0, g: 0.60245436, b: 0.8773585, a: 1}
   intersectionFoamMovement: {x: 0, y: 0}
   intersectionFoamDirection: 0
   intersectionFoamSpeed: 0
@@ -4648,13 +4652,13 @@ MonoBehaviour:
   intersectionFoamCutoff: 0
   intersectionFoamDistortion: 5
   enableIntersectionEffects: 1
-  intersectionFoamBlend: 0.732
-  intersectionWaterBlend: 0.899
-  shoreFoamSpeed: -1.66
-  shoreFoamWidth: 0.1
-  shoreFoamFrequency: 31.3
-  shoreFoamBreakupStrength: 0.19
-  shoreFoamBreakupScale: 3.6
+  intersectionFoamBlend: 0.093
+  intersectionWaterBlend: 0.771
+  shoreFoamSpeed: -17.15
+  shoreFoamWidth: 0
+  shoreFoamFrequency: 0
+  shoreFoamBreakupStrength: 12.1
+  shoreFoamBreakupScale: 9.37
   lighting: 0
   lightingSmoothness: 0.67
   lightingSpecularColor: {r: 0, g: 1, b: 0.79470205, a: 1}
