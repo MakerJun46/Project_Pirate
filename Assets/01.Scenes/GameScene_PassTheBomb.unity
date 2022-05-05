@@ -392,7 +392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1138329091325207254, guid: 76f49250c45b9f24f9bd019e7adcb7c1, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1138329091325207254, guid: 76f49250c45b9f24f9bd019e7adcb7c1, type: 3}
       propertyPath: m_AnchorMax.x
@@ -877,6 +877,7 @@ MonoBehaviour:
   ObserverModePanel: {fileID: 1204842260}
   UI_Observer: {fileID: 293522467}
   ObserverCameras_Parent: {fileID: 203906442}
+  boosterCoolTime: 5
   VC_Winner: {fileID: 1384850262}
   hasBomb: 0
   bomb_Second: {fileID: 0}
@@ -2543,7 +2544,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4347741758394421611, guid: 6817cc49ce96cb243ab1ff2db555327a, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4347741758394421611, guid: 6817cc49ce96cb243ab1ff2db555327a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3070,6 +3071,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1570801864, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7783536428326601078, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3084,7 +3089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429845922401, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429845922401, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_LocalRotation.x
@@ -3100,7 +3105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429845922402, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429845922406, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: sceneViewId
@@ -4342,17 +4347,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08114419, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08114328, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12603459, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12603348, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07569832, b: 0.25381613, a: 0}
+  shoreColor: {r: 0, g: 0.07569749, b: 0.25381497, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058359712, g: 0.11274528, b: 0.1401855, a: 1}
-  underwaterColor: {r: 0.23748112, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05835884, g: 0.112744115, b: 0.1401844, a: 1}
+  underwaterColor: {r: 0.23747995, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4360,7 +4365,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09734968, g: 0.33920494, b: 0.3224395, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09734862, g: 0.33920377, b: 0.32243833, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -5920,7 +5925,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 908597251065630541, guid: 2dc2244f72307634a949b9a7c6772282, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 908597251065630541, guid: 2dc2244f72307634a949b9a7c6772282, type: 3}
       propertyPath: m_AnchorMax.x

@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
 
+    [SerializeField] float boosterCoolTime = 5f;
+
     public void InitializePlayerScore()
     {
         bestPlayerListBox.Clear();
@@ -254,6 +256,28 @@ public class GameManager : MonoBehaviour, IPunObservable
     public void Booster_Button()
     {
         MyShip.startBooster();
+
+        StartCoroutine(Booster_CoolTime());
+    }
+
+    IEnumerator Booster_CoolTime()
+    {
+        ControllerUI.transform.GetChild(5).gameObject.SetActive(true);
+
+        Image boosterCoolTimeImg = ControllerUI.transform.GetChild(5).GetComponent<Image>();
+
+        float fillAmount = 1f;
+
+        while(fillAmount > 0)
+        {
+            fillAmount -= 1f / boosterCoolTime * Time.deltaTime;
+
+            boosterCoolTimeImg.fillAmount = fillAmount;
+
+            yield return null;
+        }
+
+        ControllerUI.transform.GetChild(5).gameObject.SetActive(false);
     }
 
     public void TryUpgradeShip()
