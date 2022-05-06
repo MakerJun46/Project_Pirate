@@ -205,8 +205,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void Spawn()
     {
-        print("SPAWN");
-
         GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 
         if (go.GetComponent<PhotonView>().IsMine)
@@ -252,6 +250,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void ExitRoom()
     {
+        PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 

@@ -26,10 +26,6 @@ public class GhostShipGameManager : GameManager
 
         PV = GetComponent<PhotonView>();
 
-        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
-        {
-            Invoke("WaveStart", 5f);
-        }
     }
     private void WaveStart()
     {
@@ -69,6 +65,11 @@ public class GhostShipGameManager : GameManager
     public override void StartGame()
     {
         base.StartGame();
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
+        {
+            Invoke("WaveStart", 1f);
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
             int randomPlayerIndex = AllShip[Random.Range(0, AllShip.Count)].GetComponent<PhotonView>().OwnerActorNr;
@@ -89,7 +90,6 @@ public class GhostShipGameManager : GameManager
             canvas.Find("Health").gameObject.SetActive(false);
             canvas.Find("Count_Text").gameObject.SetActive(false);
         }
-        //TryUpgradeShip();
         CombatManager.instance.EquipSail();
         CombatManager.instance.EquipSpecialCannon(0, 0);
 

@@ -30,9 +30,12 @@ public class GameManager : MonoBehaviour, IPunObservable
 
     [SerializeField] protected Text TimeText;
 
+    [SerializeField] float boosterCoolTime = 5f;
+
     public float steeringRot { get; set; }
     private Image SteeringImg;
-    [SerializeField] private GameObject ControllerUI;
+    [SerializeField] protected GameObject ControllerUI;
+    [SerializeField] private GameObject[] GoStopBtns;
 
     public GameObject BestPlayerContent;
     private List<GameObject> BestPlayerLists = new List<GameObject>();
@@ -54,8 +57,6 @@ public class GameManager : MonoBehaviour, IPunObservable
 
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
-
-    [SerializeField] float boosterCoolTime = 5f;
 
     public void InitializePlayerScore()
     {
@@ -92,11 +93,14 @@ public class GameManager : MonoBehaviour, IPunObservable
         entry_PointerUp2.callback.AddListener((data) => { Turn_Left_Button_Up((PointerEventData)data); });
         ControllerUI.transform.GetChild(1).GetComponent<EventTrigger>().triggers.Add(entry_PointerUp2);
 
-        ControllerUI.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(GoOrStop_Button);
-        ControllerUI.transform.GetChild(4).GetComponent<Button>().onClick.AddListener(Booster_Button);
+        GoStopBtns = new GameObject[2];
+        GoStopBtns[0] = ControllerUI.transform.GetChild(2).gameObject;
+        GoStopBtns[1] = ControllerUI.transform.GetChild(3).gameObject;
+        GoStopBtns[0].GetComponent<Button>().onClick.AddListener(GoOrStop_Button);
+        GoStopBtns[1].GetComponent<Button>().onClick.AddListener(GoOrStop_Button);
+        ControllerUI.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(Booster_Button);
         
-        SteeringImg = ControllerUI.transform.GetChild(3).GetComponent<Image>();
-
+        SteeringImg = ControllerUI.transform.GetChild(4).GetComponent<Image>();
     }
 
 
@@ -251,7 +255,12 @@ public class GameManager : MonoBehaviour, IPunObservable
     }
     public void GoOrStop_Button()
     {
-        MyShip.goOrStop = !MyShip.goOrStop;
+        MyShip.GoOrStop_Button();
+    }
+    public void ActiveGoOrStopBtn()
+    {
+        GoStopBtns[0].gameObject.SetActive(MyShip.goOrStop);
+        GoStopBtns[1].gameObject.SetActive(!MyShip.goOrStop);
     }
     public void Booster_Button()
     {

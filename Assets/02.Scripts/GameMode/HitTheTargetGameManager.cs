@@ -13,15 +13,15 @@ public class HitTheTargetGameManager : GameManager
     protected override void Start()
     {
         base.Start();
-        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
-        {
-            Invoke("WaveStart", 3f);
-        }
     }
 
     public override void StartGame()
     {
         base.StartGame();
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
+        {
+            Invoke("WaveStart", 1f);
+        }
     }
 
     private void WaveStart()
