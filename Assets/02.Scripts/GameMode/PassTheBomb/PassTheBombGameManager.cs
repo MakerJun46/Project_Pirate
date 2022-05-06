@@ -83,7 +83,7 @@ public class PassTheBombGameManager : GameManager
         CombatManager.instance.EquipSail();
         CombatManager.instance.EquipSpecialCannon(0, 0);
 
-        VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = statue.transform;
+        //VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = statue.transform;
 
         MyShip.MoveSpeed = 20;
     }
