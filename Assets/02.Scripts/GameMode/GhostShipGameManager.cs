@@ -16,12 +16,29 @@ public class GhostShipGameManager : GameManager
     public Cinemachine.CinemachineVirtualCamera VC_Bomb;
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
+
+    [SerializeField] List<GhostShip> ghostShips;
+    [SerializeField] float GhostSpawnRadius=10f;
+
     protected override void Start()
     {
         base.Start();
 
         PV = GetComponent<PhotonView>();
+
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
+        {
+            Invoke("WaveStart", 5f);
+        }
     }
+    private void WaveStart()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject tmpEnemy = PhotonNetwork.Instantiate("GhostShip", new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * GhostSpawnRadius, Quaternion.identity);
+        }
+    }
+
     public override void MasterChanged(bool _isMaster)
     {
         base.MasterChanged(_isMaster);
@@ -158,20 +175,12 @@ public class GhostShipGameManager : GameManager
                     PV = GetComponent<PhotonView>();
                 }
                 PV.RPC("On_Second", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
-                PV.RPC("Change_VC_Lookat", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
             }
             else
             {
                 IsGhost = false;
             }
         }
-    }
-
-    [PunRPC]
-    public void Change_VC_Lookat(int ViewID)
-    {
-        VC_Bomb.LookAt = PhotonView.Find(ViewID).gameObject.transform;
-        VC_Bomb.Follow = PhotonView.Find(ViewID).gameObject.transform;
     }
 
 
@@ -203,15 +212,14 @@ public class GhostShipGameManager : GameManager
         }
         if (canAttack)
         {
-            RoomData.GetInstance().SetCurrScore(PhotonView.Find(FromViewID).GetComponent<PhotonView>().Owner.ActorNumber, 100);
+            if(FromViewID>0)
+                RoomData.GetInstance().SetCurrScore(PhotonView.Find(FromViewID).GetComponent<PhotonView>().Owner.ActorNumber, 100);
             PV.RPC("On_Second", RpcTarget.AllBuffered, toViewID);
 
             GameObject to_Ship = PhotonView.Find(toViewID).gameObject;
 
             if (to_Ship.GetPhotonView().IsMine)
                 IsGhost = true;
-
-            Change_VC_Lookat(toViewID);
         }
     }
 }

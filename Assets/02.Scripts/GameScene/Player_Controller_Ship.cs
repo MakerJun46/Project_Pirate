@@ -72,6 +72,28 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     }
     private void Start()
     {
+        if (GetComponent<Photon.Pun.PhotonView>().IsMine)
+        {
+            Player_Controller_Ship[] currentShips = FindObjectsOfType<Player_Controller_Ship>();
+            for (int i = 0; i < currentShips.Length; i++)
+            {
+                if (currentShips[i].gameObject == this.gameObject)
+                {
+                    continue;
+                }
+
+                if (currentShips[i].GetComponent<PhotonView>().IsMine)
+                {
+                    PhotonNetwork.Destroy(currentShips[i].GetComponent<PhotonView>());
+                    if (currentShips[i] != null)
+                    {
+                        Destroy(currentShips[i].gameObject);
+                    }
+                }
+            }
+        }
+
+
         GameManager.GetInstance().AllShip.Add(this);
         Reset_Ship_Status();
     }

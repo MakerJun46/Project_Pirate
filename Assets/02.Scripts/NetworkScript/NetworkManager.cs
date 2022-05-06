@@ -22,7 +22,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         instance = this;
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
-        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     private void Start()
@@ -207,18 +206,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void Spawn()
     {
         print("SPAWN");
-        Player_Controller_Ship[] currentShips = FindObjectsOfType<Player_Controller_Ship>();
-        for (int i=0;i< currentShips.Length; i++)
-        {
-            if (currentShips[i].GetComponent<PhotonView>().IsMine)
-            {
-                PhotonNetwork.Destroy(currentShips[i].GetComponent<PhotonView>());
-                if (currentShips[i] != null)
-                {
-                    Destroy(currentShips[i].gameObject);
-                }
-            }
-        }
 
         GameObject go = PhotonNetwork.Instantiate("PlayerShip", CalculateSpawnPos(), Quaternion.Euler(0, 90, 0));
 

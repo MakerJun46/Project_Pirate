@@ -393,28 +393,31 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (photonView.IsMine && collision.transform.CompareTag("Player"))
+        if (photonView.IsMine)
         {
-            if (collision.transform.GetComponent<Player_Combat_Ship>())
+            if (collision.transform.CompareTag("Player"))
             {
-                Vector3 impulse = collision.impulse;
-                if (Vector3.Dot(collision.GetContact(0).normal, impulse) < 0f)
-                    impulse *= -1f;
-
-                if ((GameMode)RoomData.GetInstance().gameMode == GameMode.Treasure)
+                if (collision.transform.GetComponent<Player_Combat_Ship>())
                 {
-                    Treasure_GameManager.instance.DropAllTreasure();
-                }
+                    Vector3 impulse = collision.impulse;
+                    if (Vector3.Dot(collision.GetContact(0).normal, impulse) < 0f)
+                        impulse *= -1f;
 
-                collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
+                    if ((GameMode)RoomData.GetInstance().gameMode == GameMode.Treasure)
+                    {
+                        Treasure_GameManager.instance.DropAllTreasure();
+                    }
+
+                    collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
                     5.0f
                     ,-1*impulse*3f,photonView.ViewID
                     });
-                this.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
+                    this.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
                     5.0f
                     ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
                     });
 
+                }
             }
         }
     }
