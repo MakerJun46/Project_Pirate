@@ -7,6 +7,7 @@ using Cinemachine;
 using UnityEngine.UI;
 public class RoomGameManager : GameManager
 {
+    [SerializeField] GameObject GameInfoPanel;
     [SerializeField] Text GameModeTitleTxt;
     [SerializeField] Text GameModeInfoTxt;
 
@@ -34,7 +35,7 @@ public class RoomGameManager : GameManager
         RoomData currRoomData = RoomData.GetInstance();
         if (currRoomData)
         {
-            GameModeTitleTxt.text = "GameMode : " + currRoomData.GetCurrSceneString();
+            GameModeTitleTxt.text = currRoomData.GetGameModeTitle();
             GameModeInfoTxt.text = currRoomData.GetGameModeInfo();
         }
     }
@@ -56,8 +57,6 @@ public class RoomGameManager : GameManager
 
     public void ActiveResultPanel()
     {
-        PlayerListPanel.gameObject.SetActive(true);
-
         RoomData currRoomData = RoomData.GetInstance();
 
         bool ForceQuit = false;
@@ -66,6 +65,9 @@ public class RoomGameManager : GameManager
 
         if (currRoomData.PlayGameCountOvered() || ForceQuit)
         {
+            PlayerListPanel.gameObject.SetActive(true);
+            ControllerUI.gameObject.SetActive(false);
+            GameInfoPanel.SetActive(false);
             rankObjs.SetActive(true);
             WinPanel.SetActive(false);
             LosePanel.SetActive(false);
@@ -113,7 +115,8 @@ public class RoomGameManager : GameManager
                 {
                     Transform tmpPlayerList = Instantiate(PlayerListContainer.transform.GetChild(0), PlayerListContainer);
                     tmpPlayerList.gameObject.SetActive(true);
-                    tmpPlayerList.GetComponentInChildren<Text>().text = (i + 1) + "th : " + PhotonNetwork.PlayerList[tmpFounded].NickName + "\n";
+                    tmpPlayerList.GetChild(0).GetComponent<Text>().text = (i + 1) + "th  " + PhotonNetwork.PlayerList[tmpFounded].NickName;
+                    tmpPlayerList.GetChild(1).GetComponent<Text>().text = "Á¡¼ö : " + currRoomData.FinalScores[PhotonNetwork.PlayerList[tmpFounded].ActorNumber];
                 }
             }
 

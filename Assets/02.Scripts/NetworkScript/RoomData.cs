@@ -102,6 +102,32 @@ public class RoomData : MonoBehaviourPunCallbacks
         }
         return info;
     }
+    public string GetGameModeTitle()
+    {
+        string info = "";
+        switch ((GameMode)gameMode)
+        {
+            case GameMode.BattleRoyale:
+                info = "배틀로얄";
+                break;
+            case GameMode.PassTheBomb:
+                info = "폭탄돌리기";
+                break;
+            case GameMode.Survivor:
+                info = "서바이벌";
+                break;
+            case GameMode.HitTheTarget:
+                info = "타겟맞추기";
+                break;
+            case GameMode.Treasure:
+                info = "보물찾기";
+                break;
+            case GameMode.GhostShip:
+                info = "유령선피하기";
+                break;
+        }
+        return info;
+    }
     public void AddPlayedGameCount()
     {
         PV.RPC("AddPlayedGameCountRPC", RpcTarget.AllBuffered);

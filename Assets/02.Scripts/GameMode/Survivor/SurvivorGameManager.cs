@@ -27,16 +27,16 @@ public class SurvivorGameManager : GameManager
     public override void StartGame()
     {
         base.StartGame();
+
+        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
+        {
+            Invoke("WaveStart", 1f);
+        }
     }
 
     protected override void Start()
     {
         base.Start();
-
-        if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected==false)
-        {
-            Invoke("WaveStart", 5f);
-        }
     }
 
     private void WaveStart()

@@ -250,6 +250,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public void GoOrStop_Button()
     {
         goOrStop = !goOrStop;
+        GameManager.GetInstance().ActiveGoOrStopBtn();
     }
 
 

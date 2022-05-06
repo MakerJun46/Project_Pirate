@@ -2993,7 +2993,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 723, y: 25}
+  m_SizeDelta: {x: 750, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &527574274
 MonoBehaviour:
@@ -3010,13 +3010,13 @@ MonoBehaviour:
   m_Padding:
     m_Left: 20
     m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
+    m_Top: 50
+    m_Bottom: 50
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 200}
-  m_Spacing: {x: 15, y: 15}
+  m_Spacing: {x: 50, y: 50}
   m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!114 &527574275
@@ -8191,19 +8191,19 @@ MonoBehaviour:
   GameModeImage: {fileID: 1511102956}
   GameModeText: {fileID: 586463625}
   GameModeInfos:
-  - title: BattleRoyale
+  - title: "\uBC30\uD2C0\uB85C\uC584"
     sprite: {fileID: 21300000, guid: 1a88274fd1bae604cb53ac3a0e54bbd4, type: 3}
-  - title: PassTheBomb
+  - title: "\uD3ED\uD0C4\uB3CC\uB9AC\uAE30"
     sprite: {fileID: 21300000, guid: f8547fa490e55644db6faaf8f126480c, type: 3}
-  - title: Survival
+  - title: "\uC11C\uBC14\uC774\uBC8C"
     sprite: {fileID: 21300000, guid: 402248b23dcf8754dabae23d9033d264, type: 3}
-  - title: Hit The Target
+  - title: "\uD0C0\uAC9F\uB9DE\uCD94\uAE30"
     sprite: {fileID: 21300000, guid: 310d1d6df17ebb14681fd624e5782342, type: 3}
-  - title: 'Treasure '
+  - title: "\uBCF4\uBB3C\uCC3E\uAE30"
     sprite: {fileID: 21300000, guid: 7c63820264963a44f834c08f79e495fa, type: 3}
-  - title: GhostShip
+  - title: "\uC720\uB839\uC120\uD53C\uD558\uAE30"
     sprite: {fileID: 21300000, guid: 9ec2f393724172b4190911234bb431f1, type: 3}
-  - title: RANDOM
+  - title: "\uB79C\uB364 \uBAA8\uB4DC"
     sprite: {fileID: 21300000, guid: bd293dc32f4aaf94e8274f2fac2cdf89, type: 3}
   RoomListContainer: {fileID: 558969289}
   RoomListBtnPrefab: {fileID: 2654076666834460374, guid: 49ae07e95f5b58d41885fc7a26c75200, type: 3}
@@ -8723,7 +8723,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 120, y: -120}
+  m_AnchoredPosition: {x: 120, y: -150}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1521087761
@@ -12892,17 +12892,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.081142746, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.081131466, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12603286, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12601936, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07569701, b: 0.2538143, a: 0}
+  shoreColor: {r: 0, g: 0.0756867, b: 0.25380006, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05835835, g: 0.11274346, b: 0.14018378, a: 1}
-  underwaterColor: {r: 0.2374793, g: 0.7544341, b: 0.8301887, a: 1}
+  waveColor: {r: 0.058347665, g: 0.112729214, b: 0.14017028, a: 1}
+  underwaterColor: {r: 0.23746505, g: 0.7544341, b: 0.8301887, a: 1}
   underwaterColorStrength: 1
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -12910,7 +12910,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09734804, g: 0.33920312, b: 0.32243767, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09733524, g: 0.33918887, b: 0.32242343, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
