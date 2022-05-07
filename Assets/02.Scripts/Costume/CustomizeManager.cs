@@ -18,7 +18,6 @@ public class CustomizeManager : MonoBehaviour
     }
 
     [SerializeField] GameObject costumePanel;
-    [SerializeField] GameObject costumePanelOpenBtn;
     public CostumeDictionary costumeDictionary;
     [SerializeField] Transform costumeContainer;
 
@@ -90,7 +89,7 @@ public class CustomizeManager : MonoBehaviour
         {
             costumePanel.SetActive(false);
         }
-        OptionSettingManager.GetInstance().ActiveCustomPanelOpenBtn(inLobby);
+        //OptionSettingManager.GetInstance().ActiveCustomPanelOpenBtn(inLobby);
     }
     public void SelectCategory(int _index)
     {

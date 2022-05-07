@@ -17,6 +17,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     GameObject CountDownPanel;
     GameObject FadeScreenPanel;
 
+    [SerializeField] int WaitTimeForCount;
+    [SerializeField] int CountDownTime=3;
     private void Awake()
     {
         instance = this;
@@ -38,11 +40,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 // 플레이 한 게임모드가 최대가 되지 않으면 정상적으로 게임 진행
                 StartGame();
-                
-                if (SceneManager.GetActiveScene().name != "GameScene_Room")
-                {
-                    RoomData.GetInstance().RemoveCurrGameMode();
-                }
             }
             else
             {
@@ -79,6 +76,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (RoomData.GetInstance().PlayedGameCount > 0 || 
                 (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
             {
+                print("CHANGE RNAOMLY : "+ RoomData.GetInstance().GetNotOverlappedRandomGameMode());
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
             }
         }
@@ -112,9 +110,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     IEnumerator StartGameEffectCoroutine()
     {
+        GameManager.GetInstance().InitializePlayerScore(SceneManager.GetActiveScene().name == "GameScene_Room");
         yield return new WaitForSeconds(1f);
 
-        GameManager.GetInstance().InitializePlayerScore();
         // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
         // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
         if (PhotonNetwork.IsMasterClient)
@@ -124,10 +122,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         yield return StartCoroutine("LoadingFadeInOut", true);
 
+        yield return new WaitForSeconds(WaitTimeForCount);
+
         if (FindObjectOfType<CutSceneManager>())
             yield return new WaitForSeconds(Mathf.Max(0f, (float)FindObjectOfType<CutSceneManager>().director.duration - 6f));
 
-        yield return StartCoroutine(CountDownCoroutine(3));
+        yield return StartCoroutine(CountDownCoroutine(CountDownTime));
 
         GameManager.GetInstance().StartGame();
     }

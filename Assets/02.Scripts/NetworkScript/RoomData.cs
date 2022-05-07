@@ -54,16 +54,6 @@ public class RoomData : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(this.gameObject);
     }
 
-    public int GetNotOverlappedRandomGameMode()
-    {
-        int currGameIndex = Random.Range(0, remainGameModeList.Count);
-        return remainGameModeList[currGameIndex];
-    }
-    public void RemoveCurrGameMode()
-    {
-        if(remainGameModeList.Contains(gameMode))
-            remainGameModeList.Remove(gameMode);
-    }
     public bool PlayGameCountOvered()
     {
         return PlayedGameCount >= MaxPlayGameCount;
@@ -75,6 +65,15 @@ public class RoomData : MonoBehaviourPunCallbacks
     }
 
     #region GameMode
+
+    public int GetNotOverlappedRandomGameMode()
+    {
+        int currGameIndex = Random.Range(0, remainGameModeList.Count);
+        int returnVal = remainGameModeList[currGameIndex];
+        remainGameModeList.RemoveAt(currGameIndex);
+
+        return returnVal;
+    }
 
     public string GetGameModeInfo()
     {
@@ -190,13 +189,11 @@ public class RoomData : MonoBehaviourPunCallbacks
         gameMode = _gameModeIndex;
     }
 
-
     [PunRPC]
     public void SetRandomGameModeRPC(bool _val)
     {
         setSceneRandom = _val;
     }
-
     #endregion
 
     #region Scores

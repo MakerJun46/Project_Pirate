@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d04fa9ef91692c6429efccdf42970c46, type: 2}
   m_HaloStrength: 0.509
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2698,10 +2698,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Controll_UI_Panel
       objectReference: {fileID: 0}
-    - target: {fileID: 1138329091325207255, guid: 76f49250c45b9f24f9bd019e7adcb7c1, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1138329091823447020, guid: 76f49250c45b9f24f9bd019e7adcb7c1, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -2899,7 +2895,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361742108}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 201, y: 17.1, z: 0}
+  m_LocalPosition: {x: 225, y: 2.7, z: -0}
   m_LocalScale: {x: 400, y: 400, z: 400}
   m_Children:
   - {fileID: 1683031444}
@@ -3520,13 +3516,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1561859351}
-  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
-  m_LocalScale: {x: 50, y: 1, z: 50}
+  m_LocalScale: {x: 100, y: 1, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 14
-  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1561859356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3605,17 +3601,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.0811312, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08112586, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12601903, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12601265, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07568643, b: 0.25379974, a: 0}
+  shoreColor: {r: 0, g: 0.07568156, b: 0.253793, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058347404, g: 0.11272887, b: 0.14016995, a: 1}
-  underwaterColor: {r: 0.2374647, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05834236, g: 0.11272215, b: 0.14016357, a: 1}
+  underwaterColor: {r: 0.23745796, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3623,7 +3619,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09733494, g: 0.33918855, b: 0.32242307, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.097328894, g: 0.3391818, b: 0.32241634, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -5165,7 +5161,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2091609849}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -185, y: 11, z: 0}
+  m_LocalPosition: {x: -185, y: 11.8, z: 0}
   m_LocalScale: {x: 400, y: 400, z: 400}
   m_Children:
   - {fileID: 944372685}
@@ -6584,7 +6580,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8961347951157320602}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 17.1, z: 180}
+  m_LocalPosition: {x: 0, y: 17.6, z: 180}
   m_LocalScale: {x: 400, y: 400, z: 400}
   m_Children:
   - {fileID: 2308923934181255483}

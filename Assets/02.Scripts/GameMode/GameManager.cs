@@ -58,14 +58,14 @@ public class GameManager : MonoBehaviour, IPunObservable
     [SerializeField] protected GameObject UI_Observer;
     [SerializeField] protected GameObject ObserverCameras_Parent;
 
-    public void InitializePlayerScore()
+    public void InitializePlayerScore(bool isFinal)
     {
         bestPlayerListBox.Clear();
         for (int i = 0; i < BestPlayerContent.transform.childCount; i++)
         {
             bestPlayerListBox.Add(BestPlayerContent.transform.GetChild(i).GetComponent<PlayerScoreList>());
         }
-        RefreshPlayeScore(false);
+        RefreshPlayeScore(isFinal);
     }
 
     protected virtual void Start()
@@ -167,7 +167,6 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         WinPanel.SetActive(IsWinner);
         LosePanel.SetActive(!IsWinner);
-        print("End : " + IsWinner);
         GameStarted = false;
 
 
@@ -271,9 +270,9 @@ public class GameManager : MonoBehaviour, IPunObservable
 
     IEnumerator Booster_CoolTime()
     {
-        ControllerUI.transform.GetChild(5).gameObject.SetActive(true);
+        ControllerUI.transform.GetChild(6).gameObject.SetActive(true);
 
-        Image boosterCoolTimeImg = ControllerUI.transform.GetChild(5).GetComponent<Image>();
+        Image boosterCoolTimeImg = ControllerUI.transform.GetChild(6).GetComponent<Image>();
 
         float fillAmount = 1f;
 
@@ -286,7 +285,7 @@ public class GameManager : MonoBehaviour, IPunObservable
             yield return null;
         }
 
-        ControllerUI.transform.GetChild(5).gameObject.SetActive(false);
+        ControllerUI.transform.GetChild(6).gameObject.SetActive(false);
     }
 
     public void TryUpgradeShip()
@@ -313,13 +312,16 @@ public class GameManager : MonoBehaviour, IPunObservable
         for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
         {
             int score=0;
-            if (isFinal && RoomData.GetInstance().FinalScores.Count> PhotonNetwork.PlayerList[i].ActorNumber && PhotonNetwork.PlayerList[i].ActorNumber>=0)
+            if (isFinal)
                 score = RoomData.GetInstance().FinalScores[PhotonNetwork.PlayerList[i].ActorNumber];
-            else if (RoomData.GetInstance().currGameScores.Count > PhotonNetwork.PlayerList[i].ActorNumber && PhotonNetwork.PlayerList[i].ActorNumber >= 0)
+            else
                 score = RoomData.GetInstance().currGameScores[PhotonNetwork.PlayerList[i].ActorNumber];
 
-            bestPlayerListBox[i - 1].SetScore(score);
-            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[i - 1], Color.black, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
+            bestPlayerListBox[i-1].SetScore(score);
+
+            string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
+            int profileIndex = int.Parse(tmp);
+            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[profileIndex], Color.black, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
 
             if (maxScore < score)
             {

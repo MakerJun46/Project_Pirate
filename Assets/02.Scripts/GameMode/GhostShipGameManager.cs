@@ -70,12 +70,7 @@ public class GhostShipGameManager : GameManager
             Invoke("WaveStart", 1f);
         }
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            int randomPlayerIndex = AllShip[Random.Range(0, AllShip.Count)].GetComponent<PhotonView>().OwnerActorNr;
-            PV.RPC("FirstInfection", RpcTarget.AllBuffered, randomPlayerIndex);
-        }
-        else
+        if (PhotonNetwork.IsMasterClient==false)
         {
             InitializeGame();
         }
@@ -161,9 +156,8 @@ public class GhostShipGameManager : GameManager
         yield return new WaitForSeconds(1.0f);
     }
 
-
     [PunRPC]
-    public void FirstInfection(int PlayerIndex)
+    public void Infection(int PlayerIndex)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -182,6 +176,7 @@ public class GhostShipGameManager : GameManager
             }
         }
     }
+
 
 
     [PunRPC]
