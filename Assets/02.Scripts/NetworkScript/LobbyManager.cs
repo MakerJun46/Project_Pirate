@@ -232,6 +232,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         SetNickName();
 
         OptionPanel.SetActive(true);
+        OptionPanel.transform.GetChild(0).gameObject.SetActive(true);
+        OptionPanel.transform.GetChild(1).gameObject.SetActive(true);
+        OptionPanel.transform.GetChild(2).gameObject.SetActive(true);
+
         MainPanel.SetActive(false);
         TitleImg.SetActive(false);
     }

@@ -98,7 +98,7 @@ public class SpecialCannon : Cannon
                     ChargeCannon();
 
                     currCannonDistance += Time.deltaTime * 20f;
-                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 12f);
+                    currCannonDistance = Mathf.Clamp(currCannonDistance, 0, 20f);
 
                     lrs[0].enabled = true;
                     DrawPath();
@@ -184,7 +184,7 @@ public class SpecialCannon : Cannon
             new object[] { 
                 PhotonNetwork.LocalPlayer.ActorNumber,
                 CalculateLaunchData(Vector3.zero).initialVelocity,
-                gravity*2f
+                gravity
             });
 
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, true);

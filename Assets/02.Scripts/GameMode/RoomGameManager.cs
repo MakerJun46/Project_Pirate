@@ -120,13 +120,13 @@ public class RoomGameManager : GameManager
                 }
             }
 
+            FindObjectOfType<NetworkManager>().StartFadeInOut(true);
             if (PhotonNetwork.IsMasterClient==false)
             {
                 // 자신의 등수 알아내기
 
                 WinPanel.SetActive(rank <= 0);
                 LosePanel.SetActive(rank > 0);
-                FindObjectOfType<NetworkManager>().StartFadeInOut(true);
 
                 int playerIndex = 0;
                 for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
