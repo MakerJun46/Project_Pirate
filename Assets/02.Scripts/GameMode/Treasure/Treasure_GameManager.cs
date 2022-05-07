@@ -20,7 +20,6 @@ public class Treasure_GameManager : GameManager
     public int Player_TreasureCount_Value;
     public TextMeshProUGUI Player_TreasureCount_Text;
 
-
     // 0416 - chest animation 을 위한 임시 변수
     public Animator chestAnimator;
 
@@ -33,6 +32,9 @@ public class Treasure_GameManager : GameManager
         PV = GetComponent<PhotonView>();
 
         Player_TreasureCount_Value = 0;
+
+        VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
+        VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
     }
 
     public override void StartGame()
@@ -45,9 +47,6 @@ public class Treasure_GameManager : GameManager
         }
         else
         {
-            VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
-            VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
-
             Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
             PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
@@ -63,6 +62,7 @@ public class Treasure_GameManager : GameManager
 
         ship.MyShip_Canvas.transform.Find("HealthArea").gameObject.SetActive(false);
         ship.MyShip_Canvas.transform.Find("Health").gameObject.SetActive(false);
+        ship.Count_Text.gameObject.SetActive(true);
         ship.Count_Text.text = "0";
     }
 

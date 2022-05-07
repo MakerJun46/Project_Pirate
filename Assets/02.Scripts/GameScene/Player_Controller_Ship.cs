@@ -51,6 +51,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public ParticleSystem LoseEffectPrefab;
     public GameObject BoosterEffect;
 
+    public ParticleSystem FrontFoam;
+
     public TextMeshProUGUI Count_Text;
     private void Awake()
     {
@@ -69,6 +71,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         is_Turn_Right = false;
         is_Landing = false;
 
+        FrontFoam.Stop();
     }
     private void Start()
     {
@@ -184,10 +187,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             RB.velocity = inputVel + additionalForce;
             currVel = RB.velocity;
 
+            var FF = FrontFoam.main;
+            FF.startSpeed = RB.velocity.magnitude;
+
             if (is_Turn_Left)
                 Turn_Left();
             if (is_Turn_Right)
                 Turn_Right();
+
         }
         else
         {
@@ -251,6 +258,15 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         goOrStop = !goOrStop;
         GameManager.GetInstance().ActiveGoOrStopBtn();
+
+        if(FrontFoam.isPlaying)
+        {
+            FrontFoam.Stop();
+        }
+        else
+        {
+            FrontFoam.Play();
+        }
     }
 
 
@@ -258,6 +274,8 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         RB.velocity = Vector3.zero;
         goOrStop = false;
+
+        FrontFoam.Stop();
     }
 
 

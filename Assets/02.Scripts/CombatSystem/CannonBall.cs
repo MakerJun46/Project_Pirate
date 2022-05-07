@@ -10,6 +10,8 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     Rigidbody rb;
 
     [SerializeField] List<ParticleSystem> AttackParticles;
+    [SerializeField] ParticleSystem DropParticle;
+
 
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -33,6 +35,7 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
         {
             Destroy(this.gameObject);
         }
+
     }
 
     private void FixedUpdate()
@@ -58,6 +61,7 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
             }
         }
     }
+
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
