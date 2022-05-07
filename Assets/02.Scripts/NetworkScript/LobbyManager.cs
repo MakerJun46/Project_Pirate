@@ -172,7 +172,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.IsOpen = false;
             //PhotonNetwork.CurrentRoom.IsVisible = false;
 
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" } });
+            PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
 
             StartCoroutine(FadeOut_beforeLoadScene());
         }
@@ -275,6 +275,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedLobby();
         contractText.text = "로비 접속 성공" + myNickName;
+        
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" }, { "IsKicked", false }, { "ProfileIndex", "0" } });
 
         LobbyPanel.SetActive(true);
         RoomPanel.SetActive(false);
@@ -301,7 +303,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
         roomOptions.MaxPlayers = (byte)(selectedMaxPlayerCount+1);
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
+
+
+        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
+        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         roomOptions.CleanupCacheOnLeave = false;
         SelectCreatingRoomName(roomName);
@@ -319,7 +324,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = IsVisible;
         roomOptions.IsOpen = IsOpen;
         roomOptions.MaxPlayers = (byte)5;
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "ReadyPlayerCount", 0 },  { "IsGameStarted", false }};
+
+
+        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
+        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, null);
     }
@@ -348,7 +356,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedRoom();
 
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" }, { "IsKicked", false } });
+        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
+        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
         contractText.text = "방 입장 성공";
 
         ChatUI.SetActive(true);
@@ -400,7 +409,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         contractText.text = "방 나가기";
 
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" }, { "IsKicked", false }});
+        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
+        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
 
         // Lobby 상황에 맞춰서 UI 세팅
         ChatUI.SetActive(false);
@@ -533,7 +543,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.PlayerList[i].UserId == id)
             {
                 // IsKicked가 되면 Update에서 자동으로 LeaveRoom실행
-                PhotonNetwork.PlayerList[i].SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Ready", "0" }, { "IsKicked", true } });
+                PhotonNetwork.PlayerList[i].CustomProperties["Ready"] = "0";
+                PhotonNetwork.PlayerList[i].CustomProperties["IsKicked"] = true;
             }
         }
     }
@@ -611,6 +622,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         profileColorImg.color = playerProfileExamples[myProfileIndex];
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
+        PhotonNetwork.LocalPlayer.CustomProperties["ProfileIndex"] = myProfileIndex.ToString();
     }
     #endregion
 

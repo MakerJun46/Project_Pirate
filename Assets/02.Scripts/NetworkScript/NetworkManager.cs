@@ -40,11 +40,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 // 플레이 한 게임모드가 최대가 되지 않으면 정상적으로 게임 진행
                 StartGame();
-                
-                if (SceneManager.GetActiveScene().name != "GameScene_Room")
-                {
-                    RoomData.GetInstance().RemoveCurrGameMode();
-                }
             }
             else
             {
@@ -81,6 +76,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (RoomData.GetInstance().PlayedGameCount > 0 || 
                 (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
             {
+                print("CHANGE RNAOMLY : "+ RoomData.GetInstance().GetNotOverlappedRandomGameMode());
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
             }
         }

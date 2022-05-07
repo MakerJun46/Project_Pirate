@@ -317,9 +317,11 @@ public class GameManager : MonoBehaviour, IPunObservable
             else
                 score = RoomData.GetInstance().currGameScores[PhotonNetwork.PlayerList[i].ActorNumber];
 
-            print("Set Final Score : " + PhotonNetwork.PlayerList[i].ActorNumber + " / " + score);
             bestPlayerListBox[i-1].SetScore(score);
-            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[i - 1], Color.black, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
+
+            string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
+            int profileIndex = int.Parse(tmp);
+            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[profileIndex], Color.black, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
 
             if (maxScore < score)
             {

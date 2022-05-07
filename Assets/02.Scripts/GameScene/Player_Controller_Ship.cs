@@ -31,6 +31,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public bool isBoosting;
     private bool isBoostingSynced;
     float steeringRot;
+    float shipRot;
 
     public float motorFoamMultiplier;
     public float moterFoamBase;
@@ -128,20 +129,29 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     private void Update()
     {
         GameObject myShipObjects = GetComponent<Player_Combat_Ship>().myShipObjects;
+        int myupgradeIndex = GetComponent<Player_Combat_Ship>().upgradeIndex;
+        
         if (photonView.IsMine)
         {
             if (is_Turn_Left)
-                steeringRot = Mathf.Lerp(steeringRot, 24, Time.deltaTime);
+                steeringRot = Mathf.Lerp(steeringRot, myupgradeIndex==0? 5 : 18, Time.deltaTime);
             else if (is_Turn_Right)
-                steeringRot = Mathf.Lerp(steeringRot, -24, Time.deltaTime);
+                steeringRot = Mathf.Lerp(steeringRot, -(myupgradeIndex == 0 ? 5 : 18), Time.deltaTime);
             else
                 steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+            shipRot = this.transform.rotation.eulerAngles.y;
+        }
+        else
+        {
+            this.transform.rotation = Quaternion.Euler(Vector3.up * shipRot);
         }
         myShipObjects.transform.localEulerAngles = new Vector3
             (myShipObjects.transform.localEulerAngles.x,
             myShipObjects.transform.localEulerAngles.y,
             steeringRot
             );
+
+
 
         if (isBoosting)
         {
@@ -316,12 +326,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         {
             stream.SendNext(RB.velocity);
             stream.SendNext(steeringRot);
+            stream.SendNext(shipRot);
             stream.SendNext(isBoosting);
         }
         else
         {
             currVel = (Vector3)stream.ReceiveNext();
             steeringRot = (float)stream.ReceiveNext();
+            shipRot = (float)stream.ReceiveNext();
             isBoosting = (bool)stream.ReceiveNext();
         }
     }

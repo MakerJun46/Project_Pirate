@@ -21,6 +21,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     [SerializeField] private List<GameObject> shipObjects;
     public GameObject myShipObjects;
+    public int upgradeIndex{get;private set;}
 
     [SerializeField] private Transform SailSpots;
 
@@ -64,7 +65,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [PunRPC]
     public void InitializeCombat(int param)
     {
-        int upgradeIndex = 0;
+        upgradeIndex = 0;
         if (param <= 0)
             upgradeIndex = 2;
         else if (param == 1)

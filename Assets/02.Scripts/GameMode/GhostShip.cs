@@ -65,7 +65,7 @@ public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) {
-            FindObjectOfType<GhostShipGameManager>().GetComponent<Photon.Pun.PhotonView>().RPC("FirstInfection",RpcTarget.AllBuffered, other.GetComponent<PhotonView>().OwnerActorNr);
+            FindObjectOfType<GhostShipGameManager>().GetComponent<Photon.Pun.PhotonView>().RPC("Infection",RpcTarget.AllBuffered, other.GetComponent<PhotonView>().OwnerActorNr);
         }
     }
 
