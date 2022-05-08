@@ -232,117 +232,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 29908357}
   m_CullTransparentMesh: 1
---- !u!1 &63131680
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 63131681}
-  - component: {fileID: 63131683}
-  - component: {fileID: 63131682}
-  - component: {fileID: 63131685}
-  - component: {fileID: 63131684}
-  m_Layer: 5
-  m_Name: TitleTxt
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &63131681
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63131680}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1765438710}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -320}
-  m_SizeDelta: {x: 720, y: 480}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &63131682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63131680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: 58d245c2892b95345a5c29c69578d760, type: 3}
-    m_FontSize: 120
-    m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 1
-    m_MaxSize: 120
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 1
-    m_VerticalOverflow: 1
-    m_LineSpacing: 1
-  m_Text: "\uBC94\uBBA4\uB2E4\n\uC0BC\uAC01\uC9C0\uB300"
---- !u!222 &63131683
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63131680}
-  m_CullTransparentMesh: 1
---- !u!114 &63131684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63131680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0}
-  m_EffectDistance: {x: 0, y: 0}
-  m_UseGraphicAlpha: 0
---- !u!114 &63131685
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63131680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
 --- !u!1 &81489552
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,8 +739,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133426680}
-  m_LocalRotation: {x: -0.0014625586, y: 0.8105126, z: 0.0020238862, w: 0.58571583}
-  m_LocalPosition: {x: -22.305937, y: 23.552692, z: -21.147871}
+  m_LocalRotation: {x: -0.0076131113, y: 0.8104467, z: 0.010535011, w: 0.58566827}
+  m_LocalPosition: {x: -22.305937, y: 18, z: -21.147871}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1898,7 +1787,7 @@ MonoBehaviour:
   m_HorizontalDamping: 1
   m_VerticalDamping: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.5
+  m_ScreenY: 0.8
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.8
@@ -2598,8 +2487,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363887028}
-  m_LocalRotation: {x: 0.18400986, y: 0.29032022, z: -0.05699296, w: 0.9373401}
-  m_LocalPosition: {x: -31.800598, y: 23.552692, z: -18.009174}
+  m_LocalRotation: {x: -0.014789203, y: 0.29582602, z: 0.0045806253, w: 0.9551164}
+  m_LocalPosition: {x: -31.800598, y: 18, z: -18.009174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 251740567}
@@ -9921,15 +9810,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 63131681}
+  m_Children: []
   m_Father: {fileID: 380437557}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 600, y: 500}
+  m_AnchoredPosition: {x: 0, y: 291}
+  m_SizeDelta: {x: 1600, y: 1600}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!95 &1765438711
 Animator:
@@ -9982,7 +9870,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9ec2f393724172b4190911234bb431f1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8310a9c701f74c24e96040cf41326420, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10231,8 +10119,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798153902}
-  m_LocalRotation: {x: 0.18400986, y: 0.29032022, z: -0.05699296, w: 0.9373401}
-  m_LocalPosition: {x: -31.800598, y: 23.552692, z: -18.009174}
+  m_LocalRotation: {x: -0.014789203, y: 0.29582602, z: 0.0045806253, w: 0.9551164}
+  m_LocalPosition: {x: -31.800598, y: 18, z: -18.009174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -11479,13 +11367,13 @@ MonoBehaviour:
     width: 0.2
   m_Looped: 1
   m_Waypoints:
-  - position: {x: -22.305937, y: 23.552692, z: -21.147871}
+  - position: {x: -22.305937, y: 18, z: -21.147871}
     roll: 0
-  - position: {x: 57.307972, y: 28.168785, z: 11.589924}
+  - position: {x: 57.307972, y: 20, z: 11.589924}
     roll: 0
-  - position: {x: 16.401848, y: 39.081306, z: 67.26831}
+  - position: {x: 16.401848, y: 29, z: 67.26831}
     roll: 0
-  - position: {x: -44.03126, y: 27.486439, z: 45.484158}
+  - position: {x: -44.03126, y: 17, z: 45.484158}
     roll: 0
 --- !u!4 &1983943368
 Transform:
@@ -12902,17 +12790,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08112126, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08111561, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12600714, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12600037, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07567737, b: 0.2537872, a: 0}
+  shoreColor: {r: 0, g: 0.07567217, b: 0.25378004, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058337994, g: 0.112716325, b: 0.14015806, a: 1}
-  underwaterColor: {r: 0.23745215, g: 0.7544341, b: 0.8301887, a: 1}
+  waveColor: {r: 0.058332644, g: 0.11270919, b: 0.14015129, a: 1}
+  underwaterColor: {r: 0.23744503, g: 0.7544341, b: 0.8301887, a: 1}
   underwaterColorStrength: 1
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -12920,7 +12808,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09732368, g: 0.339176, b: 0.32241052, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09731727, g: 0.33916885, b: 0.3224034, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
