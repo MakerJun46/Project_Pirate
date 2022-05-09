@@ -70,7 +70,7 @@ public class RoomData : MonoBehaviourPunCallbacks
     {
         int currGameIndex = Random.Range(0, remainGameModeList.Count);
         int returnVal = remainGameModeList[currGameIndex];
-        remainGameModeList.RemoveAt(currGameIndex);
+        //remainGameModeList.RemoveAt(currGameIndex);
 
         return returnVal;
     }
@@ -187,6 +187,8 @@ public class RoomData : MonoBehaviourPunCallbacks
     public void SetGameModeRPC(int _gameModeIndex)
     {
         gameMode = _gameModeIndex;
+        if(remainGameModeList.Contains(gameMode))
+            remainGameModeList.Remove(gameMode);
     }
 
     [PunRPC]

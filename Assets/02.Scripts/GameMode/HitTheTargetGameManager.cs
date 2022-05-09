@@ -33,7 +33,7 @@ public class HitTheTargetGameManager : GameManager
         for (int j = 0; j < targetCounts[waveIndex]; j++)
         {
             Vector2 spawnPoint = Random.insideUnitCircle * targetSpawnDistance;
-            GameObject tmpTarget = PhotonNetwork.Instantiate("ScoreTarget_" + Random.Range(0, 3),new Vector3(spawnPoint.x,0, spawnPoint.y) , Quaternion.identity);
+            GameObject tmpTarget = PhotonNetwork.Instantiate("ScoreTarget_" + Random.Range(0, 4),new Vector3(spawnPoint.x,0, spawnPoint.y) , Quaternion.identity);
             yield return new WaitForSeconds(0.1f);
         }
         yield return new WaitForSeconds(3f);

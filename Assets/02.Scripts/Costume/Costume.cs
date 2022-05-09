@@ -12,6 +12,7 @@ public class Costume : ScriptableObject
     }
 
     public string itemName;
+    public Sprite itemPreview;
     public CostumeType costumeType;
     public int itemID;
 

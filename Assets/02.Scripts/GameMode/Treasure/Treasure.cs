@@ -11,10 +11,18 @@ public class Treasure : MonoBehaviour
 
     PhotonView PV;
 
+    [SerializeField] MeshFilter MF;
+    [SerializeField] MeshRenderer MR;
+    [SerializeField] Mesh[] GemMeshs;
+    [SerializeField] Material[] GemMats;
+
     void Start()
     {
         PV = this.GetComponent<PhotonView>();
         isPickable = false;
+
+        MF.mesh = GemMeshs[Random.Range(0, GemMeshs.Length)];
+        MR.material = GemMats[Random.Range(0, GemMats.Length)];
     }
 
     private void Update()
