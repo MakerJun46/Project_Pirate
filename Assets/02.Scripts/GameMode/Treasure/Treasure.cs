@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Treasure : MonoBehaviour
+public class Treasure : MonoBehaviourPunCallbacks
 {
     public bool isPickable;
     public float rotateSpeed;

@@ -182,8 +182,6 @@ public class GhostShipGameManager : GameManager
     [PunRPC]
     public void On_Second(int ViewID)
     {
-        PhotonView.Find(ViewID).gameObject.transform.Find("Canvas").transform.Find("Count_Text").gameObject.SetActive(true);
-        PhotonView.Find(ViewID).gameObject.transform.Find("PassTheBomb").gameObject.SetActive(true);
         PhotonView.Find(ViewID).gameObject.GetComponent<Player_Combat_Ship>().SetToGhost();
     }
 

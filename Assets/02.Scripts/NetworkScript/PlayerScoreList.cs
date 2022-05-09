@@ -20,10 +20,10 @@ public class PlayerScoreList : MonoBehaviour
     {
         anim = GetComponent<Animator>();
     }
-    public void SetInfoUI(Color _infoImgColor, Color _infoTxtColor, string _infoTxt)
+    public void SetInfoUI(Color _infoImgColor,  string _infoTxt)
     {
         infoImg.color = _infoImgColor;
-        infoTxt.color = _infoTxtColor;
+        //infoTxt.color = _infoTxtColor;
         infoTxt.text = _infoTxt;
     }
 

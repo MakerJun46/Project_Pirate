@@ -44,7 +44,6 @@ public class CustomizeManager : MonoBehaviour
 
         for (int i = 0; i < costumeDictionary.HatCostumes.Count; i++)
         {
-            print("yse");
             GameObject costuemBtn = Instantiate(costumeContainer.GetChild(0).gameObject, costumeContainer);
             costuemBtn.transform.name = costumeDictionary.HatCostumes[i].itemID + "_" + costumeDictionary.HatCostumes[i].costumeType.ToString() + "_" + costumeDictionary.HatCostumes[i].itemName;
             int itemID = costumeDictionary.HatCostumes[i].itemID;

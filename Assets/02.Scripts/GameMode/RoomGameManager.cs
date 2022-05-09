@@ -137,7 +137,7 @@ public class RoomGameManager : GameManager
                         break;
                     }
                 }
-                PhotonNetwork.Instantiate("PlayerRankCharacter", rankTRs[playerIndex-1].position, rankTRs[playerIndex-1].rotation, 0, new object[] { rank});
+                PhotonNetwork.Instantiate("PlayerRankCharacter", rankTRs[rank].position, rankTRs[playerIndex-1].rotation, 0, new object[] { rank});
             }
         }
     }

@@ -221,14 +221,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
     }
 
+    Coroutine ShipBoosterCoroutine;
     public void startBooster()
     {
-        if (!isBoosting)
-        {
-            if(goOrStop==false)
-                GoOrStop_Button();
-            StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
-        }
+        if (goOrStop == false)
+            GoOrStop_Button();
+        if(ShipBoosterCoroutine!=null)
+            StopCoroutine(ShipBoosterCoroutine);
+        ShipBoosterCoroutine= StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
     }
 
     public IEnumerator Ship_Booster(float sec, float addMoveSpeed, float addTrunSpeed)
