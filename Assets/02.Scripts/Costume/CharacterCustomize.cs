@@ -35,6 +35,12 @@ public class CharacterCustomize : MonoBehaviourPun
                 {
                     HatObj.GetComponent<MeshFilter>().mesh = tmpCostume.itemMesh[0];
                     HatObj.GetComponent<MeshRenderer>().material = tmpCostume.itemMaterial[0];
+
+                    if (tmpCostume.itemMaterial.Length == 2)
+                    {
+                        HatObj.GetComponent<MeshRenderer>().materials[1] = tmpCostume.itemMaterial[1];
+                    }
+
                 }
                 else
                 {

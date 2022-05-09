@@ -51,6 +51,7 @@ public class CustomizeManager : MonoBehaviour
             Costume.CostumeType type = costumeDictionary.HatCostumes[i].costumeType;
             costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
             costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.HatCostumes[i].itemName;
+            costuemBtn.transform.GetChild(0).GetComponent<Image>().sprite = costumeDictionary.HatCostumes[i].itemPreview;
             costuemBtn.gameObject.SetActive(true);
         }
         for (int i = 0; i < costumeDictionary.ClothCostumes.Count; i++)
@@ -61,6 +62,7 @@ public class CustomizeManager : MonoBehaviour
             Costume.CostumeType type = costumeDictionary.ClothCostumes[i].costumeType;
             costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
             costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.ClothCostumes[i].itemName;
+            costuemBtn.transform.GetChild(0).GetComponent<Image>().sprite = costumeDictionary.ClothCostumes[i].itemPreview;
             costuemBtn.gameObject.SetActive(true);
         }
 
@@ -74,6 +76,7 @@ public class CustomizeManager : MonoBehaviour
             Costume.CostumeType type = costumeDictionary.SkinCostumes[i].costumeType;
             costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
             costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.SkinCostumes[i].itemName;
+            costuemBtn.transform.GetChild(0).GetComponent<Image>().sprite = costumeDictionary.SkinCostumes[i].itemPreview;
             costuemBtn.gameObject.SetActive(true);
 
             if(selectedIndex== itemID)
@@ -120,7 +123,7 @@ public class CustomizeManager : MonoBehaviour
                 {
                     // 이전 것 되돌리기
                     selectedHatItem.GetComponent<Image>().color = Color.white;
-                    selectedHatItem.transform.GetChild(1).gameObject.SetActive(false);
+                    selectedHatItem.transform.GetChild(2).gameObject.SetActive(false);
                     if (selectedHatItem == _btn.gameObject)
                     {
                         UnEquip();
@@ -130,14 +133,14 @@ public class CustomizeManager : MonoBehaviour
                 }
                 selectedHatItem = _btn.gameObject;
                 selectedHatItem.GetComponent<Image>().color = Color.grey;
-                selectedHatItem.transform.GetChild(1).gameObject.SetActive(true);
+                selectedHatItem.transform.GetChild(2).gameObject.SetActive(true);
                 break;
             case Costume.CostumeType.Cloth:
                 if (selectedClothItem)
                 {
                     // 이전 것 되돌리기
                     selectedClothItem.GetComponent<Image>().color = Color.white;
-                    selectedClothItem.transform.GetChild(1).gameObject.SetActive(false);
+                    selectedClothItem.transform.GetChild(2).gameObject.SetActive(false);
                     if (selectedClothItem == _btn.gameObject)
                     {
                         UnEquip();
@@ -147,18 +150,18 @@ public class CustomizeManager : MonoBehaviour
                 }
                 selectedClothItem = _btn.gameObject;
                 selectedClothItem.GetComponent<Image>().color = Color.grey;
-                selectedClothItem.transform.GetChild(1).gameObject.SetActive(true);
+                selectedClothItem.transform.GetChild(2).gameObject.SetActive(true);
                 break;
             case Costume.CostumeType.Skin:
                 if (selectedSkinItem)
                 {
                     // 이전 것 되돌리기
                     selectedSkinItem.GetComponent<Image>().color = Color.white;
-                    selectedSkinItem.transform.GetChild(1).gameObject.SetActive(false);
+                    selectedSkinItem.transform.GetChild(2).gameObject.SetActive(false);
                 }
                 selectedSkinItem = _btn.gameObject;
                 selectedSkinItem.GetComponent<Image>().color = Color.grey;
-                selectedSkinItem.transform.GetChild(1).gameObject.SetActive(true);
+                selectedSkinItem.transform.GetChild(2).gameObject.SetActive(true);
                 break;
         }
 
@@ -240,7 +243,7 @@ public class CustomizeManager : MonoBehaviour
         {
             // 이전 것 되돌리기
             selectedHatItem.GetComponent<Image>().color = Color.white;
-            selectedHatItem.transform.GetChild(1).gameObject.SetActive(false);
+            selectedHatItem.transform.GetChild(2).gameObject.SetActive(false);
             UnEquip();
             selectedHatItem = null;
         }
@@ -249,7 +252,7 @@ public class CustomizeManager : MonoBehaviour
         {
             // 이전 것 되돌리기
             selectedClothItem.GetComponent<Image>().color = Color.white;
-            selectedClothItem.transform.GetChild(1).gameObject.SetActive(false);
+            selectedClothItem.transform.GetChild(2).gameObject.SetActive(false);
             UnEquip();
             selectedClothItem = null;
         }
@@ -257,7 +260,7 @@ public class CustomizeManager : MonoBehaviour
         {
             // 이전 것 되돌리기
             selectedSkinItem.GetComponent<Image>().color = Color.white;
-            selectedSkinItem.transform.GetChild(1).gameObject.SetActive(false);
+            selectedSkinItem.transform.GetChild(2).gameObject.SetActive(false);
         }
 
         myHatIndex = -1;
