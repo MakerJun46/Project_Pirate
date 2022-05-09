@@ -996,9 +996,9 @@ GameObject:
   - component: {fileID: 252234930}
   - component: {fileID: 252234929}
   - component: {fileID: 252234928}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: UnderSeaTerrain_HitTheTarget
-  m_TagString: Terrain
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -2057,7 +2057,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -2949,13 +2949,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1561859351}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 30, y: 1, z: 30}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 15
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!114 &1561859356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3034,17 +3034,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.081107356, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08111044, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12599048, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12599418, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07566463, b: 0.2537696, a: 0}
+  shoreColor: {r: 0, g: 0.07566745, b: 0.2537735, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058324814, g: 0.112698756, b: 0.1401414, a: 1}
-  underwaterColor: {r: 0.23743457, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.058327742, g: 0.112702645, b: 0.1401451, a: 1}
+  underwaterColor: {r: 0.23743847, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3052,7 +3052,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09730788, g: 0.33915842, b: 0.32239297, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.097311385, g: 0.33916232, b: 0.32239684, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -3075,7 +3075,7 @@ MonoBehaviour:
   foamMovement: 0
   intersectionFoamDepth: 1.16
   intersectionFoamTexture: {fileID: 2800000, guid: f0a203cf18c99cd49b6180796a78152c, type: 3}
-  intersectionFoamColor: {r: 0, g: 0.60245436, b: 0.8773585, a: 1}
+  intersectionFoamColor: {r: 0.8820755, g: 0.98665005, b: 1, a: 1}
   intersectionFoamMovement: {x: 0, y: 0}
   intersectionFoamDirection: 0
   intersectionFoamSpeed: 0
