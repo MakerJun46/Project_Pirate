@@ -13,16 +13,23 @@ public class Treasure : MonoBehaviourPunCallbacks
 
     [SerializeField] MeshFilter MF;
     [SerializeField] MeshRenderer MR;
-    [SerializeField] Mesh[] GemMeshs;
-    [SerializeField] Material[] GemMats;
+    [SerializeField] public Mesh[] GemMeshs;
+    [SerializeField] public Material[] GemMats;
 
     void Start()
     {
         PV = this.GetComponent<PhotonView>();
         isPickable = false;
+    }
 
+    [PunRPC]
+    public void SetTreasureScore(int randScore)
+    {
         MF.mesh = GemMeshs[Random.Range(0, GemMeshs.Length)];
-        MR.material = GemMats[Random.Range(0, GemMats.Length)];
+
+        MR.material = GemMats[randScore];
+
+        Score = randScore;
     }
 
     private void Update()
