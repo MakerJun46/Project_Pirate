@@ -35,11 +35,21 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     [SerializeField] int MaxPlayGameCount = 3;
 
-    public List<Color> playerColor;
+    public List<Sprite> playerSprite;
 
     // Scores
     public List<int> FinalScores = new List<int>(10000);
     public List<int> currGameScores = new List<int>(10000);
+
+    public int winnerIndex = 0;
+    public int loserIndex = 0;
+
+    [PunRPC]
+    public void AddRankIndex(int winIndex,int loseIndex)
+    {
+        winnerIndex += winIndex;
+        loserIndex += loseIndex;
+    }
 
     void Start()
     {

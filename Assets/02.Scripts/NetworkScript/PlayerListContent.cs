@@ -9,6 +9,8 @@ using Photon.Pun.UtilityScripts;
 public class PlayerListContent : MonoBehaviour, IPunObservable 
 {
     [SerializeField] private Text nameTxt;
+    [SerializeField] private Image PlayerListImg;
+    [SerializeField] private Color[] ReadyColors;
     [SerializeField] private Toggle readyToggle;
     [SerializeField] private Button KickBtn;
 
@@ -48,10 +50,15 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
         {
             nameTxt.text = "["+ myPlayer.ActorNumber+ "]" + myPlayer.NickName;
 
-            if ((string)myPlayer.CustomProperties["Ready"] == "0")
+            if ((string)myPlayer.CustomProperties["Ready"] == "0") {
                 readyToggle.isOn = false;
-            else
+                PlayerListImg.color = ReadyColors[0];
+            }
+            else {
                 readyToggle.isOn = true;
+                PlayerListImg.color = ReadyColors[1];
+            }
+            
         }
         else
         {

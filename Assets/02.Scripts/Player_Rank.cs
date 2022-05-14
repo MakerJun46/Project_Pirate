@@ -20,6 +20,7 @@ public class Player_Rank : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallba
 
         playerNameText.text = GetComponent<PhotonView>().Owner.NickName;
         playerScoreText.text=  RoomData.GetInstance().FinalScores[GetComponent<PhotonView>().OwnerActorNr].ToString();
+
     }
     private void Start()
     {

@@ -14,7 +14,8 @@ public class RoomGameManager : GameManager
     [SerializeField] Transform PlayerListPanel;
     [SerializeField] Transform PlayerListContainer;
 
-    [SerializeField] List<Transform> rankTRs;
+    [SerializeField] List<Transform> winnerTRs;
+    [SerializeField] List<Transform> loserTRs;
     [SerializeField] GameObject rankObjs;
 
     int rank = 0;
@@ -128,19 +129,39 @@ public class RoomGameManager : GameManager
                 WinPanel.SetActive(rank <= 0);
                 LosePanel.SetActive(rank > 0);
 
-                int playerIndex = 0;
                 for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
                 {
-                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
-                    {
-                        playerIndex = i;
-                        break;
-                    }
+                    rank = RoomData.GetInstance().GetPlayerFinalRank(PhotonNetwork.PlayerList[i].ActorNumber);
                 }
-                PhotonNetwork.Instantiate("PlayerRankCharacter", rankTRs[rank].position, rankTRs[playerIndex-1].rotation, 0, new object[] { rank});
+
+                if (rank <= 0)
+                {
+                    int winnerIndex = RoomData.GetInstance().winnerIndex % winnerTRs.Count;
+                    PhotonNetwork.Instantiate("PlayerRankCharacter", winnerTRs[winnerIndex].position, winnerTRs[winnerIndex].rotation, 0, new object[] { rank });
+                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddRankIndex", RpcTarget.AllBuffered, new object[] { 1, 0 });
+                }
+                else
+                {
+                    int loserIndex = RoomData.GetInstance().loserIndex % loserTRs.Count;
+                    PhotonNetwork.Instantiate("PlayerRankCharacter", loserTRs[loserIndex].position, loserTRs[loserIndex].rotation, 0, new object[] { rank });
+                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddRankIndex", RpcTarget.AllBuffered, new object[] { 0, 1 });
+                }
             }
         }
     }
+
+    public Transform GetRankTransform(bool isWinner,int index)
+    {
+        if (isWinner)
+        {
+            return winnerTRs[index];
+        }
+        else
+        {
+            return loserTRs[index];
+        }
+    }
+
 
     private int Compare(int a, int b)
     {

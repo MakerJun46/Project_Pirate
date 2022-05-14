@@ -320,7 +320,7 @@ public class GameManager : MonoBehaviour, IPunObservable
 
             string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
             int profileIndex = int.Parse(tmp);
-            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[profileIndex], PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
+            bestPlayerListBox[i-1].SetInfoUI(profileIndex, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
 
             if (maxScore < score)
             {

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerScoreList : MonoBehaviour
 {
     [SerializeField] Text infoTxt;
-    [SerializeField] Image infoImg;
+    [SerializeField] Image profileImg;
     [SerializeField] Image WinnerImg;
     [SerializeField] Text addScoreTxt;
     Animator anim;
@@ -20,9 +20,9 @@ public class PlayerScoreList : MonoBehaviour
     {
         anim = GetComponent<Animator>();
     }
-    public void SetInfoUI(Color _infoImgColor,  string _infoTxt)
+    public void SetInfoUI(int _infoImgSprite,  string _infoTxt)
     {
-        infoImg.color = _infoImgColor;
+        profileImg.sprite = RoomData.GetInstance().playerSprite[_infoImgSprite];
         //infoTxt.color = _infoTxtColor;
         infoTxt.text = _infoTxt;
     }

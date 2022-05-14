@@ -2487,7 +2487,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363887028}
-  m_LocalRotation: {x: -0.014789205, y: 0.29582602, z: 0.0045806263, w: 0.9551164}
+  m_LocalRotation: {x: -0.014789203, y: 0.29582602, z: 0.0045806253, w: 0.9551164}
   m_LocalPosition: {x: -31.800598, y: 18, z: -18.009174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4692,7 +4692,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1230540192}
   m_HandleRect: {fileID: 1230540191}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -8211,16 +8211,16 @@ MonoBehaviour:
   - "\uB9D0\uB791\uB9D0\uB791"
   - "\uB538\uB791\uB538\uB791"
   playerProfileExamples:
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0.6037736, g: 0.24777503, b: 0.24777503, a: 1}
-  - {r: 0.6698113, g: 0.5765377, b: 0.36334103, a: 1}
-  - {r: 0.37624598, g: 0.8396226, b: 0.37624598, a: 1}
-  - {r: 0.24532752, g: 0.2553255, b: 0.3490566, a: 1}
-  - {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
+  - {fileID: -4545738352749646432, guid: 00f3b939d4e548f4092b227e34419e3b, type: 3}
+  - {fileID: 5510465169304295043, guid: 00f3b939d4e548f4092b227e34419e3b, type: 3}
+  - {fileID: 8158461246853394414, guid: 00f3b939d4e548f4092b227e34419e3b, type: 3}
+  - {fileID: 839613960307503501, guid: 00f3b939d4e548f4092b227e34419e3b, type: 3}
+  - {fileID: 2851521751577318508, guid: 00f3b939d4e548f4092b227e34419e3b, type: 3}
+  - {fileID: -6026512997622902165, guid: 00f3b939d4e548f4092b227e34419e3b, type: 3}
   playerProfileBtnContainer: {fileID: 791522860}
   playerProfileBtnContainer2: {fileID: 896104869}
   NickNameText: {fileID: 579144010}
-  profileColorImg: {fileID: 1946962340}
+  profileImg: {fileID: 1786300369}
   ChatUI: {fileID: 255400246}
   ChatInputField: {fileID: 989143537}
   ChatTexts:
@@ -10134,7 +10134,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798153902}
-  m_LocalRotation: {x: -0.014789205, y: 0.29582602, z: 0.0045806263, w: 0.9551164}
+  m_LocalRotation: {x: -0.014789203, y: 0.29582602, z: 0.0045806253, w: 0.9551164}
   m_LocalPosition: {x: -31.800598, y: 18, z: -18.009174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -12840,17 +12840,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08110196, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.081064306, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12598401, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12593877, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07565967, b: 0.25376278, a: 0}
+  shoreColor: {r: 0, g: 0.075625084, b: 0.25371507, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058319695, g: 0.11269193, b: 0.14013493, a: 1}
-  underwaterColor: {r: 0.23742777, g: 0.7544341, b: 0.8301887, a: 1}
+  waveColor: {r: 0.058283903, g: 0.1126442, b: 0.14008969, a: 1}
+  underwaterColor: {r: 0.23738003, g: 0.7544341, b: 0.8301887, a: 1}
   underwaterColorStrength: 1
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -12858,7 +12858,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.097301744, g: 0.3391516, b: 0.32238615, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.097258784, g: 0.33910388, b: 0.3223384, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0

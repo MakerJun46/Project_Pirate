@@ -58,12 +58,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     [Header("[Player]")]
     [SerializeField] List<string> playerNameExamples;
-    [SerializeField] List<Color> playerProfileExamples;
+    [SerializeField] List<Sprite> playerProfileExamples;
 
     [SerializeField] Transform playerProfileBtnContainer;
     [SerializeField] Transform playerProfileBtnContainer2;
     [SerializeField] Text NickNameText;
-    [SerializeField] Image profileColorImg;
+    [SerializeField] Image profileImg;
 
     [Header("[Chat]")]
     [SerializeField] GameObject ChatUI;
@@ -98,12 +98,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < playerProfileExamples.Count; i++)
         {
-
             GameObject tmpBtn = Instantiate(playerProfileBtnContainer.GetChild(0).gameObject, playerProfileBtnContainer);
             int tmpIndex = i;
             tmpBtn.SetActive(true);
             tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
-            tmpBtn.transform.GetChild(0).GetComponent<Image>().color = playerProfileExamples[tmpIndex];
+            tmpBtn.transform.GetChild(0).GetComponent<Image>().sprite = playerProfileExamples[tmpIndex];
         }
         for (int i = 0; i < playerProfileExamples.Count; i++)
         {
@@ -112,11 +111,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             int tmpIndex = i;
             tmpBtn.SetActive(true);
             tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
-            tmpBtn.transform.GetChild(0).GetComponent<Image>().color = playerProfileExamples[tmpIndex];
+            tmpBtn.transform.GetChild(0).GetComponent<Image>().sprite = playerProfileExamples[tmpIndex];
         }
         SetProfileIndex(Random.Range(0, playerProfileExamples.Count));
-
-
     }
 #endregion
 
@@ -619,7 +616,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
         playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
         myProfileIndex = _index;
-        profileColorImg.color = playerProfileExamples[myProfileIndex];
+        profileImg.sprite = playerProfileExamples[myProfileIndex];
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         PhotonNetwork.LocalPlayer.CustomProperties["ProfileIndex"] = myProfileIndex.ToString();
