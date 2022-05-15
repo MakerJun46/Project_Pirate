@@ -263,14 +263,13 @@ public class GameManager : MonoBehaviour, IPunObservable
     }
     public void Booster_Button()
     {
-        MyShip.startBooster();
-
         StartCoroutine(Booster_CoolTime());
     }
 
     IEnumerator Booster_CoolTime()
     {
         ControllerUI.transform.GetChild(6).gameObject.SetActive(true);
+        MyShip.startBooster();
 
         Image boosterCoolTimeImg = ControllerUI.transform.GetChild(6).GetComponent<Image>();
 
@@ -321,21 +320,24 @@ public class GameManager : MonoBehaviour, IPunObservable
 
             string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
             int profileIndex = int.Parse(tmp);
-            bestPlayerListBox[i-1].SetInfoUI(RoomData.GetInstance().playerColor[profileIndex], Color.black, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
+            bestPlayerListBox[i-1].SetInfoUI(profileIndex, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
 
             if (maxScore < score)
             {
                 maxScore = score;
             }
         }
+
         for (int i = 0; i < bestPlayerListBox.Count; i++)
         {
             bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore);
 
+            /*
             if (PhotonNetwork.PlayerList.Length-1 <= i)
             {
-                bestPlayerListBox[i].SetInfoUI(Color.black, Color.white, "XXX");
+                bestPlayerListBox[i].SetInfoUI(Color.black,  "XXX");
             }
+            */
         }
     }
 

@@ -221,14 +221,14 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         //front.rate = frontFoamMultiplier * GetComponent<Rigidbody>().velocity.magnitude;
     }
 
+    Coroutine ShipBoosterCoroutine;
     public void startBooster()
     {
-        if (!isBoosting)
-        {
-            if(goOrStop==false)
-                GoOrStop_Button();
-            StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
-        }
+        if (goOrStop == false)
+            GoOrStop_Button();
+        if(ShipBoosterCoroutine!=null)
+            StopCoroutine(ShipBoosterCoroutine);
+        ShipBoosterCoroutine= StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
     }
 
     public IEnumerator Ship_Booster(float sec, float addMoveSpeed, float addTrunSpeed)
@@ -311,7 +311,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             if (GetComponent<PhotonView>().IsMine)
             {
                 Debug.LogError("GetTreasure");
-                Debug.LogError(Treasure_GameManager.instance.Player_TreasureCount_Value);
                 Treasure_GameManager.instance.Player_TreasureCount_Value++;
                 Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
             }
@@ -327,7 +326,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogError("GetTreasure");
                 Debug.LogError(Treasure_GameManager.instance.Player_TreasureCount_Value);
-                Treasure_GameManager.instance.Player_TreasureCount_Value++;
+                Treasure_GameManager.instance.Player_TreasureCount_Value += other.GetComponent<Treasure>().Score;
                 Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
             }
 

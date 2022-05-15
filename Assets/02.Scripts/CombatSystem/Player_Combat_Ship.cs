@@ -325,10 +325,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
             tmpCannon.transform.localRotation = Quaternion.identity;
             myAutoCannons[_spotIndex] = tmpCannon.GetComponent<Cannon>();
 
-            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("GameModeIndex"))
-                tmpCannon.GetComponent<AutoCannon>().Initialize(this, _spotIndex, int.Parse((string)PhotonNetwork.CurrentRoom.CustomProperties["GameModeIndex"]));
-            else
-                tmpCannon.GetComponent<AutoCannon>().Initialize(this, _spotIndex, -1);
+            tmpCannon.GetComponent<AutoCannon>().Initialize(this, _spotIndex, RoomData.GetInstance().gameMode);
         }
 
         ChangeCannonType(_spotIndex, _cannonIndex, true);
@@ -420,6 +417,28 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
                 }
             }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = 0; i < mySpecialCannons.Count; i++)
+        {
+            if (mySpecialCannons[i] != null)
+            {
+                Destroy(mySpecialCannons[i].gameObject);
+            }
+        }
+        for (int i = 0; i < myAutoCannons.Count; i++)
+        {
+            if (myAutoCannons[i] != null)
+            {
+                Destroy(myAutoCannons[i].gameObject);
+            }
+        }
+        if (mySails != null)
+        {
+            Destroy(mySails.gameObject);
         }
     }
 }

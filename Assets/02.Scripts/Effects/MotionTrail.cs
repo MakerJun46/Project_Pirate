@@ -28,6 +28,7 @@ public class MotionTrail : MonoBehaviour
     private List<Quaternion> rotMemory = new List<Quaternion>();
 
     [Header("[Trail Info]")]
+    [SerializeField] bool PlayOnStart=false;
     [SerializeField] private int TrailCount;
     [SerializeField] private float TrailGap = 0.2f;
     [SerializeField] [ColorUsage(true, true)] private Color frontColor;
@@ -80,6 +81,11 @@ public class MotionTrail : MonoBehaviour
                 Color tmpColor_Inner = Color.Lerp(frontColor_Inner, backColor_Inner, (float)i / TrailCount);
                 pss.MeshFilters[j].GetComponent<MeshRenderer>().material.SetColor("_BaselColor", tmpColor_Inner);
             }
+        }
+
+        if (PlayOnStart)
+        {
+            StartMotionTrail();
         }
     }
 
@@ -165,4 +171,8 @@ public class MotionTrail : MonoBehaviour
     }
     #endregion
 
+    public void DestroyMotionTrail()
+    {
+        Destroy(TrailContainer.gameObject);
+    }
 }

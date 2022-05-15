@@ -32,9 +32,6 @@ public class Treasure_GameManager : GameManager
         PV = GetComponent<PhotonView>();
 
         Player_TreasureCount_Value = 0;
-
-        VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
-        VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform;
     }
 
     public override void StartGame()
@@ -52,6 +49,9 @@ public class Treasure_GameManager : GameManager
             PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
 
             CombatManager.instance.EquipSpecialCannon(0, (int)SpecialCannon.SpecialCannonType.KnockBack);
+
+            VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform.GetChild(0).transform;
+            VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform.GetChild(0).transform;
         }
     }
 
@@ -69,7 +69,6 @@ public class Treasure_GameManager : GameManager
 
     public void initialize()
     {
-
         PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
 
         VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform;
@@ -93,10 +92,6 @@ public class Treasure_GameManager : GameManager
     protected override void Update()
     {
         base.Update();
-        //if(!SpawnStart && GameManager.GetInstance().MyShip != null) // 에디터에서 테스트하기 위함
-        //{
-        //    initialize();
-        //}
 
         if (GameStarted)
         {
@@ -194,6 +189,10 @@ public class Treasure_GameManager : GameManager
             }
 
             GameObject go = PhotonNetwork.Instantiate("Treasure", TreasureSpawner_Object.transform.position + new Vector3(0, 2, 0), Quaternion.identity);
+
+            int randScore = Random.Range(0, go.GetComponent<Treasure>().GemMats.Length) + 1;
+
+            go.GetComponent<Treasure>().photonView.RPC("SetTreasureScore", RpcTarget.AllBuffered, randScore);
             go.GetComponent<Treasure>().startMove(NetworkManager.instance.CalculateSpawnPos());
             Vector3 pos = NetworkManager.instance.CalculateSpawnPos();
 

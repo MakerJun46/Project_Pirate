@@ -35,11 +35,21 @@ public class RoomData : MonoBehaviourPunCallbacks
 
     [SerializeField] int MaxPlayGameCount = 3;
 
-    public List<Color> playerColor;
+    public List<Sprite> playerSprite;
 
     // Scores
     public List<int> FinalScores = new List<int>(10000);
     public List<int> currGameScores = new List<int>(10000);
+
+    public int winnerIndex = 0;
+    public int loserIndex = 0;
+
+    [PunRPC]
+    public void AddRankIndex(int winIndex,int loseIndex)
+    {
+        winnerIndex += winIndex;
+        loserIndex += loseIndex;
+    }
 
     void Start()
     {
@@ -70,11 +80,15 @@ public class RoomData : MonoBehaviourPunCallbacks
     {
         int currGameIndex = Random.Range(0, remainGameModeList.Count);
         int returnVal = remainGameModeList[currGameIndex];
-        //remainGameModeList.RemoveAt(currGameIndex);
 
         return returnVal;
     }
 
+    public void RemovePlayedGameMode()
+    {
+        if (remainGameModeList.Contains(gameMode))
+            remainGameModeList.Remove(gameMode);
+    }
     public string GetGameModeInfo()
     {
         string info = "";
@@ -137,6 +151,7 @@ public class RoomData : MonoBehaviourPunCallbacks
         PlayedGameCount++;
     }
 
+
     public void AddGameModeIndex(int addAmount)
     {
         // Random Mode도 있기에 +1
@@ -187,8 +202,6 @@ public class RoomData : MonoBehaviourPunCallbacks
     public void SetGameModeRPC(int _gameModeIndex)
     {
         gameMode = _gameModeIndex;
-        if(remainGameModeList.Contains(gameMode))
-            remainGameModeList.Remove(gameMode);
     }
 
     [PunRPC]

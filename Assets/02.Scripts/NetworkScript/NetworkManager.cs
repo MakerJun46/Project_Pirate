@@ -129,6 +129,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         yield return StartCoroutine(CountDownCoroutine(CountDownTime));
 
+        if (SceneManager.GetActiveScene().name != "GameScene_Room")
+            RoomData.GetInstance().RemovePlayedGameMode();
         GameManager.GetInstance().StartGame();
     }
 
