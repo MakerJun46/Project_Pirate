@@ -27,7 +27,7 @@ public class Treasure : MonoBehaviourPunCallbacks
     {
         MF.mesh = GemMeshs[Random.Range(0, GemMeshs.Length)];
 
-        MR.material = GemMats[randScore];
+        MR.material = GemMats[randScore-1];
 
         Score = randScore;
     }

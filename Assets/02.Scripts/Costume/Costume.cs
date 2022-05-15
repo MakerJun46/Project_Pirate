@@ -16,6 +16,7 @@ public class Costume : ScriptableObject
     public CostumeType costumeType;
     public int itemID;
 
+    public int itemMeshIndex;
     public Mesh[] itemMesh;
     public Material[] itemMaterial;
 }

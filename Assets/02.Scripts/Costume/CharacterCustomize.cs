@@ -5,8 +5,8 @@ using Photon.Pun;
 
 public class CharacterCustomize : MonoBehaviourPun
 {
-    [SerializeField] GameObject HatObj;
-    [SerializeField] GameObject ClothObj;
+    [SerializeField] GameObject[] HatObj;
+    [SerializeField] GameObject[] ClothObj;
     [SerializeField] GameObject[] SkinObjs;
 
     [PunRPC]
@@ -31,40 +31,32 @@ public class CharacterCustomize : MonoBehaviourPun
         switch ((Costume.CostumeType)typeIndex)
         {
             case Costume.CostumeType.Hat:
+                for(int i = 0; i < HatObj.Length; i++)
+                {
+                    HatObj[i].SetActive(false);
+                }
                 if (index >= 0)
                 {
-                    HatObj.GetComponent<MeshFilter>().mesh = tmpCostume.itemMesh[0];
-                    HatObj.GetComponent<MeshRenderer>().material = tmpCostume.itemMaterial[0];
-
-                    if (tmpCostume.itemMaterial.Length == 2)
-                    {
-                        HatObj.GetComponent<MeshRenderer>().materials[1] = tmpCostume.itemMaterial[1];
-                    }
-
-                }
-                else
-                {
-                    HatObj.GetComponent<MeshFilter>().mesh = null;
-                    HatObj.GetComponent<MeshRenderer>().material = null;
+                    HatObj[tmpCostume.itemMeshIndex].SetActive(true);
+                    HatObj[tmpCostume.itemMeshIndex].GetComponent<MeshRenderer>().material = tmpCostume.itemMaterial[0];
                 }
                 break;
             case Costume.CostumeType.Cloth:
+                for (int i = 0; i < ClothObj.Length; i++)
+                {
+                    ClothObj[i].SetActive(false);
+                }
                 if (index >= 0)
                 {
-                    ClothObj.GetComponent<MeshFilter>().mesh = tmpCostume.itemMesh[0];
-                    ClothObj.GetComponent<MeshRenderer>().material = tmpCostume.itemMaterial[0];
-                }
-                else
-                {
-                    ClothObj.GetComponent<MeshFilter>().mesh = null;
-                    ClothObj.GetComponent<MeshRenderer>().material = null;
+                    ClothObj[tmpCostume.itemMeshIndex].SetActive(true);
+                    ClothObj[tmpCostume.itemMeshIndex].GetComponent<SkinnedMeshRenderer>().material = tmpCostume.itemMaterial[0];
                 }
                 break;
             case Costume.CostumeType.Skin:
                 // Body Tail Ear Face
                 for(int i = 0; i < 4; i++)
                 {
-                    SkinObjs[i].GetComponent<MeshRenderer>().material = index >= 0 ? tmpCostume.itemMaterial[i] : null;
+                    SkinObjs[i].GetComponent<SkinnedMeshRenderer>().material = index >= 0 ? tmpCostume.itemMaterial[i] : null;
                 }
                 break;
             default:

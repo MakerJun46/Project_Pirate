@@ -147,14 +147,8 @@ public class GhostShipGameManager : GameManager
         {
             MyShip.Ship_Stop();
         }
-        StartCoroutine(GhostDIed(ViewID));
     }
 
-    IEnumerator GhostDIed(int ViewID)
-    {
-        VC_Bomb.Priority = 15;
-        yield return new WaitForSeconds(1.0f);
-    }
 
     [PunRPC]
     public void Infection(int PlayerIndex)

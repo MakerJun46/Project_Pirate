@@ -4053,18 +4053,18 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
-  shallowColor: {r: 0.02370354, g: 0.03272918, b: 0.44333413, a: 0.5176471}
-  deepColor: {r: 0.05181077, g: 0.26793537, b: 0.43390018, a: 1}
+  shallowColor: {r: 0.02370354, g: 0.03272918, b: 0.44333303, a: 0.5176471}
+  deepColor: {r: 0.05180995, g: 0.26793426, b: 0.43389907, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.6762976, g: 0.04398541, b: 1, a: 0.7647059}
+  horizonColor: {r: 0.6762976, g: 0.043984696, b: 1, a: 0.7647059}
   horizonDistance: 5
   shoreFade: 0.446
-  shoreColor: {r: 0.38656953, g: 0.4086652, b: 0.462264, a: 0}
+  shoreColor: {r: 0.38656846, g: 0.4086641, b: 0.462264, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.017236255, g: 0.04970099, b: 0.065955065, a: 1}
-  underwaterColor: {r: 0.31324095, g: 0.10224817, b: 0.6509434, a: 0}
+  waveColor: {r: 0.017236255, g: 0.049700275, b: 0.06595424, a: 1}
+  underwaterColor: {r: 0.31323984, g: 0.10224713, b: 0.6509434, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4072,8 +4072,8 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.061629668, g: 0.16463721, b: 0.6132076, a: 0.3137255}
-  surfaceFoamColor2: {r: 0, g: 0.28856167, b: 0.5943396, a: 0.050980393}
+  surfaceFoamColor1: {r: 0.06162884, g: 0.16463616, b: 0.6132076, a: 0.3137255}
+  surfaceFoamColor2: {r: 0, g: 0.28856057, b: 0.5943396, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
   surfaceFoamDirection2: 0
@@ -4113,7 +4113,7 @@ MonoBehaviour:
   shoreFoamBreakupScale: 9.37
   lighting: 0
   lightingSmoothness: 0.67
-  lightingSpecularColor: {r: 0.42128524, g: 0.659304, b: 1, a: 1}
+  lightingSpecularColor: {r: 0.42128414, g: 0.659304, b: 1, a: 1}
   lightingDiffuseColor: {r: 0, g: 0.4982708, b: 0.8207547, a: 0.60784316}
   lightingHardness: 0.73
   normalsTexture: {fileID: 2800000, guid: 205a2cc3008483a44b2310b168f10ba4, type: 3}
@@ -5401,7 +5401,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6713755858579188570}
-  - component: {fileID: 463284742031852487}
   m_Layer: 0
   m_Name: Pirate_Ship
   m_TagString: Untagged
@@ -5409,29 +5408,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &463284742031852487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 463284742031852486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8176b5d6f4f66f343b3bfd7a7a492af0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MeshTrailPrefab: {fileID: 560164734314721946, guid: 820788a479a508e4fbebf88c4c0d2fea, type: 3}
-  MeshTrailStructs: []
-  PlayOnStart: 1
-  TrailCount: 10
-  TrailGap: 0.2
-  frontColor: {r: 0, g: 7.999999, b: 3.4210584, a: 0.39215687}
-  backColor: {r: 1.043167, g: 0, b: 7.999999, a: 0.39215687}
-  frontColor_Inner: {r: 0, g: 7.999999, b: 4.4063754, a: 0.39215687}
-  backColor_Inner: {r: 1.6335077, g: 0, b: 7.999999, a: 0.39215687}
-  GhostFrontColor: {r: 0, g: 8, b: 4.329412, a: 0.39215687}
-  GhostBackColor: {r: 0, g: 0.7529412, b: 8, a: 0.39215687}
 --- !u!1001 &908597251320251241
 PrefabInstance:
   m_ObjectHideFlags: 0

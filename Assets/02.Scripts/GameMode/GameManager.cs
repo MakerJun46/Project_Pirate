@@ -199,7 +199,10 @@ public class GameManager : MonoBehaviour, IPunObservable
     protected virtual void Update()
     {
         if (TimeText)
-            TimeText.text = ((int)(currPlayTime / 60)) + ":" + ((int)(currPlayTime % 60));
+        {
+            float calculatedTime = maxPlayTime- currPlayTime;
+            TimeText.text = ((int)(calculatedTime / 60)) + ":" + ((int)(calculatedTime % 60));
+        }
         if (GameStarted)
         {
             int countDownTime = 5;

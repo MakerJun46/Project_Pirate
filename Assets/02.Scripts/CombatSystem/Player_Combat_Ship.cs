@@ -130,6 +130,21 @@ public class Player_Combat_Ship : MonoBehaviourPun
         isTagger = true;
         myShipObjects.GetComponent<ShipCustom>().SetToGhost();
         myShipObjects.GetComponent<MotionTrail>().ChangeGhostColor();
+
+        for (int i = 0; i < myAutoCannons.Count; i++)
+        {
+            if (myAutoCannons[i] != null)
+            {
+                myAutoCannons[i].ChangeMaterialToGohst();
+            }
+        }
+        for(int i = 0; i < mySpecialCannons.Count; i++)
+        {
+            if (mySpecialCannons[i] != null)
+            {
+                mySpecialCannons[i].ChangeMaterialToGohst();
+            }
+        }
     }
 
 

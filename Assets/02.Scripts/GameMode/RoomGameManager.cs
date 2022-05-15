@@ -37,7 +37,7 @@ public class RoomGameManager : GameManager
         if (currRoomData)
         {
             GameModeTitleTxt.text = currRoomData.GetGameModeTitle();
-            GameModeInfoTxt.text = currRoomData.GetGameModeInfo();
+            GameModeInfoTxt.text = currRoomData.GetCurrGameModeInfo();
         }
     }
     public override void StartGame()

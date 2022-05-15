@@ -81,15 +81,15 @@ public class SurvivorGameManager : GameManager
 
     IEnumerator NaturalDisastersCoroutine()
     {
-        int spawnCount = Random.Range(4, 8);
+        int spawnCount = Random.Range(3, 6);
         for (int i = 0; i < spawnCount; i++)
         {
             GameObject tmp = PhotonNetwork.Instantiate("CannonBall_Rain", new Vector3(Random.Range(-40,40),50f, Random.Range(-40,40)), Quaternion.identity,
-                0, new object[] { 25.0f,4f });
+                0, new object[] { 25.0f,3f });
             tmp.GetComponent<CannonBall>().gravity = Vector3.up * -9.8f * 4f;
             yield return new WaitForSeconds(Random.Range(0.1f,.5f));
         }
-        yield return new WaitForSeconds(Random.Range(0.5f,2f));
+        yield return new WaitForSeconds(Random.Range(1f,2f));
         if (GameStarted)
             StartCoroutine("NaturalDisastersCoroutine");
     }
