@@ -590,6 +590,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             default:
                 break;
         }
+        UpdateameModeInfo();
+    }
+
+    [SerializeField] Text GameModeInfoTxt;
+    public void UpdateameModeInfo()
+    {
+        GameModeInfoTxt.text= RoomData.GetInstance().GetCurrGameModeInfo();
     }
 
 

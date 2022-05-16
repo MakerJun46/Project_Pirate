@@ -51,7 +51,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 }
             }
         }
-
     }
 
     bool characterGened = false;
@@ -70,17 +69,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public IEnumerator StartGameCoroutine()
     {
-        if (RoomData.GetInstance())
-        {
-            // 첫 번째 판이 아니거나, 첫 번째 판인데 random을 고른 경우 -> 랜덤
-            if (RoomData.GetInstance().PlayedGameCount > 0 || 
-                (RoomData.GetInstance().PlayedGameCount==0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
-            {
-                print("CHANGE RNAOMLY : "+ RoomData.GetInstance().GetNotOverlappedRandomGameMode());
-                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, RoomData.GetInstance().GetNotOverlappedRandomGameMode());
-            }
-        }
-        
         while (true)
         {
             yield return new WaitForEndOfFrame();
@@ -91,7 +79,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 break;
             }
         }
-        
+
+        if (RoomData.GetInstance())
+        {
+            // 첫 번째 판이 아니거나, 첫 번째 판인데 random을 고른 경우 -> 랜덤
+            if ((RoomData.GetInstance().PlayedGameCount > 0 && SceneManager.GetActiveScene().name == "GameScene_Room") ||
+                (RoomData.GetInstance().PlayedGameCount == 0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
+            {
+                int currGameIndex = RoomData.GetInstance().GetNotOverlappedRandomGameMode();
+                print("CURRENT GAME INDEX : " + currGameIndex);
+                RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, currGameIndex);
+            }
+        }
+
         if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount <= 1 && FindObjectOfType<RoomGameManager>())
         {
             // 플레이어 혼자만 남으면 Loading하지 않음 -> RoomGameManager에서 RoomExit하는 Panel Active
@@ -127,10 +127,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (FindObjectOfType<CutSceneManager>())
             yield return new WaitForSeconds(Mathf.Max(0f, (float)FindObjectOfType<CutSceneManager>().director.duration - 6f));
 
-        yield return StartCoroutine(CountDownCoroutine(CountDownTime));
-
         if (SceneManager.GetActiveScene().name != "GameScene_Room")
             RoomData.GetInstance().RemovePlayedGameMode();
+
+        yield return StartCoroutine(CountDownCoroutine(CountDownTime));
+
         GameManager.GetInstance().StartGame();
     }
 
@@ -253,8 +254,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void ExitRoom()
     {
         PhotonNetwork.LeaveRoom();
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
+
 
     /// <summary>
     /// 플레이어가 네트워크에 접속한 시점에 호출
@@ -279,6 +280,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
+
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     /// <summary>
@@ -288,6 +291,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         //DisconnetPanel.SetActive(true);
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {

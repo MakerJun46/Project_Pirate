@@ -37,7 +37,7 @@ public class RoomGameManager : GameManager
         if (currRoomData)
         {
             GameModeTitleTxt.text = currRoomData.GetGameModeTitle();
-            GameModeInfoTxt.text = currRoomData.GetGameModeInfo();
+            GameModeInfoTxt.text = currRoomData.GetCurrGameModeInfo();
         }
     }
     public override void StartGame()
@@ -128,25 +128,26 @@ public class RoomGameManager : GameManager
 
                 WinPanel.SetActive(rank <= 0);
                 LosePanel.SetActive(rank > 0);
-
-                for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
-                {
-                    rank = RoomData.GetInstance().GetPlayerFinalRank(PhotonNetwork.PlayerList[i].ActorNumber);
-                }
-
-                if (rank <= 0)
-                {
-                    int winnerIndex = RoomData.GetInstance().winnerIndex % winnerTRs.Count;
-                    PhotonNetwork.Instantiate("PlayerRankCharacter", winnerTRs[winnerIndex].position, winnerTRs[winnerIndex].rotation, 0, new object[] { rank });
-                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddRankIndex", RpcTarget.AllBuffered, new object[] { 1, 0 });
-                }
-                else
-                {
-                    int loserIndex = RoomData.GetInstance().loserIndex % loserTRs.Count;
-                    PhotonNetwork.Instantiate("PlayerRankCharacter", loserTRs[loserIndex].position, loserTRs[loserIndex].rotation, 0, new object[] { rank });
-                    RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddRankIndex", RpcTarget.AllBuffered, new object[] { 0, 1 });
-                }
+                StartCoroutine("RankCoroutine", rank);
             }
+        }
+    }
+
+    IEnumerator RankCoroutine(float _time)
+    {
+        yield return new WaitForSeconds(_time+Random.Range(0f,0.5f));
+
+        if (rank <= 0)
+        {
+            int winnerIndex = RoomData.GetInstance().winnerIndex % winnerTRs.Count;
+            PhotonNetwork.Instantiate("PlayerRankCharacter", winnerTRs[winnerIndex].position, winnerTRs[winnerIndex].rotation, 0, new object[] { rank});
+            RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddRankIndex", RpcTarget.AllBuffered, new object[] { 1, 0 });
+        }
+        else
+        {
+            int loserIndex = RoomData.GetInstance().loserIndex % loserTRs.Count;
+            PhotonNetwork.Instantiate("PlayerRankCharacter", loserTRs[loserIndex].position, loserTRs[loserIndex].rotation, 0, new object[] { rank});
+            RoomData.GetInstance().GetComponent<PhotonView>().RPC("AddRankIndex", RpcTarget.AllBuffered, new object[] { 0, 1 });
         }
     }
 

@@ -50,7 +50,8 @@ public class Hook : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 
             if (distance.magnitude <= 10f)
             {
-                Destroy(this.gameObject);
+                if(this.gameObject)
+                    PhotonNetwork.Destroy(this.gameObject);
             }
         }
     }

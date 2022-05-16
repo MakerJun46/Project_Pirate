@@ -14,7 +14,6 @@ public enum GameMode
 
 public class RoomData : MonoBehaviourPunCallbacks
 {
-
     private static RoomData instance;
     public static RoomData GetInstance()
     {
@@ -89,10 +88,14 @@ public class RoomData : MonoBehaviourPunCallbacks
         if (remainGameModeList.Contains(gameMode))
             remainGameModeList.Remove(gameMode);
     }
-    public string GetGameModeInfo()
+    public string GetCurrGameModeInfo()
+    {
+        return GetGameModeInfo((GameMode)gameMode);
+    }
+    public string GetGameModeInfo(GameMode _gameMode)
     {
         string info = "";
-        switch ((GameMode)gameMode)
+        switch (_gameMode)
         {
             case GameMode.BattleRoyale:
                 info = "배틀로얄은 최후의 1인이 승리하는 게임입니다.\n 자원을 수집하고 장비를 제작하여 경쟁자와 싸우세요.";
@@ -201,6 +204,7 @@ public class RoomData : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetGameModeRPC(int _gameModeIndex)
     {
+        print("SettedGameMode To " + _gameModeIndex);
         gameMode = _gameModeIndex;
     }
 

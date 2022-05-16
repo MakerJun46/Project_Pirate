@@ -49,7 +49,7 @@ public class CustomizeManager : MonoBehaviour
             int itemID = costumeDictionary.HatCostumes[i].itemID;
             Costume.CostumeType type = costumeDictionary.HatCostumes[i].costumeType;
             costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
-            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.HatCostumes[i].itemName;
+            //costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.HatCostumes[i].itemName;
             costuemBtn.transform.GetChild(0).GetComponent<Image>().sprite = costumeDictionary.HatCostumes[i].itemPreview;
             costuemBtn.gameObject.SetActive(true);
         }
@@ -60,7 +60,7 @@ public class CustomizeManager : MonoBehaviour
             int itemID = costumeDictionary.ClothCostumes[i].itemID;
             Costume.CostumeType type = costumeDictionary.ClothCostumes[i].costumeType;
             costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
-            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.ClothCostumes[i].itemName;
+            //costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.ClothCostumes[i].itemName;
             costuemBtn.transform.GetChild(0).GetComponent<Image>().sprite = costumeDictionary.ClothCostumes[i].itemPreview;
             costuemBtn.gameObject.SetActive(true);
         }
@@ -74,7 +74,7 @@ public class CustomizeManager : MonoBehaviour
             int itemID = costumeDictionary.SkinCostumes[i].itemID;
             Costume.CostumeType type = costumeDictionary.SkinCostumes[i].costumeType;
             costuemBtn.GetComponent<Button>().onClick.AddListener(() => SelectItem(costuemBtn.GetComponent<Button>(), type, itemID));
-            costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.SkinCostumes[i].itemName;
+            //costuemBtn.GetComponentInChildren<Text>().text = costumeDictionary.SkinCostumes[i].itemName;
             costuemBtn.transform.GetChild(0).GetComponent<Image>().sprite = costumeDictionary.SkinCostumes[i].itemPreview;
             costuemBtn.gameObject.SetActive(true);
 

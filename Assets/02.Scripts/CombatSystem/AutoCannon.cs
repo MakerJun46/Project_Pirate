@@ -184,6 +184,7 @@ public class AutoCannon : Cannon
                 break;
         }
     }
+
     
     protected void LaunchTrajectory()
     {

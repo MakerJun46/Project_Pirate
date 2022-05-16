@@ -49,6 +49,8 @@ public class Cannon : MonoBehaviourPun
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] protected List<LineRenderer> lrs;
+    [SerializeField] private MeshRenderer[] cannonMeshes;
+    [SerializeField] private Material GhostMat;
 
     protected int spotIndex;
 
@@ -65,6 +67,7 @@ public class Cannon : MonoBehaviourPun
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
             cursor = Instantiate(Resources.Load("Cursor") as GameObject, this.transform.position, Quaternion.identity).transform;
+            cursor.gameObject.SetActive(false);
         }
     }
 
@@ -75,6 +78,13 @@ public class Cannon : MonoBehaviourPun
         Destroy(this.gameObject);
     }
 
+    public void ChangeMaterialToGhost()
+    {
+        for(int i=0;i< cannonMeshes.Length; i++)
+        {
+            cannonMeshes[i].material = GhostMat;
+        }
+    }
 
     protected virtual void Update()
     {
