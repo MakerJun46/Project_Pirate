@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Cinemachine;
 using System.Linq;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class GameManager : MonoBehaviour, IPunObservable
 {
@@ -28,7 +29,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     protected float currPlayTime;
     public float maxPlayTime = 60f;
 
-    [SerializeField] protected Text TimeText;
+    [SerializeField] protected TextMeshProUGUI TimeText;
 
     [SerializeField] float boosterCoolTime = 5f;
 

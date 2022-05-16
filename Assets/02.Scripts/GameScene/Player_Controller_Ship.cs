@@ -306,15 +306,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         if (collision.gameObject.CompareTag("Terrain"))
         {
             additionalForce += collision.GetContact(0).normal * 30f;
-        }else if (collision.gameObject.CompareTag("Treasure") && collision.gameObject.GetComponent<Treasure>().isPickable)
-        {
-            if (GetComponent<PhotonView>().IsMine)
-            {
-                Debug.LogError("GetTreasure");
-                Treasure_GameManager.instance.Player_TreasureCount_Value++;
-                Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
-            }
-            Destroy(collision.gameObject);
         }
     }
 
@@ -326,8 +317,11 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogError("GetTreasure");
                 Debug.LogError(Treasure_GameManager.instance.Player_TreasureCount_Value);
-                Treasure_GameManager.instance.Player_TreasureCount_Value += other.GetComponent<Treasure>().Score;
-                Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID);
+
+                int score = other.GetComponent<Treasure>().Score;
+
+                Treasure_GameManager.instance.Player_TreasureCount_Value += score;
+                Treasure_GameManager.instance.Update_TreasureCount(photonView.ViewID, score);
             }
 
             Destroy(other.gameObject);

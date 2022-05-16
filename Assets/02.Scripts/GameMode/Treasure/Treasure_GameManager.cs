@@ -117,7 +117,7 @@ public class Treasure_GameManager : GameManager
         }
     }
 
-    public void Update_TreasureCount(int _viewID)
+    public void Update_TreasureCount(int _viewID, int score)
     {
         Debug.LogError("UpdateText");
 
@@ -125,7 +125,7 @@ public class Treasure_GameManager : GameManager
 
         PV.RPC("Set_Count", RpcTarget.AllBuffered, new object[] { Player_TreasureCount_Value, _viewID });
 
-        RoomData.GetInstance().SetCurrScore(PhotonView.Find(_viewID).OwnerActorNr, 1);
+        RoomData.GetInstance().SetCurrScore(PhotonView.Find(_viewID).OwnerActorNr, score);
     }
 
 
@@ -146,7 +146,9 @@ public class Treasure_GameManager : GameManager
         }
 
         Player_TreasureCount_Value = 0;
-        Update_TreasureCount(MyShip.photonView.ViewID);
+        Update_TreasureCount(MyShip.photonView.ViewID, 0);
+
+        RoomData.GetInstance().SetCurrGameScoreToZero(MyShip.photonView.OwnerActorNr);
     }
 
     [PunRPC]

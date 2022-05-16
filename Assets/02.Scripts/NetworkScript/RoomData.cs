@@ -251,9 +251,12 @@ public class RoomData : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetCurrScoreRPC(int _actorID, int _score)
     {
-        GameManager.GetInstance().ActiveScoreEffect(_actorID, _score - currGameScores[_actorID]);
-        currGameScores[_actorID] = _score;
-        GameManager.GetInstance().RefreshPlayeScore(false);
+        if (_score > 0)
+        {
+            GameManager.GetInstance().ActiveScoreEffect(_actorID, _score - currGameScores[_actorID]);
+            currGameScores[_actorID] = _score;
+            GameManager.GetInstance().RefreshPlayeScore(false);
+        }
     }
     #endregion
 

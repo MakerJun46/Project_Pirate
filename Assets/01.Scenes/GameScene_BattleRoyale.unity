@@ -340,17 +340,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &124654374 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7987070467290672114, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
-  m_PrefabInstance: {fileID: 7987070467203774676}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &143139236
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,7 +628,7 @@ MonoBehaviour:
   GameStarted: 0
   PlayerCount: 0
   maxPlayTime: 60
-  TimeText: {fileID: 124654374}
+  TimeText: {fileID: 7987070467203774677}
   boosterCoolTime: 5
   ControllerUI: {fileID: 1268300201}
   GoStopBtns: []
@@ -3740,8 +3729,8 @@ MonoBehaviour:
   intersectionEffectsExpanded: 0
   planarReflectionsExpanded: 0
   causticsExpanded: 0
-  reflectionStrength: 0.307
-  reflectionFresnel: 0.66
+  reflectionStrength: 0.36
+  reflectionFresnel: 1.75
   causticsStrength: 3.36
   causticsTexture: {fileID: 2800000, guid: 011f44fc0dcaf724cb979937ff59b011, type: 3}
   causticsSplit: 1
@@ -3799,17 +3788,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.081065126, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08105596, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12593979, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12592876, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07562586, b: 0.2537161, a: 0}
+  shoreColor: {r: 0, g: 0.07561744, b: 0.2537045, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.0582847, g: 0.112645276, b: 0.1400907, a: 1}
-  underwaterColor: {r: 0.2373811, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.058275975, g: 0.11263364, b: 0.14007968, a: 1}
+  underwaterColor: {r: 0.23736948, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3817,7 +3806,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09725975, g: 0.33910495, b: 0.32233948, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09724928, g: 0.3390933, b: 0.32232785, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -5170,11 +5159,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9473466
+      value: 0.9473467
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.18224357
+      value: 0.18224356
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.y
@@ -5182,7 +5171,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.04973783
+      value: -0.04973782
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933475, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LookAt
@@ -6694,6 +6683,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
+--- !u!114 &7987070467203774677 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 540189003836170136, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
+  m_PrefabInstance: {fileID: 7987070467203774676}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!23 &8037676837710913727
 MeshRenderer:
   m_ObjectHideFlags: 0
