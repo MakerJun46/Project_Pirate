@@ -2807,6 +2807,24 @@ MonoBehaviour:
     pitch: 0.6
     loop: 0
     source: {fileID: 0}
+  - name: Win
+    clip:
+    - {fileID: 8300000, guid: 4a2ae72ae5183e246b31020adbdc4031, type: 3}
+    - {fileID: 8300000, guid: 5cae853065c405b4b827bda589e3679c, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Lose
+    clip:
+    - {fileID: 8300000, guid: bf66f0507282028478195f2cde84c12c, type: 3}
+    - {fileID: 8300000, guid: 1b4252dcdaa7ebf4d862f2b1462b0b3d, type: 3}
+    - {fileID: 8300000, guid: 38009b0c32b33b541b9070303a3edb5a, type: 3}
+    - {fileID: 8300000, guid: a94892b2993a78e478f5c08c543f0332, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   MasterAudioMixer: {fileID: 24100000, guid: cb937a94c1611d0438fc56d92b3edf50, type: 2}
   EffectAudioMixer: {fileID: 2332939650974536947, guid: cb937a94c1611d0438fc56d92b3edf50, type: 2}
   backgroundVolIcons: {fileID: 4553304293991782529}

@@ -173,6 +173,7 @@ public class MotionTrail : MonoBehaviour
 
     public void DestroyMotionTrail()
     {
-        Destroy(TrailContainer.gameObject);
+        if(TrailContainer)
+            Destroy(TrailContainer.gameObject);
     }
 }

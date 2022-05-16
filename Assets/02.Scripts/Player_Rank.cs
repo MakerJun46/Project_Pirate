@@ -6,6 +6,7 @@ using Photon.Pun;
 
 public class Player_Rank : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 {
+    [SerializeField] Animator anim;
     [SerializeField] Text playerNameText;
     [SerializeField] Text playerScoreText;
 
@@ -20,6 +21,15 @@ public class Player_Rank : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallba
 
         playerNameText.text = GetComponent<PhotonView>().Owner.NickName;
         playerScoreText.text=  RoomData.GetInstance().FinalScores[GetComponent<PhotonView>().OwnerActorNr].ToString();
+
+        if (rank <= 0)
+        {
+            anim.SetTrigger("Win");
+        }
+        else
+        {
+            anim.SetTrigger("Lose");
+        }
 
     }
     private void Start()

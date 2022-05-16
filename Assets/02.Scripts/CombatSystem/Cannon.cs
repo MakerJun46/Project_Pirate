@@ -78,7 +78,7 @@ public class Cannon : MonoBehaviourPun
         Destroy(this.gameObject);
     }
 
-    public void ChangeMaterialToGohst()
+    public void ChangeMaterialToGhost()
     {
         for(int i=0;i< cannonMeshes.Length; i++)
         {

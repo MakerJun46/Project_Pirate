@@ -50,7 +50,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 66caed81821e5ca469e08f8d31766117, type: 2}
+  - {fileID: 2100000, guid: 4407abeec1497ba45804700b2889d950, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -76,7 +76,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -482,6 +482,10 @@ MonoBehaviour:
   - {fileID: 3066880925983922172}
   - {fileID: 4197256909732631045}
   - {fileID: 5498525502404228787}
+  cannonMeshes:
+  - {fileID: 4130034633421478347}
+  - {fileID: 3215866256641368260}
+  GhostMat: {fileID: 2100000, guid: 8b40ad17a8a712744a5e2b4d5b182182, type: 2}
   fov: {fileID: 4226405253350269953}
   CannonLayers:
   - GameMode: 0
@@ -547,7 +551,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 66caed81821e5ca469e08f8d31766117, type: 2}
+  - {fileID: 2100000, guid: 4407abeec1497ba45804700b2889d950, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -573,7 +577,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -932,7 +936,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 66caed81821e5ca469e08f8d31766117, type: 2}
+  - {fileID: 2100000, guid: 4407abeec1497ba45804700b2889d950, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -958,7 +962,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 5
     widthCurve:
       serializedVersion: 2
       m_Curve:

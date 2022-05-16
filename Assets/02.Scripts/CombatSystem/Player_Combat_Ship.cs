@@ -135,14 +135,14 @@ public class Player_Combat_Ship : MonoBehaviourPun
         {
             if (myAutoCannons[i] != null)
             {
-                myAutoCannons[i].ChangeMaterialToGohst();
+                myAutoCannons[i].ChangeMaterialToGhost();
             }
         }
         for(int i = 0; i < mySpecialCannons.Count; i++)
         {
             if (mySpecialCannons[i] != null)
             {
-                mySpecialCannons[i].ChangeMaterialToGohst();
+                mySpecialCannons[i].ChangeMaterialToGhost();
             }
         }
     }
@@ -455,5 +455,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
         {
             Destroy(mySails.gameObject);
         }
+        myShipObjects.GetComponent<MotionTrail>().DestroyMotionTrail();
     }
 }

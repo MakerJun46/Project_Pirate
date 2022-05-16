@@ -167,8 +167,12 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         WinPanel.SetActive(IsWinner);
         LosePanel.SetActive(!IsWinner);
-        GameStarted = false;
+        if (IsWinner)
+            OptionSettingManager.GetInstance().Play("Win", false);
+        else
+            OptionSettingManager.GetInstance().Play("Lose", false);
 
+        GameStarted = false;
 
         if (MyShip)
         {
@@ -304,7 +308,8 @@ public class GameManager : MonoBehaviour, IPunObservable
         for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
         {
             if(PhotonNetwork.PlayerList[i].ActorNumber == _actorID){
-                bestPlayerListBox[i - 1].AddScoreEffect(_score);
+                if(bestPlayerListBox.Count> i - 1)
+                    bestPlayerListBox[i - 1].AddScoreEffect(_score);
             }
         }
     }
@@ -333,7 +338,8 @@ public class GameManager : MonoBehaviour, IPunObservable
 
         for (int i = 0; i < bestPlayerListBox.Count; i++)
         {
-            bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore);
+
+            bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore && bestPlayerListBox[i].score>0);
 
             /*
             if (PhotonNetwork.PlayerList.Length-1 <= i)
