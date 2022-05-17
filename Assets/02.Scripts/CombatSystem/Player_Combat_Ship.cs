@@ -35,6 +35,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
     [SerializeField] private List<Cannon> myAutoCannons;
     [SerializeField] private GameObject mySails;
 
+    [SerializeField] private AudioSource hittedAudio;
+    [SerializeField] private AudioClip[] hittedAudioClips;
     [SerializeField] private ParticleSystem AttackedPS;
     [SerializeField] private ParticleSystem DiePS;
     [SerializeField] private List<ParticleSystem> AttackedPS_Flare;
@@ -203,6 +205,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 tmpVFX.transform.localScale = Vector3.one * (float)param[0];
             }
             AttackedPS.Play();
+            hittedAudio.clip = hittedAudioClips[Random.Range(0, hittedAudioClips.Length)];
+            hittedAudio.Play();
             GetComponent<Player_Controller_Ship>().additionalForce = (Vector3)param[1];
 
             ShakeCamera((float)param[0]);
@@ -227,12 +231,22 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     GetComponent<Player_Controller_Ship>().deadTime = Time.time;
                     GameManager.GetInstance().Observe(0);
 
+                    OptionSettingManager.GetInstance().Play("Demolish", true);
+
+
                     if (GetComponent<PhotonView>().IsMine)
-                        PhotonNetwork.Destroy(this.gameObject);
+                        Invoke("DestroyShip", 2f);
                 }
             }
         }
     }
+
+    public void DestroyShip()
+    {
+        if(this.gameObject)
+            PhotonNetwork.Destroy(this.gameObject);
+    }
+
     public void ShakeCamera(float _force)
     {
         impulseSource.GenerateImpulse(_force);

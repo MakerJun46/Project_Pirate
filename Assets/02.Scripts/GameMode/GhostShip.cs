@@ -5,6 +5,7 @@ using Photon.Pun;
 
 public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
 {
+    GameManager GM;
     Vector3 targetVel;
     float speed;
     Rigidbody rb;
@@ -14,6 +15,7 @@ public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Start()
     {
+        GM = GetComponent<GameManager>();
         InitializeGhostShip();
         if (pv.IsMine)
         {
@@ -41,22 +43,28 @@ public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update()
     {
-        if (pv.IsMine)
+        if(GM==null)
+            GM = FindObjectOfType<GameManager>();
+
+        if (GM.GameStarted)
         {
-            if(this.transform.position.magnitude>= exitDistance)
+            if (pv.IsMine)
             {
-                Vector2 spawnPos = Random.insideUnitCircle.normalized * (exitDistance - 1);
-                this.transform.position = new Vector3(spawnPos.x, transform.position.y, spawnPos.y);
-
-                Player_Combat_Ship[] ships = FindObjectsOfType<Player_Combat_Ship>();
-                if (ships.Length > 0)
+                if (this.transform.position.magnitude >= exitDistance)
                 {
-                    int randomIndex = Random.Range(0, ships.Length);
+                    Vector2 spawnPos = Random.insideUnitCircle.normalized * (exitDistance - 1);
+                    this.transform.position = new Vector3(spawnPos.x, transform.position.y, spawnPos.y);
 
-                    Vector3 dist = (ships[randomIndex].transform.position - this.transform.position);
-                    dist.y = 0;
-                    GetComponent<Rigidbody>().velocity = dist.normalized * speed;
-                    this.transform.LookAt(this.transform.position + dist);
+                    Player_Combat_Ship[] ships = FindObjectsOfType<Player_Combat_Ship>();
+                    if (ships.Length > 0)
+                    {
+                        int randomIndex = Random.Range(0, ships.Length);
+
+                        Vector3 dist = (ships[randomIndex].transform.position - this.transform.position);
+                        dist.y = 0;
+                        GetComponent<Rigidbody>().velocity = dist.normalized * speed;
+                        this.transform.LookAt(this.transform.position + dist);
+                    }
                 }
             }
         }
@@ -64,8 +72,12 @@ public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) {
-            FindObjectOfType<GhostShipGameManager>().GetComponent<Photon.Pun.PhotonView>().RPC("Infection",RpcTarget.AllBuffered, other.GetComponent<PhotonView>().OwnerActorNr);
+        if (GM.GameStarted)
+        {
+            if (other.CompareTag("Player"))
+            {
+                FindObjectOfType<GhostShipGameManager>().GetComponent<Photon.Pun.PhotonView>().RPC("Infection", RpcTarget.AllBuffered, other.GetComponent<PhotonView>().OwnerActorNr);
+            }
         }
     }
 

@@ -9,6 +9,7 @@ using TMPro;
 
 public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 {
+    private Player_Combat_Ship combatComponent;
     public int myIndex;
     public string myName;
     public float deadTime;
@@ -59,6 +60,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     {
         RB = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
+        combatComponent = GetComponent<Player_Combat_Ship>();
 
         Count_Text = transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
@@ -97,7 +99,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
 
-
         GameManager.GetInstance().AllShip.Add(this);
         Reset_Ship_Status();
     }
@@ -131,54 +132,66 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     }
     private void Update()
     {
-        GameObject myShipObjects = GetComponent<Player_Combat_Ship>().myShipObjects;
-        int myupgradeIndex = GetComponent<Player_Combat_Ship>().upgradeIndex;
-        
-        if (photonView.IsMine)
+        if (combatComponent.health > 0)
         {
-            if (is_Turn_Left)
-                steeringRot = Mathf.Lerp(steeringRot, myupgradeIndex==0? 5 : 18, Time.deltaTime);
-            else if (is_Turn_Right)
-                steeringRot = Mathf.Lerp(steeringRot, -(myupgradeIndex == 0 ? 5 : 18), Time.deltaTime);
-            else
-                steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
-            shipRot = this.transform.rotation.eulerAngles.y;
-        }
-        else
-        {
-            this.transform.rotation = Quaternion.Euler(Vector3.up * shipRot);
-        }
-        myShipObjects.transform.localEulerAngles = new Vector3
-            (myShipObjects.transform.localEulerAngles.x,
-            myShipObjects.transform.localEulerAngles.y,
-            steeringRot
-            );
+            GameObject myShipObjects = combatComponent.myShipObjects;
+            int myupgradeIndex = combatComponent.upgradeIndex;
 
-
-
-        if (isBoosting)
-        {
-            if (isBoostingSynced == false)
+            if (photonView.IsMine)
             {
-                isBoostingSynced = true;
-                BoosterEffect.SetActive(true);
-                GetComponent<Player_Combat_Ship>().myShipObjects.GetComponent<MotionTrail>().StartMotionTrail();
+                if (is_Turn_Left)
+                    steeringRot = Mathf.Lerp(steeringRot, myupgradeIndex == 0 ? 5 : 18, Time.deltaTime);
+                else if (is_Turn_Right)
+                    steeringRot = Mathf.Lerp(steeringRot, -(myupgradeIndex == 0 ? 5 : 18), Time.deltaTime);
+                else
+                    steeringRot = Mathf.Lerp(steeringRot, 0, Time.deltaTime);
+                shipRot = this.transform.rotation.eulerAngles.y;
             }
-        }
-        else
-        {
-            if (isBoostingSynced == true)
+            else
             {
-                isBoostingSynced = false;
-                BoosterEffect.SetActive(false);
-                GetComponent<Player_Combat_Ship>().myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
+                this.transform.rotation = Quaternion.Euler(Vector3.up * shipRot);
+            }
+            if(myShipObjects)
+                myShipObjects.transform.localEulerAngles = new Vector3
+                    (myShipObjects.transform.localEulerAngles.x,
+                    myShipObjects.transform.localEulerAngles.y,
+                    steeringRot
+                    );
+
+            if (isBoosting)
+            {
+                if (isBoostingSynced == false)
+                {
+                    isBoostingSynced = true;
+                    BoosterEffect.SetActive(true);
+                    combatComponent.myShipObjects.GetComponent<MotionTrail>().StartMotionTrail();
+                }
+            }
+            else
+            {
+                if (isBoostingSynced == true)
+                {
+                    isBoostingSynced = false;
+                    BoosterEffect.SetActive(false);
+                    combatComponent.myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
+                }
             }
         }
     }
     private void FixedUpdate()
     {
-        Move();
-        GetInput();
+        if (combatComponent.health > 0)
+        {
+            Move();
+            GetInput();
+        }
+        else
+        {
+            RB.constraints = RigidbodyConstraints.None;
+            GetComponent<CapsuleCollider>().isTrigger = true;
+            //this.transform.Translate(Vector3.down*5f*Time.deltaTime);
+            this.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.right * 60f),Time.deltaTime);
+        }
     }
 
     public void Move()
@@ -243,7 +256,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
         MoveSpeed -= addMoveSpeed;
         turningSpeed -= addTrunSpeed;
 
-        GetComponent<Player_Combat_Ship>().myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
+        combatComponent.myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
 
         yield return new WaitForSecondsRealtime(boosterCoolTime); // cooltime
         isBoosting = false;

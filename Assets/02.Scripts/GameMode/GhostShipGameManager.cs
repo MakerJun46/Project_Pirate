@@ -27,14 +27,6 @@ public class GhostShipGameManager : GameManager
         PV = GetComponent<PhotonView>();
 
     }
-    private void WaveStart()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            GameObject tmpEnemy = PhotonNetwork.Instantiate("GhostShip", new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * GhostSpawnRadius, Quaternion.identity);
-        }
-    }
-
     public override void MasterChanged(bool _isMaster)
     {
         base.MasterChanged(_isMaster);
@@ -67,7 +59,10 @@ public class GhostShipGameManager : GameManager
         base.StartGame();
         if (PhotonNetwork.IsMasterClient || PhotonNetwork.IsConnected == false)
         {
-            Invoke("WaveStart", 1f);
+            for (int i = 0; i < 3; i++)
+            {
+                GameObject tmpEnemy = PhotonNetwork.Instantiate("GhostShip", new Vector3(Random.Range(-1, 1f), 0f, Random.Range(-1, 1f)).normalized * GhostSpawnRadius, Quaternion.identity);
+            }
         }
 
         if (PhotonNetwork.IsMasterClient==false)

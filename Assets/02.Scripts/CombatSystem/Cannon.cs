@@ -88,6 +88,12 @@ public class Cannon : MonoBehaviourPun
 
     protected virtual void Update()
     {
+        if (myShip.health <= 0)
+        {
+            ResetAttackingState(1000f);
+            return;
+        }
+
         if (myShip.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
             tmpInput = tmpJoyStick.GetJoyStickInput();

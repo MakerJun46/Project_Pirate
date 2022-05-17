@@ -12,7 +12,11 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     [SerializeField] List<ParticleSystem> AttackParticles;
     [SerializeField] ParticleSystem DropParticle;
 
+    [SerializeField] AudioSource FireAudio;
+    [SerializeField] AudioClip[] fireAudioClips;
 
+    [SerializeField] AudioSource FlyingAudio;
+    [SerializeField] AudioClip[] flyingAudioClips;
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         // sendData | 0: damage 1: scale
@@ -26,6 +30,11 @@ public class CannonBall : MonoBehaviourPunCallbacks,IPunObservable,IPunInstantia
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        FireAudio.clip = fireAudioClips[Random.Range(0, fireAudioClips.Length)];
+        FireAudio.Play();
+
+        FlyingAudio.clip = flyingAudioClips[Random.Range(0, flyingAudioClips.Length)];
+        FlyingAudio.PlayDelayed(0.2f);
     }
     protected virtual void Update()
     {
