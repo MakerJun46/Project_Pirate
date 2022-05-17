@@ -201,7 +201,7 @@ public class AutoCannon : Cannon
                 targetPos = Vector3.zero;
         }
         ball.velocity = CalculateLaunchData(targetPos).initialVelocity;
-        OptionSettingManager.GetInstance().Play("FireCannon", true);
+        //OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS",RpcTarget.AllBuffered,spotIndex, false);
         ResetAttackingState(5f);
     }
@@ -222,7 +222,7 @@ public class AutoCannon : Cannon
             }
             ball.velocity = CalculateLaunchData(targetPos).initialVelocity;
         }
-        OptionSettingManager.GetInstance().Play("FireCannon", true);
+        //OptionSettingManager.GetInstance().Play("FireCannon", true);
         myShip.photonView.RPC("PlayAttackPS", RpcTarget.AllBuffered, spotIndex, false);
         ResetAttackingState(7.5f);
     }

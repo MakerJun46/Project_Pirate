@@ -84,6 +84,7 @@ public class Octopus : SurvivorMonster
         for (int i = 0; i < AttackParticle.Count; i++)
         {
             AttackParticle[i].Play();
+            AttackParticle[i].GetComponent<AudioSource>().PlayDelayed(i/10f);
         }
     }
 

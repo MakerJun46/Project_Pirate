@@ -113,7 +113,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
             tmpBtn.transform.GetChild(0).GetComponent<Image>().sprite = playerProfileExamples[tmpIndex];
         }
-        SetProfileIndex(Random.Range(0, playerProfileExamples.Count));
+        //SetProfileIndex(Random.Range(0, playerProfileExamples.Count));
+        // 이거 해도 한 번 클릭을 해야 적용이 됨.. -> 그럴바에는 랜덤으로 정해주지 말자
     }
 #endregion
 
@@ -627,6 +628,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         PhotonNetwork.LocalPlayer.CustomProperties["ProfileIndex"] = myProfileIndex.ToString();
+        print("Set Profile To : " + myProfileIndex);
     }
     #endregion
 
@@ -654,24 +656,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void ChatRPC(string msg)
     {
-        bool isInput = false;
-        for (int i = 0; i < ChatTexts.Count; i++)
+        for (int i = ChatTexts.Count - 1; i > 0; i--)
         {
-            if (ChatTexts[i].text == "")
-            {
-                isInput = true;
-                ChatTexts[i].text = msg;
-                break;
-            }
+            ChatTexts[i].text = ChatTexts[i - 1].text;
         }
-        if (!isInput)
-        {
-            for (int i = 1; i < ChatTexts.Count; i++)
-            {
-                ChatTexts[i - 1].text = ChatTexts[i].text;
-            }
-            ChatTexts[ChatTexts.Count - 1].text = msg;
-        }
+        ChatTexts[0].text = msg;
     }
 #endregion
 
