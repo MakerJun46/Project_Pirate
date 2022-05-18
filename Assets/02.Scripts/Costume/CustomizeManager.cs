@@ -39,6 +39,12 @@ public class CustomizeManager : MonoBehaviour
 
     private void Start()
     {
+        if (CustomizeManager.GetInstance() != null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
         DontDestroyOnLoad(this.gameObject);
 
 

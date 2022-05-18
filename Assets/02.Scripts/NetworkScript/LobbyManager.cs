@@ -56,12 +56,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] List<GameObject> gameModeAdjustBtns;
     [SerializeField] InputField SetNickNameInputField;
 
+    [SerializeField] Text TipTxt;
+    [SerializeField] string[] tipTextStrings;
+    int tipTxtIndex;
+
     [Header("[Player]")]
     [SerializeField] List<string> playerNameExamples;
     [SerializeField] List<Sprite> playerProfileExamples;
 
     [SerializeField] Transform playerProfileBtnContainer;
-    [SerializeField] Transform playerProfileBtnContainer2;
     [SerializeField] Text NickNameText;
     [SerializeField] Image profileImg;
 
@@ -126,6 +129,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
             tmpBtn.transform.GetChild(0).GetComponent<Image>().sprite = playerProfileExamples[tmpIndex];
         }
+        /*
         for (int i = 0; i < playerProfileExamples.Count; i++)
         {
 
@@ -135,8 +139,22 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             tmpBtn.GetComponent<Button>().onClick.AddListener(() => SetProfileIndex(tmpIndex));
             tmpBtn.transform.GetChild(0).GetComponent<Image>().sprite = playerProfileExamples[tmpIndex];
         }
+        */
         //SetProfileIndex(Random.Range(0, playerProfileExamples.Count));
         // 이거 해도 한 번 클릭을 해야 적용이 됨.. -> 그럴바에는 랜덤으로 정해주지 말자
+
+        tipTxtIndex = Random.Range(0, tipTextStrings.Length);
+        StartCoroutine("TipTextCoroutine");
+    }
+
+    IEnumerator TipTextCoroutine()
+    {
+        tipTxtIndex++;
+        tipTxtIndex = tipTxtIndex % tipTextStrings.Length;
+
+        TipTxt.text = tipTextStrings[tipTxtIndex];
+        yield return new WaitForSeconds(8f);
+        StartCoroutine("TipTextCoroutine");
     }
 #endregion
 
@@ -644,11 +662,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public void SetProfileIndex(int _index)
     {
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
-        playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
+        //playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(false);
         myProfileIndex = _index;
         profileImg.sprite = playerProfileExamples[myProfileIndex];
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
-        playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
+        //playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         PhotonNetwork.LocalPlayer.CustomProperties["ProfileIndex"] = myProfileIndex.ToString();
         print("Set Profile To : " + myProfileIndex);
     }

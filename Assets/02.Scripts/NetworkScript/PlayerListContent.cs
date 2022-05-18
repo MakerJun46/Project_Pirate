@@ -77,7 +77,7 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
 
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            if (GetComponent<PhotonView>().Owner == PhotonNetwork.PlayerList[i])
+            if (GetComponent<PhotonView>().Owner.ActorNumber == PhotonNetwork.PlayerList[i].ActorNumber)
             {
                 string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
                 int profileIndex = int.Parse(tmp);
