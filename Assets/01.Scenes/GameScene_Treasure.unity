@@ -448,7 +448,7 @@ MonoBehaviour:
   GameStarted: 0
   PlayerCount: 0
   maxPlayTime: 60
-  TimeText: {fileID: 0}
+  TimeText: {fileID: 316865625}
   boosterCoolTime: 5
   ControllerUI: {fileID: 123466688}
   GoStopBtns: []
@@ -958,6 +958,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
+--- !u!114 &316865625 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 540189003836170136, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
+  m_PrefabInstance: {fileID: 316865624}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &316865626 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7987070466466165381, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
@@ -3832,17 +3843,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.0810382, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.0810368, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12590736, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.1259057, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07560108, b: 0.25368193, a: 0}
+  shoreColor: {r: 0, g: 0.0755998, b: 0.25368017, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058259048, g: 0.11261106, b: 0.14005828, a: 1}
-  underwaterColor: {r: 0.23734689, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05825773, g: 0.112609304, b: 0.14005661, a: 1}
+  underwaterColor: {r: 0.23734513, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3850,7 +3861,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09722891, g: 0.33907074, b: 0.32230526, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09722733, g: 0.33906898, b: 0.3223035, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0

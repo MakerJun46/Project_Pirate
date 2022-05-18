@@ -190,7 +190,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             RB.constraints = RigidbodyConstraints.None;
             GetComponent<CapsuleCollider>().isTrigger = true;
             //this.transform.Translate(Vector3.down*5f*Time.deltaTime);
-            this.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.right * 60f),Time.deltaTime);
+            this.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.right * -60f),Time.deltaTime);
         }
     }
 
