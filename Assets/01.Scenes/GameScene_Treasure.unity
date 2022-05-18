@@ -448,7 +448,7 @@ MonoBehaviour:
   GameStarted: 0
   PlayerCount: 0
   maxPlayTime: 60
-  TimeText: {fileID: 316865625}
+  TimeText: {fileID: 0}
   boosterCoolTime: 5
   ControllerUI: {fileID: 123466688}
   GoStopBtns: []
@@ -958,17 +958,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
---- !u!114 &316865625 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7987070467290672114, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
-  m_PrefabInstance: {fileID: 316865624}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &316865626 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7987070466466165381, guid: 6ec6274f6d08110458f933966fcee4a8, type: 3}
@@ -1907,7 +1896,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712173840}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -98, y: -1.7, z: -48.1}
+  m_LocalPosition: {x: -250, y: -1.7, z: -250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3760,7 +3749,7 @@ Transform:
   m_GameObject: {fileID: 1561859351}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 9.8}
-  m_LocalScale: {x: 19, y: 1, z: 10}
+  m_LocalScale: {x: 50, y: 1, z: 50}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 18
@@ -3843,17 +3832,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.081040286, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.0810382, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12590986, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12590736, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07560297, b: 0.25368455, a: 0}
+  shoreColor: {r: 0, g: 0.07560108, b: 0.25368193, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05826103, g: 0.1126137, b: 0.14006078, a: 1}
-  underwaterColor: {r: 0.23734954, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.058259048, g: 0.11261106, b: 0.14005828, a: 1}
+  underwaterColor: {r: 0.23734689, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3861,7 +3850,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.097231306, g: 0.33907336, b: 0.3223079, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09722891, g: 0.33907074, b: 0.32230526, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
