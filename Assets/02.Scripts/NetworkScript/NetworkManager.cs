@@ -117,7 +117,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
         // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && SceneManager.GetActiveScene().name == "GameScene_Room")
         {
             GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
         }
@@ -128,6 +128,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if (FindObjectOfType<CutSceneManager>())
             yield return new WaitForSeconds(Mathf.Max(0f, (float)FindObjectOfType<CutSceneManager>().director.duration - 6f));
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
+        }
 
         if (SceneManager.GetActiveScene().name != "GameScene_Room")
             RoomData.GetInstance().RemovePlayedGameMode();

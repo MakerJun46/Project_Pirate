@@ -70,7 +70,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: b94794e7ff301904d971ceaf9bfe1015, type: 3}
     m_FontSize: 20
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300
@@ -487,6 +487,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myCanvas: {fileID: 5473967993594146477}
   healthImage: {fileID: 5482857998271304205}
+  VCam: {fileID: 0}
+  isObserver: 0
 --- !u!114 &-9014573942241425512
 MonoBehaviour:
   m_ObjectHideFlags: 0

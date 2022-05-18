@@ -109,6 +109,8 @@ public class GameManager : MonoBehaviour, IPunObservable
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            Color[] c = { Color.red, Color.blue, Color.green, Color.black };
+
             UI_Observer.SetActive(true);
             ObserverCameras_Parent.SetActive(true);
 
@@ -118,10 +120,15 @@ public class GameManager : MonoBehaviour, IPunObservable
                 {
                     ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
                     ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
-                }
-            }
+                    AllShip[i].gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().color = c[i];
 
-            BestPlayerContent.SetActive(false);
+                    AllShip[i].gameObject.GetComponent<Player_UI_Ship>().VCam = ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>();
+                    AllShip[i].gameObject.GetComponent<Player_UI_Ship>().isObserver = true;
+
+                    BestPlayerContent.transform.GetChild(i).GetChild(0).GetComponent<Text>().color = c[i];
+                }
+            }            
+
             RefreshPlayeScore(true);
         }
     }
