@@ -10,6 +10,7 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
 {
     [SerializeField] private Text nameTxt;
     [SerializeField] private Image PlayerListImg;
+    [SerializeField] private Image PlayerProfileImg;
     [SerializeField] private Color[] ReadyColors;
     [SerializeField] private Toggle readyToggle;
     [SerializeField] private Button KickBtn;
@@ -44,11 +45,10 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
 
     private void Update()
     {
-        this.transform.localScale = new Vector3(0.9f, 0.9f, 1f);
-
+        this.transform.localScale = Vector3.one;
         if (myPlayer != null)
         {
-            nameTxt.text = "["+ myPlayer.ActorNumber+ "]" + myPlayer.NickName;
+            nameTxt.text = myPlayer.NickName;
 
             if ((string)myPlayer.CustomProperties["Ready"] == "0") {
                 readyToggle.isOn = false;
@@ -74,9 +74,21 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
                     PhotonNetwork.Destroy(GetComponent<PhotonView>());
             }
         }
+
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (GetComponent<PhotonView>().Owner == PhotonNetwork.PlayerList[i])
+            {
+                string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
+                int profileIndex = int.Parse(tmp);
+                PlayerProfileImg.sprite = RoomData.GetInstance().playerSprite[profileIndex];
+                break;
+            }
+        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
     }
+
 }
