@@ -33,6 +33,11 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
         GetComponent<PhotonView>().RPC("doEnable", RpcTarget.AllBuffered);
     }
 
+    public void SetInfoUI(int _infoImgSprite)
+    {
+        PlayerProfileImg.sprite = RoomData.GetInstance().playerSprite[_infoImgSprite];
+    }
+
 
     [PunRPC]
     public void doEnable()
@@ -72,17 +77,6 @@ public class PlayerListContent : MonoBehaviour, IPunObservable
             {
                 if (GetComponent<PhotonView>().IsMine)
                     PhotonNetwork.Destroy(GetComponent<PhotonView>());
-            }
-        }
-
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            if (GetComponent<PhotonView>().Owner.ActorNumber == PhotonNetwork.PlayerList[i].ActorNumber)
-            {
-                string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
-                int profileIndex = int.Parse(tmp);
-                PlayerProfileImg.sprite = RoomData.GetInstance().playerSprite[profileIndex];
-                break;
             }
         }
     }

@@ -193,6 +193,23 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 ReadyCountText.text = "";
             }
         }
+
+        PlayerListContent[] plcs= FindObjectsOfType<PlayerListContent>();
+
+
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            for(int j=0;j< plcs.Length; j++)
+            {
+                if(PhotonNetwork.PlayerList[i] == plcs[j].GetComponent<PhotonView>().Owner)
+                {
+                    string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
+                    int profileIndex = int.Parse(tmp);
+                    plcs[j].SetInfoUI(profileIndex);
+                    break;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -210,7 +227,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.IsOpen = false;
             //PhotonNetwork.CurrentRoom.IsVisible = false;
 
-            PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
+
+            ExitGames.Client.Photon.Hashtable cpPlayer = PhotonNetwork.LocalPlayer.CustomProperties;
+            cpPlayer["Ready"] = "0";
+            PhotonNetwork.LocalPlayer.SetCustomProperties(cp);
 
             StartCoroutine(FadeOut_beforeLoadScene());
         }
@@ -343,8 +363,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = (byte)(selectedMaxPlayerCount+1);
 
 
-        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
-        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
+        ExitGames.Client.Photon.Hashtable cpPlayer = PhotonNetwork.LocalPlayer.CustomProperties;
+        cpPlayer["Ready"] = "0";
+        cpPlayer["IsKicked"] = false;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(cpPlayer);
+
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         roomOptions.CleanupCacheOnLeave = false;
         SelectCreatingRoomName(roomName);
@@ -364,8 +387,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = (byte)5;
 
 
-        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
-        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
+        ExitGames.Client.Photon.Hashtable cpPlayer = PhotonNetwork.LocalPlayer.CustomProperties;
+        cpPlayer["Ready"] = "0";
+        cpPlayer["IsKicked"] = false;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(cpPlayer);
+
         roomOptions.CustomRoomPropertiesForLobby = new string[] {"IsGameStarted"};
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, null);
     }
@@ -394,8 +420,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedRoom();
 
-        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
-        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
+        ExitGames.Client.Photon.Hashtable cpPlayer = PhotonNetwork.LocalPlayer.CustomProperties;
+        cpPlayer["Ready"] = "0";
+        cpPlayer["IsKicked"] = false;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(cpPlayer);
+
         contractText.text = "방 입장 성공";
 
         ChatUI.SetActive(true);
@@ -447,8 +476,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         contractText.text = "방 나가기";
 
-        PhotonNetwork.LocalPlayer.CustomProperties["Ready"] = "0";
-        PhotonNetwork.LocalPlayer.CustomProperties["IsKicked"] = false;
+
+        ExitGames.Client.Photon.Hashtable cpPlayer = PhotonNetwork.LocalPlayer.CustomProperties;
+        cpPlayer["Ready"] = "0";
+        cpPlayer["IsKicked"] = false;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(cpPlayer);
 
         // Lobby 상황에 맞춰서 UI 세팅
         ChatUI.SetActive(false);
@@ -581,8 +613,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.PlayerList[i].UserId == id)
             {
                 // IsKicked가 되면 Update에서 자동으로 LeaveRoom실행
-                PhotonNetwork.PlayerList[i].CustomProperties["Ready"] = "0";
-                PhotonNetwork.PlayerList[i].CustomProperties["IsKicked"] = true;
+
+                ExitGames.Client.Photon.Hashtable cp = PhotonNetwork.LocalPlayer.CustomProperties;
+                cp["Ready"] = "0";
+                cp["IsKicked"] =true;
+                PhotonNetwork.LocalPlayer.SetCustomProperties(cp);
             }
         }
     }
@@ -667,7 +702,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         profileImg.sprite = playerProfileExamples[myProfileIndex];
         playerProfileBtnContainer.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
         //playerProfileBtnContainer2.GetChild(1 + myProfileIndex).GetChild(1).gameObject.SetActive(true);
-        PhotonNetwork.LocalPlayer.CustomProperties["ProfileIndex"] = myProfileIndex.ToString();
+
+
+        ExitGames.Client.Photon.Hashtable cpPlayer = PhotonNetwork.LocalPlayer.CustomProperties;
+        cpPlayer["ProfileIndex"] = myProfileIndex.ToString();
+        PhotonNetwork.LocalPlayer.SetCustomProperties(cpPlayer);
         print("Set Profile To : " + myProfileIndex);
     }
     #endregion

@@ -158,7 +158,7 @@ public class RoomData : MonoBehaviourPunCallbacks
     public void AddGameModeIndex(int addAmount)
     {
         // Random Mode도 있기에 +1
-        int selectableGameModeCount = (System.Enum.GetValues(typeof(GameMode)).Length + 1);
+        int selectableGameModeCount = (System.Enum.GetValues(typeof(GameMode)).Length);
         int resultIndex = (addAmount + (int)gameMode) % selectableGameModeCount;
         if (resultIndex < 0)
             resultIndex += selectableGameModeCount;
