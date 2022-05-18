@@ -1738,6 +1738,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 711646331458719578, guid: 2296baaa48a303140afc4534dd6274ad, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4667103262023776481, guid: 2296baaa48a303140afc4534dd6274ad, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -3430,7 +3434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoadingPanel: {fileID: 765876458}
-  WaitTimeForCount: 5
+  WaitTimeForCount: 10
   CountDownTime: 3
   PlayerSpawnRadius: 100
 --- !u!4 &1510809183
@@ -3729,17 +3733,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08103692, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.081029914, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12590581, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12589738, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07559989, b: 0.2536803, a: 0}
+  shoreColor: {r: 0, g: 0.07559345, b: 0.25367138, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05825782, g: 0.11260942, b: 0.14005673, a: 1}
-  underwaterColor: {r: 0.23734525, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05825115, g: 0.11260053, b: 0.1400483, a: 1}
+  underwaterColor: {r: 0.23733637, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3747,7 +3751,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09722743, g: 0.3390691, b: 0.32230362, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.097219415, g: 0.3390602, b: 0.32229474, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -4005,10 +4009,6 @@ PrefabInstance:
     - target: {fileID: 641162822113941522, guid: b2470574c43d6ed47b45e7aaf35e134d, type: 3}
       propertyPath: m_Name
       value: ObserverPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 641162822113941522, guid: b2470574c43d6ed47b45e7aaf35e134d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b2470574c43d6ed47b45e7aaf35e134d, type: 3}

@@ -52,7 +52,7 @@ public class AutoCannon : Cannon
                 cursor.gameObject.SetActive(fov.currTarget != null);
                 if (fov.currTarget)
                 {
-                    cursor.transform.position = fov.currTarget.position;
+                    cursor.transform.position = new Vector3(fov.currTarget.position.x,0, fov.currTarget.position.z);
                     if (currCoolTime<=0 &&Vector3.Distance(fov.currTarget.position,this.transform.position) <= fov.viewRadius * currChargeAmount / maxChargetAmount)
                     {
                         currChargeAmount = 0;

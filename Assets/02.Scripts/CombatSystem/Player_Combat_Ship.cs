@@ -195,7 +195,6 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
         if (canAttack)
         {
-            FloatingTextController.CreateFloatingText("- " + (float)param[0], this.transform, Color.red);
 
             if (param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<CannonBall>())
             {
@@ -213,29 +212,30 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
             if (GameManager.GetInstance().GameStarted)
             {
-                health -= (float)param[0];
-                GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
-
-
-                BattleRoyalGameManager battleRoyalGameManager = FindObjectOfType<BattleRoyalGameManager>();
-                if (battleRoyalGameManager && param.Length > 2)
+                if (RoomData.GetInstance().gameMode == (int)GameMode.BattleRoyale ||
+                    RoomData.GetInstance().gameMode == (int)GameMode.Survivor)
                 {
-                    if (PhotonNetwork.IsMasterClient)
-                        RoomData.GetInstance().SetCurrScore(PhotonView.Find((int)param[2]).OwnerActorNr, (float)param[0]);
-                }
+                    FloatingTextController.CreateFloatingText("- " + (float)param[0], this.transform, Color.red);
+                    health -= (float)param[0];
+                    GetComponent<Player_UI_Ship>().UpdateHealth(health / maxHealth);
 
+                    if (RoomData.GetInstance().gameMode == (int)GameMode.BattleRoyale && param.Length > 2)
+                    {
+                        if (PhotonNetwork.IsMasterClient)
+                            RoomData.GetInstance().SetCurrScore(PhotonView.Find((int)param[2]).OwnerActorNr, (float)param[0]);
+                    }
 
-                if (health <= 0)
-                {
-                    DiePS.Play();
-                    GetComponent<Player_Controller_Ship>().deadTime = Time.time;
-                    GameManager.GetInstance().Observe(0);
+                    if (health <= 0)
+                    {
+                        DiePS.Play();
+                        GetComponent<Player_Controller_Ship>().deadTime = Time.time;
+                        GameManager.GetInstance().Observe(0);
 
-                    OptionSettingManager.GetInstance().Play("Demolish", true);
+                        OptionSettingManager.GetInstance().Play("Demolish", true);
 
-
-                    if (GetComponent<PhotonView>().IsMine)
-                        Invoke("DestroyShip", 2f);
+                        if (GetComponent<PhotonView>().IsMine)
+                            Invoke("DestroyShip", 2f);
+                    }
                 }
             }
         }

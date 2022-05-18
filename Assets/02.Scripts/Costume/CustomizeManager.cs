@@ -39,7 +39,7 @@ public class CustomizeManager : MonoBehaviour
 
     private void Start()
     {
-        if (CustomizeManager.GetInstance() != null)
+        if (CustomizeManager.GetInstance() != null && CustomizeManager.GetInstance().gameObject!= this.gameObject)
         {
             Destroy(this.gameObject);
             return;

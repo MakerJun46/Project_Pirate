@@ -97,7 +97,6 @@ public class RoomGameManager : GameManager
                 }
             }
 
-            ObserverModePanel.GetComponentInChildren<Text>().text = "Game END\n";
             for (int i = 0; i < bestPlayerNumbers.Count; i++)
             {
                 int tmpFounded = -1;

@@ -65,7 +65,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         else if(characterGened==false)
         {
             characterGened = true;
-            Spawn();
+            Invoke("Spawn",2f);
         }
 
     }
@@ -85,9 +85,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (RoomData.GetInstance())
         {
             // 첫 번째 판이 아니거나, 첫 번째 판인데 random을 고른 경우 -> 랜덤
-            if ((RoomData.GetInstance().PlayedGameCount > 0 && SceneManager.GetActiveScene().name == "GameScene_Room") ||
-                (RoomData.GetInstance().PlayedGameCount == 0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length))
+            if ((RoomData.GetInstance().PlayedGameCount > 0 && SceneManager.GetActiveScene().name == "GameScene_Room") )
             {
+                // ||(RoomData.GetInstance().PlayedGameCount == 0 && RoomData.GetInstance().gameMode == System.Enum.GetValues(typeof(GameMode)).Length)
+                // 이것은 초기 랜덤 모드를 위한 것이었음
                 int currGameIndex = RoomData.GetInstance().GetNotOverlappedRandomGameMode();
                 print("CURRENT GAME INDEX : " + currGameIndex);
                 RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetGameModeRPC", RpcTarget.AllBuffered, currGameIndex);

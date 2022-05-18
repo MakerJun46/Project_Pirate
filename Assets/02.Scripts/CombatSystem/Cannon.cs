@@ -134,12 +134,12 @@ public class Cannon : MonoBehaviourPun
         attackAreaImage.transform.position = new Vector3(attackAreaImage.transform.position.x, 0f, attackAreaImage.transform.position.z);
 
         if (cursorSpeed == -1)
-            cursor.transform.position = this.transform.position + new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
+            cursor.transform.position = new Vector3(transform.position.x,0, transform.position.z)+ new Vector3(tmpInput.x, 0, tmpInput.y) * currCannonDistance;
         else
         {
             cursorAddPos += new Vector3(tmpInput.x, 0, tmpInput.y) * cursorSpeed * Time.deltaTime;
             cursorAddPos = Vector3.ClampMagnitude(cursorAddPos, currCannonDistance);
-            cursor.transform.position = this.transform.position+ cursorAddPos;
+            cursor.transform.position = new Vector3(transform.position.x, 0, transform.position.z) + cursorAddPos;
         }
     }
     protected void ResetAttackingState(float coolTime)
@@ -152,7 +152,7 @@ public class Cannon : MonoBehaviourPun
         attackingState = 0;
         currCannonDistance = 0;
         currChargeAmount = 0;
-        //cursor.gameObject.SetActive(false);
+        cursor.gameObject.SetActive(false);
     }
 
     protected LaunchData CalculateLaunchData(Vector3 _offset)
