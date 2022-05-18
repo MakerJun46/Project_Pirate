@@ -206,7 +206,10 @@ public class GameManager : MonoBehaviour, IPunObservable
         if (TimeText)
         {
             float calculatedTime = maxPlayTime - currPlayTime;
-            TimeText.text = ((int)(calculatedTime / 60)) + ":" + ((int)(calculatedTime % 60));
+            int c_tmp = (int)calculatedTime;
+            float textTime = ((int)(calculatedTime % 60)) + (calculatedTime - (float)c_tmp);
+
+            TimeText.text = string.Format("{0:0.0}", textTime);
         }
         if (GameStarted)
         {

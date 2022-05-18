@@ -15,6 +15,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [SerializeField] GameObject LoadingPanel;
     GameObject CountDownPanel;
+    GameObject CountDownPanel_End;
     GameObject FadeScreenPanel;
 
     [SerializeField] int WaitTimeForCount;
@@ -30,7 +31,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         PV = GetComponent<PhotonView>();
         CountDownPanel = LoadingPanel.transform.GetChild(0).gameObject;
-        FadeScreenPanel = LoadingPanel.transform.GetChild(1).gameObject;
+        CountDownPanel_End = LoadingPanel.transform.GetChild(1).gameObject;
+        FadeScreenPanel = LoadingPanel.transform.GetChild(2).gameObject;
         FadeScreenPanel.GetComponent<Image>().color = Color.black;
 
 
@@ -150,7 +152,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void StartCountDown(int loadingSec)
     {
-        StartCoroutine(CountDownCoroutine(loadingSec));
+        StartCoroutine(CountDownEndCoroutine(loadingSec));
     }
 
     IEnumerator CountDownCoroutine(int loadingSec)
@@ -165,6 +167,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             FindObjectOfType<CutSceneManager>().director.Stop();
 
         CountDownPanel.SetActive(false);
+    }
+
+    IEnumerator CountDownEndCoroutine(int loadingSec)
+    {
+        Animator AN = LoadingPanel.GetComponent<Animator>();
+        AN.SetTrigger("CountDownStart");
+        CountDownPanel_End.SetActive(true);
+
+        for (int i = loadingSec; i > 0; i--)
+        {
+            CountDownPanel_End.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
+            yield return new WaitForSecondsRealtime(1.0f);
+        }
+        if (FindObjectOfType<CutSceneManager>())
+            FindObjectOfType<CutSceneManager>().director.Stop();
+
+        CountDownPanel_End.SetActive(false);
     }
 
     public void StartFadeInOut(bool FadeIn)

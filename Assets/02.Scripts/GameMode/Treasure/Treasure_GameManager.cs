@@ -136,11 +136,29 @@ public class Treasure_GameManager : GameManager
     {
         Debug.Log("DropTreasure");
 
-        for (int i = 0; i < Player_TreasureCount_Value; i++)
+        List<int> TreasureScore = new List<int>();
+        int Count_tmp = Player_TreasureCount_Value;
+
+        while (Count_tmp != 0)
+        {
+            for(int i = Random.Range(1, 4); i >= 1; i--)
+            {
+                if(Count_tmp % i == 0)
+                {
+                    Count_tmp -= i;
+                    TreasureScore.Add(i);
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < TreasureScore.Count; i++)
         {
             Vector3 randomPos = MyShip.transform.position + new Vector3(Random.Range(-7, 7), 0, Random.Range(-7, 7));
 
             GameObject go = PhotonNetwork.Instantiate("Treasure", MyShip.transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+
+            go.GetComponent<Treasure>().photonView.RPC("SetTreasureScore", RpcTarget.AllBuffered, TreasureScore[i]);
 
             PV.RPC("TreasureMove", RpcTarget.AllBuffered, new object[] { go.GetPhotonView().ViewID, randomPos });
         }
