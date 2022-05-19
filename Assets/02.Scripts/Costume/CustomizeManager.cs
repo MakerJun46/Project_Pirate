@@ -17,7 +17,7 @@ public class CustomizeManager : MonoBehaviour
         return instance;
     }
 
-    [SerializeField] GameObject costumePanel;
+    public GameObject costumePanel;
     public CostumeDictionary costumeDictionary;
     [SerializeField] Transform costumeContainer;
 

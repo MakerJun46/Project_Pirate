@@ -50,7 +50,10 @@ public class Player_Combat_Ship : MonoBehaviourPun
     private void Start()
     {
         health = maxHealth;
-        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, RoomData.GetInstance().GetPlayerFinalRank(GetComponent<PhotonView>().OwnerActorNr));
+        int upgradeIndex = RoomData.GetInstance().GetPlayerFinalRank(GetComponent<PhotonView>().OwnerActorNr);
+        if (RoomData.GetInstance().FinalScores[GetComponent<PhotonView>().OwnerActorNr] == 0)
+            upgradeIndex = 3;
+        GetComponent<Photon.Pun.PhotonView>().RPC("InitializeCombat", Photon.Pun.RpcTarget.AllBuffered, upgradeIndex);
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
@@ -61,6 +64,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
             AttackIDs[i].lifetime -= Time.deltaTime;
             if (AttackIDs[i].lifetime <= 0)
                 AttackIDs.RemoveAt(i);
+        }
+
+        if (transform.position.y<=-5)
+        {
+            Destroy(this.gameObject);
         }
     }
 
@@ -201,7 +209,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
                 ParticleSystem tmpVFX = Instantiate(AttackedPS_Flare[Random.Range(0, AttackedPS_Flare.Count)], this.transform.position, Quaternion.identity);
                 tmpVFX.transform.position = PhotonView.Find((int)param[2]).transform.position;
                 tmpVFX.transform.LookAt(this.transform.position + (PhotonView.Find((int)param[2]).transform.position - this.transform.position).normalized);
-                tmpVFX.transform.localScale = Vector3.one * (float)param[0];
+                tmpVFX.transform.localScale = Vector3.one * (float)param[0] * 0.5f;
             }
             AttackedPS.Play();
             hittedAudio.clip = hittedAudioClips[Random.Range(0, hittedAudioClips.Length)];
@@ -229,22 +237,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
                     {
                         DiePS.Play();
                         GetComponent<Player_Controller_Ship>().deadTime = Time.time;
-                        GameManager.GetInstance().Observe(0);
-
                         OptionSettingManager.GetInstance().Play("Demolish", true);
-
-                        if (GetComponent<PhotonView>().IsMine)
-                            Invoke("DestroyShip", 2f);
                     }
                 }
             }
         }
-    }
-
-    public void DestroyShip()
-    {
-        if(this.gameObject)
-            PhotonNetwork.Destroy(this.gameObject);
     }
 
     public void ShakeCamera(float _force)

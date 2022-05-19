@@ -157,7 +157,7 @@ public class SpecialCannon : Cannon
             Vector3 dist = fov.visibleTargets[i].position - this.transform.position;
             float power = dist.magnitude ==0 ? 1 : (1/dist.magnitude);
             power *= fov.viewRadius*20f;
-            fov.visibleTargets[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 3.0f, power*dist.normalized, myShip.photonView.ViewID });
+            fov.visibleTargets[i].GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] { 10.0f, (power+2f)*dist.normalized, myShip.photonView.ViewID });
         }
         fov.visibleTargets.Clear();
         fov.enabled = false;
@@ -212,7 +212,7 @@ public class SpecialCannon : Cannon
                 "CannonBall_Rain",
                 cursor.transform.position + new Vector3(Random.Range(-1, 1f) * 30f, Random.Range(50f, 60f), Random.Range(-1, 1f) * 30f),
                 Quaternion.identity,
-                0, new object[] { 1.0f, 0.5f });
+                0, new object[] { 10.0f, 1f });
             tmp.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
             yield return new WaitForSeconds(0.05f);
         }

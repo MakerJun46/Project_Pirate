@@ -116,7 +116,12 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void EquipCostume(int typeIndex,int index)
     {
-        GetComponentInChildren<CharacterCustomize>().EquipCostume(typeIndex,index);
+        CharacterCustomize[] customizes = GetComponentsInChildren<CharacterCustomize>();
+        
+        for(int i = 0; i < customizes.Length; i++)
+        {
+            customizes[i].EquipCostume(typeIndex, index);
+        }
     }
 
     public void ActiveWinLoseEffect(bool _isWinner)

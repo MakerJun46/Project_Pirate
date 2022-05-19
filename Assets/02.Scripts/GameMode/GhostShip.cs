@@ -72,7 +72,7 @@ public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (GM.GameStarted)
+        if (GM&&GM.GameStarted)
         {
             if (other.CompareTag("Player"))
             {

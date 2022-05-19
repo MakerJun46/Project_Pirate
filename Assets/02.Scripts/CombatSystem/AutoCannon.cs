@@ -188,7 +188,7 @@ public class AutoCannon : Cannon
     
     protected void LaunchTrajectory()
     {
-        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity,0, new object[] { 10.0f, 1.0f });
+        GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity,0, new object[] { 30.0f, 1.0f });
         ball = tmp.GetComponent<Rigidbody>();
         ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
 
@@ -211,7 +211,7 @@ public class AutoCannon : Cannon
     {
         for (int i = 0; i < 10; i++)
         {
-            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] {4.0f ,0.3f });
+            GameObject tmp = PhotonNetwork.Instantiate("CannonBall", this.transform.position, Quaternion.identity, 0, new object[] {8.0f ,0.3f });
             ball = tmp.GetComponent<Rigidbody>();
             ball.GetComponent<CannonBall>().gravity = Vector3.up * gravity;
 
@@ -229,11 +229,11 @@ public class AutoCannon : Cannon
 
     protected void LaunchStraight(int divided ,Vector3 _targetPos)
     {
-        float damage=8f;
+        float damage=20f;
         float scale=0.8f;
         if (divided > 1)
         {
-            damage = 2f;
+            damage = 10f;
             scale = 0.5f;
         }
         Vector3 spawnPos = this.transform.position;

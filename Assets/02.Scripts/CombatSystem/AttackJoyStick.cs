@@ -13,12 +13,6 @@ public class AttackJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
 
     private Vector2 joyStickInput;
 
-    private void Start()
-    {
-        joyStickBackground = GetComponent<Image>();
-        joyStick = transform.GetChild(0).GetComponent<Image>();
-    }
-
     public Vector2 GetJoyStickInput()
     {
         return joyStickInput;

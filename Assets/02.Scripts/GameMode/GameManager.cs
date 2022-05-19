@@ -173,13 +173,15 @@ public class GameManager : MonoBehaviour, IPunObservable
     /// <param name="_win"></param>
     public virtual void JudgeWinLose()
     {
-        WinPanel.SetActive(IsWinner);
-        LosePanel.SetActive(!IsWinner);
-        if (IsWinner)
-            OptionSettingManager.GetInstance().Play("Win", false);
-        else
-            OptionSettingManager.GetInstance().Play("Lose", false);
-
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            WinPanel.SetActive(IsWinner);
+            LosePanel.SetActive(!IsWinner);
+            if (IsWinner)
+                OptionSettingManager.GetInstance().Play("Win", false);
+            else
+                OptionSettingManager.GetInstance().Play("Lose", false);
+        }
         GameStarted = false;
 
         if (MyShip)

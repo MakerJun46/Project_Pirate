@@ -15,7 +15,6 @@ public class BattleRoyalGameManager : GameManager
 
 
     [Header("[Info UI]")]
-    bool PlayerInfo_UI_Opened = false;
     public GameObject PlayerInfo_UI_Panel;
     public GameObject Island_Landing_UI;
     public GameObject TreasureChest_UI_Panel;
@@ -28,18 +27,6 @@ public class BattleRoyalGameManager : GameManager
     public GameObject Landing_Button_Blur;
     public Text LandingEscape_Button_Text;
 
-    /*
-    [Header("[MiniMap]")]
-    [SerializeField] GameObject miniMap;
-    [SerializeField] protected GameObject WorldMap;
-    [SerializeField] MinimapCamera minimapCam;
-    [SerializeField] Material MyshipColor;
-    */
-
-    /* 벽 투명하게 보이도록
-    [SerializeField] Material WallMaterial;
-    [SerializeField] LayerMask WallThroughLayer;
-    */
     protected override void Start()
     {
         base.Start();
@@ -48,29 +35,17 @@ public class BattleRoyalGameManager : GameManager
         Resource_Wood_Count = 0;
         Resource_Rock_Count = 0;
         My_Sailor_Count = 0;
-
-        //getStartResource();
     }
 
     public override void StartGame()
     {
         base.StartGame();
-
     }
-
 
     public override void SetMyShip(Player_Controller_Ship _myShip,bool _SetMyShip)
     {
         base.SetMyShip(_myShip, _SetMyShip);
-
-        /* Minimap
-        if (_SetMyShip)
-        {
-            minimapCam.Player = _myShip.gameObject;
-        }
-        */
     }
-
     #endregion
 
     protected override void Update()
@@ -99,31 +74,6 @@ public class BattleRoyalGameManager : GameManager
                 FindObjectOfType<NetworkManager>().EndGame();
             }
         }
-
-        /* Minimap
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            miniMap.SetActive(WorldMap.activeInHierarchy);
-            WorldMap.SetActive(!WorldMap.activeInHierarchy);
-        }
-        */
-
-        /* See Through Wall  
-        if (MyShip)
-        {
-            var dir = Camera.main.transform.position - MyShip.transform.position;
-            var ray = new Ray(MyShip.transform.position, dir.normalized);
-            Debug.DrawRay(MyShip.transform.position, dir.normalized * 1000f, Color.blue);
-            //if (Physics.Raycast(ray, 10000f, WallThroughLayer))
-            //{
-            //    WallMaterial.SetFloat(Shader.PropertyToID("_Size"), 1);
-            // }
-            //else
-            //    WallMaterial.SetFloat(Shader.PropertyToID("_Size"), 0);
-            var view = Camera.main.WorldToViewportPoint(MyShip.transform.position);
-            WallMaterial.SetVector(Shader.PropertyToID("_Position"), view);
-        }*/
-
     }
 
     public override void JudgeWinLose()

@@ -564,11 +564,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-        Chat(newPlayer.NickName + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
+        //Chat(newPlayer.NickName + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
     }
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-        Chat(otherPlayer.NickName + "´ÔÀÌ ÅðÀåÇÏ¼Ì½À´Ï´Ù.");
+        //Chat(otherPlayer.NickName + "´ÔÀÌ ÅðÀåÇÏ¼Ì½À´Ï´Ù.");
     }
     #endregion
 
@@ -708,6 +708,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         cpPlayer["ProfileIndex"] = myProfileIndex.ToString();
         PhotonNetwork.LocalPlayer.SetCustomProperties(cpPlayer);
         print("Set Profile To : " + myProfileIndex);
+    }
+
+    public void OpenCustomizePanel()
+    {
+        CustomizeManager.GetInstance().costumePanel.SetActive(true);
     }
     #endregion
 

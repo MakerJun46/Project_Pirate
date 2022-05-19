@@ -229,6 +229,13 @@ public class FieldOfView : MonoBehaviourPun
             }
         }
 
+        for (int i = 1; i < vertexCount ; i++)
+        {
+            float angle = ((float)i / (vertexCount - 1)) * 90f * Mathf.Deg2Rad;
+            uvs[i] = new Vector2(Mathf.Cos(angle) , Mathf.Sin(angle));
+        }
+
+        /*
         for(int i=1;i< vertexCount / 2; i++)
         {
             uvs[i] = new Vector2( (i) / (vertexCount / 2f), 1f);
@@ -237,6 +244,7 @@ public class FieldOfView : MonoBehaviourPun
         {
             uvs[i] = new Vector2(1f,1- (((i+1)- (vertexCount / 2)) / (vertexCount / 2f)));
         }
+        */
 
         _viewMesh.Clear();
         _viewMesh.vertices = verticies;

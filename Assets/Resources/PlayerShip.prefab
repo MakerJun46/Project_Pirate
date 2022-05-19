@@ -449,10 +449,10 @@ MonoBehaviour:
   myName: 
   deadTime: 0
   upgradeIndex: 0
-  MoveSpeed: 15
-  MaxSpeed: 15
+  MoveSpeed: 17
+  MaxSpeed: 17
   turningSpeed: 1
-  boosterCoolTime: 5
+  boosterCoolTime: 10
   inputVel: {x: 0, y: 0, z: 0}
   additionalForce: {x: 0, y: 0, z: 0}
   goOrStop: 0
@@ -501,8 +501,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef1028d2f16d55a46b6ad1bf0540b70d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  maxHealth: 100
+  health: 200
+  maxHealth: 200
   shipObjects:
   - {fileID: 7203593810883141544}
   - {fileID: 4711351119795801941}
@@ -35497,7 +35497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6236070153126803610, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6517448137793477087, guid: 25dc96f7b7bc4cd45ab927d2521eca83, type: 3}
       propertyPath: m_IsActive
@@ -35806,7 +35806,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 739146280825180425, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1650148519745353390, guid: 12e7e5ffb3b6e4b4f8d83f87f74f5916, type: 3}
       propertyPath: m_RootOrder
