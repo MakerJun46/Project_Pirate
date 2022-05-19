@@ -41,6 +41,7 @@ public class Treasure_GameManager : GameManager
         {
             Debug.Log("SpawnStart");
             StartCoroutine(TreasureSpawner());
+            ControllerUI.SetActive(false);
         }
         else
         {
@@ -49,10 +50,11 @@ public class Treasure_GameManager : GameManager
             PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
 
             CombatManager.instance.EquipSpecialCannon(0, (int)SpecialCannon.SpecialCannonType.KnockBack);
-
-            VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform.GetChild(0).transform;
-            VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform.GetChild(0).transform;
         }
+
+        VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform.GetChild(0).transform;
+        VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform.GetChild(0).transform;
+
     }
 
     [PunRPC]
@@ -134,10 +136,9 @@ public class Treasure_GameManager : GameManager
     /// </summary>
     public void DropAllTreasure()
     {
-        Debug.Log("DropTreasure");
-
         List<int> TreasureScore = new List<int>();
-        int Count_tmp = Player_TreasureCount_Value;
+        int Count_tmp = Player_TreasureCount_Value / 2;
+        int DropValue = - Count_tmp;
 
         while (Count_tmp != 0)
         {
@@ -160,13 +161,14 @@ public class Treasure_GameManager : GameManager
 
             go.GetComponent<Treasure>().photonView.RPC("SetTreasureScore", RpcTarget.AllBuffered, TreasureScore[i]);
 
-            PV.RPC("TreasureMove", RpcTarget.AllBuffered, new object[] { go.GetPhotonView().ViewID, randomPos });
+            go.GetComponent<Treasure>().startMove(randomPos);
+            //PV.RPC("TreasureMove", RpcTarget.AllBuffered, new object[] { go.GetPhotonView().ViewID, randomPos });
         }
 
-        Player_TreasureCount_Value = 0;
-        Update_TreasureCount(MyShip.photonView.ViewID, 0);
+        Player_TreasureCount_Value /= 2;
+        Update_TreasureCount(MyShip.photonView.ViewID, Player_TreasureCount_Value);
 
-        RoomData.GetInstance().SetCurrGameScoreToZero(MyShip.photonView.OwnerActorNr);
+        RoomData.GetInstance().SetCurrScore(MyShip.photonView.OwnerActorNr, DropValue);
     }
 
     [PunRPC]

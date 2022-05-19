@@ -235,6 +235,8 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
                         if (GetComponent<PhotonView>().IsMine)
                             Invoke("DestroyShip", 2f);
+
+                        GameManager.GetInstance().ObserverDied(this.gameObject);
                     }
                 }
             }
@@ -426,14 +428,14 @@ public class Player_Combat_Ship : MonoBehaviourPun
             {
                 if (collision.transform.GetComponent<Player_Combat_Ship>())
                 {
-                    Vector3 impulse = collision.impulse;
-                    if (Vector3.Dot(collision.GetContact(0).normal, impulse) < 0f)
-                        impulse *= -1f;
-
                     if ((GameMode)RoomData.GetInstance().gameMode == GameMode.Treasure)
                     {
                         Treasure_GameManager.instance.DropAllTreasure();
                     }
+
+                    Vector3 impulse = collision.impulse;
+                    if (Vector3.Dot(collision.GetContact(0).normal, impulse) < 0f)
+                        impulse *= -1f;
 
                     collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
                     5.0f

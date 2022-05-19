@@ -19,6 +19,13 @@ public class RoomGameManager : GameManager
     [SerializeField] List<Transform> loserTRs;
     [SerializeField] GameObject rankObjs;
 
+    [SerializeField] GameObject PreviewObject_BattleRoyal;
+    [SerializeField] GameObject PreviewObject_GhostShip;
+    [SerializeField] GameObject PreviewObject_PassTheBomb;
+    [SerializeField] GameObject PreviewObject_Treasure;
+    [SerializeField] GameObject PreviewObject_HitTheTarget;
+    [SerializeField] GameObject PreviewObject_Survivor;
+
     int rank = 0;
 
     protected override void Start()
@@ -39,8 +46,24 @@ public class RoomGameManager : GameManager
         {
             GameModeTitleTxt.text = currRoomData.GetGameModeTitle();
             GameModeInfoTxt.text = currRoomData.GetCurrGameModeInfo();
+
+            GameMode gm = (GameMode)currRoomData.gameMode;
+
+            if (gm == GameMode.BattleRoyale)
+                PreviewObject_BattleRoyal.SetActive(true);
+            else if (gm == GameMode.GhostShip)
+                PreviewObject_GhostShip.SetActive(true);
+            else if (gm == GameMode.PassTheBomb)
+                PreviewObject_PassTheBomb.SetActive(true);
+            else if (gm == GameMode.Treasure)
+                PreviewObject_Treasure.SetActive(true);
+            else if (gm == GameMode.HitTheTarget)
+                PreviewObject_HitTheTarget.SetActive(true);
+            else if (gm == GameMode.Survivor)
+                PreviewObject_Survivor.SetActive(true);
         }
     }
+
     public override void StartGame()
     {
         base.StartGame();
