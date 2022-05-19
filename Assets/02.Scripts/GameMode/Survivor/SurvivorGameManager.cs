@@ -135,7 +135,7 @@ public class SurvivorGameManager : GameManager
             }
 
             scoreTime += Time.deltaTime;
-            if (scoreTime>=1 && PhotonNetwork.IsMasterClient == false && MyShip.GetComponent<Player_Combat_Ship>().health>0)
+            if (scoreTime>=1 && PhotonNetwork.IsMasterClient == false && MyShip && MyShip.GetComponent<Player_Combat_Ship>().health>0)
             {
                 scoreTime -= 1;
                 RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);

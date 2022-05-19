@@ -43,6 +43,7 @@ public class Player_Combat_Ship : MonoBehaviourPun
     CinemachineImpulseSource impulseSource;
 
     public bool isTagger { get; set; }
+    public bool hasBomb;
     [SerializeField] Material[] GhostMats;
 
     List<AttackInfo> AttackIDs = new List<AttackInfo>();
@@ -175,11 +176,12 @@ public class Player_Combat_Ship : MonoBehaviourPun
     {
         PassTheBombGameManager passTheBombGameManager = FindObjectOfType<PassTheBombGameManager>();
         // pass the bomb °ÔÀÓÀÎ °æ¿ì ºÎµúÈ÷¸é ÆøÅº ÀüÀÌ
-        if (passTheBombGameManager && passTheBombGameManager.hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
+        if (passTheBombGameManager && hasBomb && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
         {
             if ((int)param[2] != photonView.ViewID)
-                passTheBombGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
+                passTheBombGameManager.CrashOtherShip(this.gameObject, PhotonView.Find((int)param[2]).transform.gameObject);
         }
+
         GhostShipGameManager ghostShipGameManager = FindObjectOfType<GhostShipGameManager>();
         if (ghostShipGameManager && ghostShipGameManager.IsGhost && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
         {
@@ -424,11 +426,11 @@ public class Player_Combat_Ship : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (photonView.IsMine)
+        if (collision.transform.CompareTag("Player"))
         {
-            if (collision.transform.CompareTag("Player"))
+            if (collision.transform.GetComponent<Player_Combat_Ship>())
             {
-                if (collision.transform.GetComponent<Player_Combat_Ship>())
+                if (photonView.IsMine)
                 {
                     if ((GameMode)RoomData.GetInstance().gameMode == GameMode.Treasure)
                     {
@@ -440,17 +442,18 @@ public class Player_Combat_Ship : MonoBehaviourPun
                         impulse *= -1f;
 
                     collision.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
-                    5.0f
-                    ,-1*impulse*3f,photonView.ViewID
-                    });
+                        5.0f
+                        ,-1*impulse*3f,photonView.ViewID, collision.transform.GetComponent<PhotonView>().ViewID
+                        });
                     this.transform.GetComponent<PhotonView>().RPC("Attacked", RpcTarget.AllBuffered, new object[] {
-                    5.0f
-                    ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID
-                    });
+                        5.0f
+                        ,impulse*3f,collision.transform.GetComponent<PhotonView>().ViewID,photonView.ViewID
+                        });
 
                 }
             }
         }
+
     }
 
     private void OnDestroy()

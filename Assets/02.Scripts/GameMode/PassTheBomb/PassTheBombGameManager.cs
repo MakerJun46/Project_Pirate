@@ -9,7 +9,6 @@ public class PassTheBombGameManager : GameManager
 {
     float scoreTime;
 
-    public bool hasBomb;
     private PhotonView PV;
     public TextMeshProUGUI bomb_Second;
 
@@ -32,11 +31,14 @@ public class PassTheBombGameManager : GameManager
     }
     public override void JudgeWinLose()
     {
-        IsWinner = !hasBomb;
-        Debug.Log(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
-        if (hasBomb)
-            PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
-        hasBomb = false;
+        if (MyShip)
+        {
+            IsWinner = !MyShip.GetComponent<Player_Combat_Ship>().hasBomb;
+            Debug.Log(PhotonNetwork.LocalPlayer.NickName + " ÆøÅº ¼ÒÁö·Î ÆÐ¹è !!"); // game Over Scene
+            if (MyShip.GetComponent<Player_Combat_Ship>().hasBomb)
+                PV.RPC("Bomb_Explode", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+            MyShip.GetComponent<Player_Combat_Ship>().hasBomb = false;
+        }
         base.JudgeWinLose();
     }
 
@@ -116,7 +118,7 @@ public class PassTheBombGameManager : GameManager
                 FindObjectOfType<NetworkManager>().EndGame();
             }
 
-            if(hasBomb==false)
+            if(MyShip.GetComponent<Player_Combat_Ship>().hasBomb ==false)
                 scoreTime += Time.deltaTime;
             if (scoreTime >= 1 && PhotonNetwork.IsMasterClient==false)
             {
@@ -161,7 +163,7 @@ public class PassTheBombGameManager : GameManager
             print("FirstHasBomb :" + PlayerIndex + "  // " + MyShip.GetComponent<PhotonView>().OwnerActorNr);
             if (PlayerIndex == MyShip.GetComponent<PhotonView>().OwnerActorNr)
             {
-                hasBomb = true;
+                MyShip.GetComponent<Player_Combat_Ship>().hasBomb = true;
                 if (PV == null)
                 {
                     PV = GetComponent<PhotonView>();
@@ -171,7 +173,7 @@ public class PassTheBombGameManager : GameManager
             }
             else
             {
-                hasBomb = false;
+                MyShip.GetComponent<Player_Combat_Ship>().hasBomb = false;
             }
         }
     }
@@ -197,17 +199,17 @@ public class PassTheBombGameManager : GameManager
         PhotonView.Find(ViewID).gameObject.transform.Find("PassTheBomb").gameObject.SetActive(true);
     }
 
-    public void CrashOtherShip(GameObject CrashedShip)
+    public void CrashOtherShip(GameObject attacker,GameObject CrashedShip)
     {
-        if (MyShip.photonView.ViewID != CrashedShip.GetPhotonView().ViewID)
+        if (MyShip.photonView.ViewID != CrashedShip.GetPhotonView().ViewID && attacker.GetPhotonView().ViewID== MyShip.photonView.ViewID)
         {
-            print(MyShip.photonView.ViewID + " / " + CrashedShip.GetPhotonView().ViewID);
-            PV.RPC("change_has_bomb", RpcTarget.AllBuffered, new object[] { MyShip.photonView.ViewID, CrashedShip.GetPhotonView().ViewID });
+            print(MyShip.photonView.Owner.NickName + " with " + CrashedShip.GetPhotonView().Owner.NickName);
+            PV.RPC("change_has_bomb_new", RpcTarget.AllBuffered, new object[] { MyShip.photonView.ViewID , CrashedShip.GetPhotonView().ViewID });
         }
     }
 
     [PunRPC]
-    public void change_has_bomb(int FromViewID, int toViewID)
+    public void change_has_bomb_new(int FromViewID, int toViewID)
     {
         bool canAttack = false;
         if (AttackIDs.Find(s => s.id == FromViewID) == null && AttackIDs.Find(s => s.id == toViewID) == null)
@@ -218,23 +220,25 @@ public class PassTheBombGameManager : GameManager
         }
         if (canAttack)
         {
-            PV.RPC("Off_Second", RpcTarget.AllBuffered, FromViewID);
-            PV.RPC("On_Second", RpcTarget.AllBuffered, toViewID);
-
-            GameObject from_Ship = PhotonView.Find(FromViewID).gameObject;
-            GameObject to_Ship = PhotonView.Find(toViewID).gameObject;
-
-            if (from_Ship.GetPhotonView().IsMine)
-            {
-                hasBomb = false;
-            }
-            if (to_Ship.GetPhotonView().IsMine)
-            {
-                hasBomb = true;
-            }
-
-            Change_VC_Lookat(toViewID);
         }
+
+        PV.RPC("Off_Second", RpcTarget.AllBuffered, FromViewID);
+        PV.RPC("On_Second", RpcTarget.AllBuffered, toViewID);
+
+        GameObject from_Ship = PhotonView.Find(FromViewID).gameObject;
+        GameObject to_Ship = PhotonView.Find(toViewID).gameObject;
+        print("from " + PhotonView.Find(FromViewID).Owner.NickName + " to " + PhotonView.Find(toViewID).Owner.NickName);
+
+        if (from_Ship.GetPhotonView().IsMine)
+        {
+            MyShip.GetComponent<Player_Combat_Ship>().hasBomb = false;
+        }
+        if (to_Ship.GetPhotonView().IsMine)
+        {
+            MyShip.GetComponent<Player_Combat_Ship>().hasBomb = true;
+        }
+
+        Change_VC_Lookat(toViewID);
     }
 
 }
