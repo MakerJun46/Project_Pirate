@@ -33,6 +33,7 @@ public class RoomData : MonoBehaviourPunCallbacks
     private List<int> remainGameModeList = new List<int>();
 
     [SerializeField] int MaxPlayGameCount = 3;
+    [SerializeField] Sprite[] gameModeSprites;
 
     public List<Sprite> playerSprite;
 
@@ -91,6 +92,10 @@ public class RoomData : MonoBehaviourPunCallbacks
     public string GetCurrGameModeInfo()
     {
         return GetGameModeInfo((GameMode)gameMode);
+    }
+    public Sprite GetCurrGameModeSprite()
+    {
+        return gameModeSprites[gameMode% gameModeSprites.Length];
     }
     public string GetGameModeInfo(GameMode _gameMode)
     {

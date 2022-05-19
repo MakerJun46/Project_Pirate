@@ -150,7 +150,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator EndGameCoroutine()
     {
         GameManager.GetInstance().JudgeWinLose();
-
+        yield return new WaitForSeconds(2.5f);
         yield return StartCoroutine("LoadingFadeInOut", false);
 
         GameManager.GetInstance().EndGame();

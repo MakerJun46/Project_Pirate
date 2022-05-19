@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class RoomGameManager : GameManager
 {
     [SerializeField] GameObject GameInfoPanel;
+    [SerializeField] Image GameModeTitleImage;
     [SerializeField] Text GameModeTitleTxt;
     [SerializeField] Text GameModeInfoTxt;
 
@@ -45,22 +46,39 @@ public class RoomGameManager : GameManager
         if (currRoomData)
         {
             GameModeTitleTxt.text = currRoomData.GetGameModeTitle();
+            GameModeTitleImage.sprite = currRoomData.GetCurrGameModeSprite();
             GameModeInfoTxt.text = currRoomData.GetCurrGameModeInfo();
 
             GameMode gm = (GameMode)currRoomData.gameMode;
 
-            if (gm == GameMode.BattleRoyale)
-                PreviewObject_BattleRoyal.SetActive(true);
-            else if (gm == GameMode.GhostShip)
-                PreviewObject_GhostShip.SetActive(true);
-            else if (gm == GameMode.PassTheBomb)
-                PreviewObject_PassTheBomb.SetActive(true);
-            else if (gm == GameMode.Treasure)
-                PreviewObject_Treasure.SetActive(true);
-            else if (gm == GameMode.HitTheTarget)
-                PreviewObject_HitTheTarget.SetActive(true);
-            else if (gm == GameMode.Survivor)
-                PreviewObject_Survivor.SetActive(true);
+            PreviewObject_BattleRoyal.SetActive(false);
+            PreviewObject_GhostShip.SetActive(false);
+            PreviewObject_PassTheBomb.SetActive(false);
+            PreviewObject_Treasure.SetActive(false);
+            PreviewObject_HitTheTarget.SetActive(false);
+            PreviewObject_Survivor.SetActive(false);
+
+            switch (gm)
+            {
+                case GameMode.BattleRoyale:
+                    PreviewObject_BattleRoyal.SetActive(true);
+                    break;
+                case GameMode.GhostShip:
+                    PreviewObject_GhostShip.SetActive(true);
+                    break;
+                case GameMode.PassTheBomb:
+                    PreviewObject_PassTheBomb.SetActive(true);
+                    break;
+                case GameMode.Treasure:
+                    PreviewObject_Treasure.SetActive(true);
+                    break;
+                case GameMode.HitTheTarget:
+                    PreviewObject_HitTheTarget.SetActive(true);
+                    break;
+                case GameMode.Survivor:
+                    PreviewObject_Survivor.SetActive(true);
+                    break;
+            }
         }
     }
 
@@ -152,6 +170,8 @@ public class RoomGameManager : GameManager
 
                 WinPanel.SetActive(rank <= 0);
                 LosePanel.SetActive(rank > 0);
+                WinPanel.transform.GetChild(1).gameObject.SetActive(false);
+                LosePanel.transform.GetChild(1).gameObject.SetActive(false);
                 StartCoroutine("RankCoroutine", rank + 2);
             }
         }
