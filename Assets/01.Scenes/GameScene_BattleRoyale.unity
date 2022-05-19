@@ -627,7 +627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameStarted: 0
   PlayerCount: 0
-  maxPlayTime: 60
+  maxPlayTime: 120
   TimeText: {fileID: 7987070467203774677}
   boosterCoolTime: 5
   ControllerUI: {fileID: 1268300201}
@@ -3820,17 +3820,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08103036, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.08102628, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12589791, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.125893, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07559382, b: 0.25367194, a: 0}
+  shoreColor: {r: 0, g: 0.07559008, b: 0.25366676, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058251575, g: 0.112601094, b: 0.14004883, a: 1}
-  underwaterColor: {r: 0.23733693, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.058247678, g: 0.11259591, b: 0.14004391, a: 1}
+  underwaterColor: {r: 0.23733175, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3838,7 +3838,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09721992, g: 0.33906075, b: 0.3222953, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09721524, g: 0.33905557, b: 0.32229012, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -5318,11 +5318,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9473466
+      value: 0.9473467
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.18224357
+      value: 0.18224356
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.y
@@ -5330,7 +5330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.04973783
+      value: -0.04973782
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933475, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LookAt
@@ -5368,6 +5368,22 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
       objectReference: {fileID: 963194231}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].value
+      value: 
+      objectReference: {fileID: 963194231}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].value
+      value: 
+      objectReference: {fileID: 2006429881}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[6].value
+      value: 
+      objectReference: {fileID: 2006429880}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[7].value
+      value: 
+      objectReference: {fileID: 2006429879}
     - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_ExposedReferences.m_References.Array.data[3].second
       value: 
@@ -5422,6 +5438,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+--- !u!95 &2006429879 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6399154192909488641, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+  m_PrefabInstance: {fileID: 2006429878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2006429880 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6399154193795092070, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+  m_PrefabInstance: {fileID: 2006429878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2006429881 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6399154193429995753, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+  m_PrefabInstance: {fileID: 2006429878}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2023307376
 GameObject:
   m_ObjectHideFlags: 0

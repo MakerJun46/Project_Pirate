@@ -1907,7 +1907,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712173840}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -250, y: -1.7, z: -250}
+  m_LocalPosition: {x: -250, y: -5, z: -250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2693,6 +2693,22 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 963194231}
     - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].value
+      value: 
+      objectReference: {fileID: 963194231}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].value
+      value: 
+      objectReference: {fileID: 1068227615}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[6].value
+      value: 
+      objectReference: {fileID: 1068227614}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+      propertyPath: m_SceneBindings.Array.data[7].value
+      value: 
+      objectReference: {fileID: 1068227613}
+    - target: {fileID: 6399154193550193193, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_ExposedReferences.m_References.Array.data[3].second
       value: 
       objectReference: {fileID: 1315902773}
@@ -2746,6 +2762,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+--- !u!95 &1068227613 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6399154192909488641, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+  m_PrefabInstance: {fileID: 1068227612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1068227614 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6399154193795092070, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+  m_PrefabInstance: {fileID: 1068227612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1068227615 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6399154193429995753, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
+  m_PrefabInstance: {fileID: 1068227612}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1141429681
 GameObject:
   m_ObjectHideFlags: 0
@@ -3903,17 +3934,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.08103015, g: 0.5484824, b: 0.6981132, a: 1}
+  deepColor: {r: 0.081026725, g: 0.5484824, b: 0.6981132, a: 1}
   colorDepth: 9.74
-  horizonColor: {r: 0.12589768, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12589353, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 1.5
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.07559366, b: 0.2536717, a: 0}
+  shoreColor: {r: 0, g: 0.0755905, b: 0.25366732, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05825138, g: 0.11260084, b: 0.1400486, a: 1}
-  underwaterColor: {r: 0.23733667, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.058248103, g: 0.112596475, b: 0.14004445, a: 1}
+  underwaterColor: {r: 0.23733231, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -3921,7 +3952,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.0972197, g: 0.33906052, b: 0.32229504, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09721575, g: 0.33905613, b: 0.3222907, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0

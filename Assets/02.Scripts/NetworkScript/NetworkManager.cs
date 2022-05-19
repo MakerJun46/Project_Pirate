@@ -16,7 +16,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject LoadingPanel;
     GameObject CountDownPanel;
     GameObject CountDownPanel_End;
-    GameObject FadeScreenPanel;
+    CanvasGroup FadeScreenGroup;
 
     [SerializeField] int WaitTimeForCount;
     [SerializeField] int CountDownTime=3;
@@ -32,8 +32,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PV = GetComponent<PhotonView>();
         CountDownPanel = LoadingPanel.transform.GetChild(0).gameObject;
         CountDownPanel_End = LoadingPanel.transform.GetChild(1).gameObject;
-        FadeScreenPanel = LoadingPanel.transform.GetChild(2).gameObject;
-        FadeScreenPanel.GetComponent<Image>().color = Color.black;
+        FadeScreenGroup = LoadingPanel.transform.GetChild(2).GetComponent<CanvasGroup>();
+        FadeScreenGroup.alpha = 1;
 
 
         if (RoomData.GetInstance() != null)
@@ -201,29 +201,37 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         while (true)
         {
-            Color c = FadeScreenPanel.GetComponent<Image>().color;
+            float c = FadeScreenGroup.alpha;
             if (FadeIn)
             {
-                c.a -= Time.deltaTime;
-                if (c.a <= 0)
+                c -= Time.deltaTime;
+                if (c <= 0)
                 {
-                    c.a = 0;
+                    c = 0;
                     break;
                 }
             }
             else
             {
-                c.a += Time.deltaTime;
-                if (c.a >= 1)
+                c += Time.deltaTime;
+                if (c >= 1)
                 {
-                    c.a = 1;
+                    c = 1;
                     break;
                 }
             }
 
-            FadeScreenPanel.GetComponent<Image>().color = c;
+            FadeScreenGroup.alpha = c;
 
             yield return new WaitForSeconds(Time.deltaTime);
+        }
+        if (FadeIn)
+        {
+            FadeScreenGroup.alpha = 0;
+        }
+        else
+        {
+            FadeScreenGroup.alpha = 1;
         }
     }
 

@@ -11,6 +11,7 @@ public class RoomGameManager : GameManager
     [SerializeField] Text GameModeTitleTxt;
     [SerializeField] Text GameModeInfoTxt;
 
+    [SerializeField] Transform topPlayerListPanel;
     [SerializeField] Transform PlayerListPanel;
     [SerializeField] Transform PlayerListContainer;
 
@@ -66,6 +67,7 @@ public class RoomGameManager : GameManager
 
         if (currRoomData.PlayGameCountOvered() || ForceQuit)
         {
+            topPlayerListPanel.gameObject.SetActive(false);
             PlayerListPanel.gameObject.SetActive(true);
             ControllerUI.gameObject.SetActive(false);
             GameInfoPanel.SetActive(false);
@@ -127,7 +129,7 @@ public class RoomGameManager : GameManager
 
                 WinPanel.SetActive(rank <= 0);
                 LosePanel.SetActive(rank > 0);
-                StartCoroutine("RankCoroutine", rank);
+                StartCoroutine("RankCoroutine", rank + 2);
             }
         }
     }
