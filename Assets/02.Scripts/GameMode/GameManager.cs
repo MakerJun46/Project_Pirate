@@ -7,6 +7,7 @@ using Cinemachine;
 using System.Linq;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour, IPunObservable
 {
@@ -111,8 +112,11 @@ public class GameManager : MonoBehaviour, IPunObservable
         {
             Color[] c = { Color.red, Color.blue, Color.green, Color.black };
 
-            UI_Observer.SetActive(true);
-            ObserverCameras_Parent.SetActive(true);
+            if(SceneManager.GetActiveScene().name != "GameScene_Treasure")
+            {
+                UI_Observer.SetActive(true);
+                ObserverCameras_Parent.SetActive(true);
+            }
 
             for (int i = 0; i < AllShip.Count; i++)
             {
@@ -120,6 +124,7 @@ public class GameManager : MonoBehaviour, IPunObservable
                 {
                     ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().LookAt = AllShip[i].gameObject.transform;
                     ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>().Follow = AllShip[i].gameObject.transform;
+
                     AllShip[i].gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().color = c[i];
 
                     AllShip[i].gameObject.GetComponent<Player_UI_Ship>().VCam = ObserverCameras_Parent.transform.GetChild(i).GetComponent<CinemachineVirtualCamera>();
@@ -127,7 +132,7 @@ public class GameManager : MonoBehaviour, IPunObservable
 
                     BestPlayerContent.transform.GetChild(i).GetChild(0).GetComponent<Text>().color = c[i];
                 }
-            }            
+            }
 
             RefreshPlayeScore(true);
         }
@@ -391,6 +396,17 @@ public class GameManager : MonoBehaviour, IPunObservable
         }
         if (foundedIndex >= 0)
             SetMyShip(AllShip[foundedIndex], false);
+    }
+
+    public void ObserverDied(GameObject go)
+    {
+        for (int i = 0; i < AllShip.Count; i++)
+        {
+            if (AllShip[i] != null && AllShip[i].gameObject == go)
+            {
+                UI_Observer.transform.GetChild(2).GetChild(i).gameObject.SetActive(true);
+            }
+        }
     }
     #endregion
 

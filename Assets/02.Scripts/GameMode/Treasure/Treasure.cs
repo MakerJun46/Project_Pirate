@@ -6,6 +6,7 @@ using Photon.Pun;
 public class Treasure : MonoBehaviourPunCallbacks
 {
     public bool isPickable;
+    public bool isPreView;
     public float rotateSpeed;
     public int Score;
 
@@ -34,7 +35,7 @@ public class Treasure : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if(isPickable)
+        if(isPickable || isPreView)
         {
             transform.Rotate(new Vector3(0, rotateSpeed * Time.deltaTime, 0));
         }
