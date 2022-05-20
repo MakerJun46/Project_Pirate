@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Underwater
   m_Shader: {fileID: -6465566751694194690, guid: c364b2f6d92c3d94fb154cb63a77dd9c, type: 3}
-  m_ShaderKeywords: INTERSECTION_EFFECTS_ON REFRACTION_ON SURFACE_FOAM_ON WATER_LIGHTING_ON
+  m_ShaderKeywords: FOAM_SHADOWS_ON INTERSECTION_EFFECTS_ON REFRACTION_ON WATER_LIGHTING_ON
     WORLD_SPACE_UV_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -37,7 +37,7 @@ Material:
     - _RefractionStrength: 0.014
     m_Colors:
     - _NormalsMovement: {r: 0.035, g: 0.22, b: 0, a: 0}
-    - _WaterColorUnderwater: {r: 0.32940343, g: 0.41175634, b: 0.57647055, a: 0.222}
+    - _WaterColorUnderwater: {r: 0.3294026, g: 0.41175553, b: 0.57647055, a: 0}
     - _WaveDirections: {r: 0, g: 0.64, b: 1, a: 0.33}
     - _WaveVisuals: {r: 0.132, g: 7.9, b: 1.38, a: 0}
   m_BuildTextureStacks: []

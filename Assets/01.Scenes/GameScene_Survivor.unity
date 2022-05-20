@@ -14,10 +14,10 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
-  m_FogColor: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 0.4413047, g: 0.44301718, b: 0.4433962, a: 1}
   m_FogMode: 2
-  m_FogDensity: 0.011
+  m_FogDensity: 0.0025
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -2656,11 +2656,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.21909802
+      value: 0.219098
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933472, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.041600402
+      value: -0.041600406
       objectReference: {fileID: 0}
     - target: {fileID: 6399154193064933475, guid: 5f4247b16edeb084b8670d011dacf4c2, type: 3}
       propertyPath: m_LookAt
@@ -4325,7 +4325,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d337fc5282607644ebb2f3575513265e, type: 2}
+  - {fileID: 2100000, guid: c7a860b137f835a4c895d7d464112be3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4447,17 +4447,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.12689292, g: 0.47221953, b: 0.8679245, a: 1}
+  deepColor: {r: 0.12688503, g: 0.47221953, b: 0.8679245, a: 1}
   colorDepth: 20
-  horizonColor: {r: 0.12585986, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12585196, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 2.26
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.075564764, b: 0.2536318, a: 0}
+  shoreColor: {r: 0, g: 0.07555873, b: 0.25362346, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05822146, g: 0.11256095, b: 0.14001077, a: 1}
-  underwaterColor: {r: 0.23729676, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05821521, g: 0.112552606, b: 0.14000288, a: 1}
+  underwaterColor: {r: 0.23728845, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4465,7 +4465,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09718367, g: 0.3390206, b: 0.32225516, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09717614, g: 0.33901227, b: 0.32224682, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
