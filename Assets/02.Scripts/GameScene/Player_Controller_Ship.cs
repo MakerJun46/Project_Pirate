@@ -20,7 +20,6 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
     public float MoveSpeed;
     public float MaxSpeed;
     public float turningSpeed;
-    [SerializeField] float boosterCoolTime=5f;
 
     public Vector3 inputVel;
     public Vector3 additionalForce;
@@ -246,7 +245,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
             GoOrStop_Button();
         if(ShipBoosterCoroutine!=null)
             StopCoroutine(ShipBoosterCoroutine);
-        ShipBoosterCoroutine= StartCoroutine(Ship_Booster(3.0f, 15f, 1f));
+        ShipBoosterCoroutine= StartCoroutine(Ship_Booster(3.0f, 15f, 2f));
     }
 
     public IEnumerator Ship_Booster(float sec, float addMoveSpeed, float addTrunSpeed)
@@ -263,7 +262,7 @@ public class Player_Controller_Ship : MonoBehaviourPunCallbacks, IPunObservable
 
         combatComponent.myShipObjects.GetComponent<MotionTrail>().EndMotionTrail();
 
-        yield return new WaitForSecondsRealtime(boosterCoolTime); // cooltime
+        yield return new WaitForSecondsRealtime(GameManager.GetInstance().boosterCoolTime); // cooltime
         isBoosting = false;
     }
 

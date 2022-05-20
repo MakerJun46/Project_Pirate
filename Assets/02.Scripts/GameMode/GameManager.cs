@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour, IPunObservable
 
     [SerializeField] protected TextMeshProUGUI TimeText;
 
-    [SerializeField] float boosterCoolTime = 5f;
+    [SerializeField] public float boosterCoolTime = 10f;
 
     public float steeringRot { get; set; }
     private Image SteeringImg;

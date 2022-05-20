@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -137,7 +138,7 @@ public class Treasure_GameManager : GameManager
     public void DropAllTreasure()
     {
         List<int> TreasureScore = new List<int>();
-        int Count_tmp = Player_TreasureCount_Value / 2;
+        int Count_tmp = (int)(Player_TreasureCount_Value / 2);
         int DropValue = - Count_tmp;
 
         while (Count_tmp != 0)
