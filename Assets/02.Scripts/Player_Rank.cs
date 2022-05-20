@@ -10,6 +10,8 @@ public class Player_Rank : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallba
     [SerializeField] Text playerNameText;
     [SerializeField] Text playerScoreText;
 
+    [SerializeField] GameObject ropeObj;
+
     int rank = -1;
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -25,10 +27,12 @@ public class Player_Rank : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallba
         if (rank <= 0)
         {
             anim.SetTrigger("Win");
+            ropeObj.SetActive(false);
         }
         else
         {
             anim.SetTrigger("Lose");
+            ropeObj.SetActive(true);
         }
 
     }

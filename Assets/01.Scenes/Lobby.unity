@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.735849, g: 0.6907262, b: 0.6907262, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1.83
+  m_AmbientIntensity: 1.72
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.6697223, g: 0.7662667, b: 0.8113208, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 94d852a7748a347489661febea5eafc6, type: 2}
@@ -1565,10 +1565,10 @@ RectTransform:
   m_Father: {fileID: 1536462749}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 293, y: 112}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &226091544
 MonoBehaviour:
@@ -1590,8 +1590,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2400313087636421002, guid: c32577b59cca71544aa50682181d6c02, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: -7847973670819615247, guid: 849e1edce5a78244081b655e482d4c28, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -5205,7 +5205,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2}
+  m_AnchoredPosition: {x: 0, y: 20}
   m_SizeDelta: {x: 0, y: 150}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &920382691
@@ -7095,7 +7095,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 60}
+  m_SizeDelta: {x: 0, y: 95}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1278183640
 GameObject:
@@ -7343,7 +7343,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10, y: 0}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1292752605
@@ -7359,14 +7359,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.21568629, g: 0.19215688, b: 0.21568629, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 936345f7fc3934efa8119a8700d904c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7422,8 +7422,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -500, y: -640}
-  m_SizeDelta: {x: -1600, y: 100}
+  m_AnchoredPosition: {x: -498.5, y: -640}
+  m_SizeDelta: {x: -1607, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1296925617
 MonoBehaviour:
@@ -8211,24 +8211,36 @@ MonoBehaviour:
   SetNickNameInputField: {fileID: 96349003}
   TipTxt: {fileID: 1865838572}
   tipTextStrings:
-  - "- \uC5B4\uC11C\uC624\uC138\uC694 \uBC94\uBBA4\uB2E4 \uC0BC\uAC01\uC9C0\uB300\uC5D0
-    -"
-  - "- \uC878\uC804\uC740 \uD5D8\uB09C\uD55C \uC815\uAE00\uC785\uB2C8\uB2E4. -"
-  - "- \uC878\uC804\uC740 \uBC94\uBBA4\uB2E4\uC0BC\uAC01\uC9C0\uB300\uC785\uB2C8\uB2E4
-    -"
-  - "- \uC878\uC804\uC740 \uD56D\uD574\uC785\uB2C8\uB2E4 -"
-  - "- \uAF2D \uC878\uC804 \uD558\uC138\uC694~ ^^ -"
-  - "- \uBC30\uD2C0\uB85C\uC584\uC740 \uC801\uC5D0\uAC8C \uD53C\uD574\uB97C \uC904
-    \uB54C\uB9C8\uB2E4 \uC2A4\uCF54\uC5B4\uB97C \uC5BB\uC2B5\uB2C8\uB2E4. -"
-  - "- \uC720\uB839 \uD53C\uD558\uAE30\uB294 \uC801\uC744 \uB04C\uC5B4\uB2F9\uAE38
+  - "\" \uC5B4\uC11C\uC624\uC138\uC694! \uBC94\uBBA4\uB2E4 \uC0BC\uAC01\uC9C0\uB300\uC5D0
+    \""
+  - "\" \uC878\uC804\uC740 \uD5D8\uB09C\uD55C \uC815\uAE00\uC785\uB2C8\uB2E4,, \""
+  - "\" \uCE90\uB9AD\uD130\uB97C \uCEE4\uC2A4\uD130\uB9C8\uC774\uC9D5 \uD560 \uC218
+    \uC788\uC2B5\uB2C8\uB2E4. \""
+  - "\" \uC878\uC804\uC740 \uBC94\uBBA4\uB2E4\uC0BC\uAC01\uC9C0\uB300\uC785\uB2C8\uB2E4
+    \""
+  - "\" \uCE90\uB9AD\uD130\uAC00 \uD638\uB791\uC774\uC778 \uC774\uC720\uB294 98\uB144
+    \uD638\uB791\uC774\uB760\uB77C \uADF8\uB807\uC2B5\uB2C8\uB2E4. \""
+  - "\" \uC878\uC804\uC740 \uD56D\uD574\uC785\uB2C8\uB2E4 \""
+  - "\" \uBB34\uBD84\uBCC4\uD55C \uCE6D\uCC2C\uC740 \uC791\uAC00\uB97C \uAE30\uBD84\uC88B\uAC8C
+    \uB9CC\uB4E4\uC5B4\uC90D\uB2C8\uB2E4. \""
+  - "\" \uAF2D \uC878\uC804 \uD558\uC138\uC694~ ^^ \""
+  - "\" \uBC30\uD2C0\uB85C\uC584\uC740 \uC801\uC5D0\uAC8C \uD53C\uD574\uB97C \uC904
+    \uB54C\uB9C8\uB2E4 \uC2A4\uCF54\uC5B4\uB97C \uC5BB\uC2B5\uB2C8\uB2E4. \""
+  - "\" \uC720\uB839 \uD53C\uD558\uAE30\uB294 \uC801\uC744 \uB04C\uC5B4\uB2F9\uAE38
     \uC218 \uC788\uB294 \uAC08\uACE0\uB9AC\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.
-    -"
-  - "- \uBCF4\uBB3C\uCC3E\uAE30\uB294 \uC801\uC744 \uBC00\uCCD0\uB0BC \uC218 \uC788\uB294
-    \uB300\uD3EC\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.-"
-  - "- \uD3ED\uD0C4 \uB3CC\uB9AC\uAE30\uB294 \uC801\uC744 \uB04C\uC5B4\uB2F9\uAE38
-    \uC218 \uC788\uB294 \uAC08\uACE0\uB9AC\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
-  - "- \uC67C\uCABD \uD558\uB2E8 \uBD80\uC2A4\uD130 \uBC84\uD2BC\uC744 \uB204\uB974\uBA74
-    \uBD80\uC2A4\uD130\uB97C \uC0AC\uC6A9\uD569\uB2C8\uB2E4. - "
+    \""
+  - "\" \uBCF4\uBB3C\uCC3E\uAE30\uB294 \uC801\uC744 \uBC00\uCCD0\uB0BC \uC218 \uC788\uB294
+    \uB300\uD3EC\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \""
+  - "\" \uD3ED\uD0C4 \uB3CC\uB9AC\uAE30\uB294 \uC801\uC744 \uB04C\uC5B4\uB2F9\uAE38
+    \uC218 \uC788\uB294 \uAC08\uACE0\uB9AC\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.
+    \""
+  - "\" \uC67C\uCABD \uD558\uB2E8 \uBD80\uC2A4\uD130 \uBC84\uD2BC\uC744 \uB204\uB974\uBA74
+    \uBD80\uC2A4\uD130\uB97C \uC0AC\uC6A9\uD569\uB2C8\uB2E4. \""
+  - "\" \uC6B0\uCE21 \uD558\uB2E8 \uB2FB \uBC84\uD2BC\uC744 \uB20C\uB7EC\uC11C \uC774\uB3D9/\uC815\uC9C0
+    \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \""
+  - "\" \uAE30\uBCF8 \uB300\uD3EC\uB294 \uC790\uB3D9\uC73C\uB85C \uACF5\uACA9\uD558\uC9C0\uB9CC
+    \uD2B9\uC218 \uB300\uD3EC\uB294 \uC870\uC900\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.
+    \""
   playerNameExamples:
   - "\uC0B0\uC911\uD638\uAC78"
   - "\uD574\uC911\uD638\uAC78"
@@ -12000,7 +12012,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 5.5, y: -6.8999023}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1942497995
@@ -12441,7 +12453,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -14.6, y: 0}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1969368615
@@ -12457,14 +12469,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2509804, g: 0.22352943, b: 0.23529413, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 936345f7fc3934efa8119a8700d904c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13856,17 +13868,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0.62767, g: 0.83284384, b: 0.8584906, a: 0.5176471}
-  deepColor: {r: 0.19378632, g: 0.35934263, b: 0.6132076, a: 1}
+  deepColor: {r: 0.19378147, g: 0.3593375, b: 0.6132076, a: 1}
   colorDepth: 24.67
   horizonColor: {r: 0, g: 1, b: 1, a: 1}
   horizonDistance: 2
   shoreFade: -6.06
-  shoreColor: {r: 0, g: 0.29532763, b: 1, a: 0}
+  shoreColor: {r: 0, g: 0.2953225, b: 1, a: 0}
   shoreStrength: 0
   shoreBlend: 5.11
   shoreDepth: 0.59
-  waveColor: {r: 0.058392867, g: 0.11278949, b: 0.1402274, a: 1}
-  underwaterColor: {r: 0.051810496, g: 0.3392749, b: 1, a: 1}
+  waveColor: {r: 0.058389023, g: 0.11278436, b: 0.14022255, a: 1}
+  underwaterColor: {r: 0.05180666, g: 0.3392698, b: 1, a: 1}
   underwaterColorStrength: 1
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -13874,7 +13886,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0, g: 0.32421866, b: 0.33008334, a: 0.3137255}
+  surfaceFoamColor1: {r: 0, g: 0.32421353, b: 0.3300782, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
