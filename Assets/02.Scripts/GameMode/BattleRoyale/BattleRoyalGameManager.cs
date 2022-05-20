@@ -86,7 +86,7 @@ public class BattleRoyalGameManager : GameManager
                 survivedShips.Add(AllShip[i]);
             }
         }
-        // 마지막에 플레이어가 살아있다면 승리
+        // 마지막에 플레이어가 살아남으면 승리
         IsWinner = survivedShips.Contains(MyShip) && MyShip!=null;
 
         if(IsWinner)

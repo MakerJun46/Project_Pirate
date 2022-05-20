@@ -229,15 +229,18 @@ public class PassTheBombGameManager : GameManager
         GameObject to_Ship = PhotonView.Find(toViewID).gameObject;
         print("from " + PhotonView.Find(FromViewID).Owner.NickName + " to " + PhotonView.Find(toViewID).Owner.NickName);
 
+        /*
         if (from_Ship.GetPhotonView().IsMine)
         {
-            MyShip.GetComponent<Player_Combat_Ship>().hasBomb = false;
         }
         if (to_Ship.GetPhotonView().IsMine)
         {
-            MyShip.GetComponent<Player_Combat_Ship>().hasBomb = true;
+            to_Ship.GetComponent<Player_Combat_Ship>().hasBomb = true;
         }
+        */
 
+        from_Ship.GetComponent<Player_Combat_Ship>().hasBomb = false;
+        to_Ship.GetComponent<Player_Combat_Ship>().hasBomb = true;
         Change_VC_Lookat(toViewID);
     }
 

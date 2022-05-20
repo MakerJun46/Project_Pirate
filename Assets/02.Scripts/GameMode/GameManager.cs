@@ -147,13 +147,27 @@ public class GameManager : MonoBehaviour, IPunObservable
     #endregion
 
     #region GameFlow
+    [SerializeField] Transform mainCanvas;
+    [SerializeField] GameObject RecognitionTagPrefab;
     public virtual void StartGame()
     {
         GameStarted = true;
         IsWinner = false;
         ControllerUI.SetActive(true);
 
-        CombatManager.instance.InitialLevelUp();
+        CombatManager.instance.InitialCombatManager();
+
+        if (MyShip)
+            MyShip.GoOrStop_Button();
+
+        Player_Controller_Ship[] enemyShips = FindObjectsOfType<Player_Controller_Ship>();
+
+        for (int i=0;i< enemyShips.Length;i++)
+        {
+            RecognitionTag tmpRecogTag  = Instantiate(RecognitionTagPrefab, mainCanvas).GetComponent<RecognitionTag>();
+            tmpRecogTag.transform.SetAsFirstSibling();
+            tmpRecogTag.myEnemy = enemyShips[i];
+        }
     }
 
     public virtual void EndGame()

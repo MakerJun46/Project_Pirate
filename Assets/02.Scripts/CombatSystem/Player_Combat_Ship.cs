@@ -183,10 +183,10 @@ public class Player_Combat_Ship : MonoBehaviourPun
         }
 
         GhostShipGameManager ghostShipGameManager = FindObjectOfType<GhostShipGameManager>();
-        if (ghostShipGameManager && ghostShipGameManager.IsGhost && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
+        if (ghostShipGameManager && isTagger && param.Length > 2 && PhotonView.Find((int)param[2]).transform.GetComponent<Player_Combat_Ship>())
         {
             if ((int)param[2] != photonView.ViewID)
-                ghostShipGameManager.CrashOtherShip(PhotonView.Find((int)param[2]).transform.gameObject);
+                ghostShipGameManager.CrashOtherShip(this.gameObject, PhotonView.Find((int)param[2]).transform.gameObject);
         }
 
         bool canAttack = false;

@@ -76,7 +76,7 @@ public class GhostShip : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (other.CompareTag("Player"))
             {
-                FindObjectOfType<GhostShipGameManager>().GetComponent<Photon.Pun.PhotonView>().RPC("Infection", RpcTarget.AllBuffered, other.GetComponent<PhotonView>().OwnerActorNr);
+                FindObjectOfType<GhostShipGameManager>().GetComponent<Photon.Pun.PhotonView>().RPC("Infection", RpcTarget.AllBuffered, other.GetComponent<PhotonView>().ViewID);
             }
         }
     }

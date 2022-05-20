@@ -8,7 +8,6 @@ public class GhostShipGameManager : GameManager
 {
     float scoreTime;
 
-    public bool IsGhost;
     private PhotonView PV;
 
     public GameObject LoadingPanel;
@@ -33,11 +32,14 @@ public class GhostShipGameManager : GameManager
     }
     public override void JudgeWinLose()
     {
-        IsWinner = !IsGhost;
-        Debug.Log(PhotonNetwork.LocalPlayer.NickName + " 유령이 되어 패배 !!"); // game Over Scene
-        if (IsGhost)
-            PV.RPC("GhostDIedRPC", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
-        IsGhost = false;
+        if (MyShip)
+        {
+            IsWinner = !MyShip.GetComponent<Player_Combat_Ship>().isTagger;
+            Debug.Log(PhotonNetwork.LocalPlayer.NickName + " 유령이 되어 패배 !!"); // game Over Scene
+            if (MyShip.GetComponent<Player_Combat_Ship>().isTagger)
+                PV.RPC("GhostDIedRPC", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+            MyShip.GetComponent<Player_Combat_Ship>().isTagger = false;
+        }
         base.JudgeWinLose();
     }
 
@@ -120,7 +122,7 @@ public class GhostShipGameManager : GameManager
                 }
             }
 
-            if (IsGhost == false)
+            if (MyShip.GetComponent<Player_Combat_Ship>().isTagger == false)
                 scoreTime += Time.deltaTime;
             if (scoreTime >= 1 && PhotonNetwork.IsMasterClient == false)
             {
@@ -146,24 +148,12 @@ public class GhostShipGameManager : GameManager
 
 
     [PunRPC]
-    public void Infection(int PlayerIndex)
+    public void Infection(int PlayerId)
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            if (PlayerIndex == MyShip.GetComponent<PhotonView>().OwnerActorNr)
-            {
-                IsGhost = true;
-                if (PV == null)
-                {
-                    PV = GetComponent<PhotonView>();
-                }
-                PV.RPC("On_Second", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
-            }
-            else
-            {
-                IsGhost = false;
-            }
-        }
+        PV.RPC("On_Second", RpcTarget.AllBuffered, PlayerId);
+        GameObject to_Ship = PhotonView.Find(PlayerId).gameObject;
+
+        to_Ship.GetComponent<Player_Combat_Ship>().isTagger = true;
     }
 
 
@@ -174,10 +164,11 @@ public class GhostShipGameManager : GameManager
         PhotonView.Find(ViewID).gameObject.GetComponent<Player_Combat_Ship>().SetToGhost();
     }
 
-    public void CrashOtherShip(GameObject CrashedShip)
+    public void CrashOtherShip(GameObject attacker, GameObject CrashedShip)
     {
-        if (MyShip.photonView.ViewID != CrashedShip.GetPhotonView().ViewID)
+        if (MyShip.photonView.ViewID != CrashedShip.GetPhotonView().ViewID && attacker.GetPhotonView().ViewID == MyShip.photonView.ViewID)
         {
+            print(MyShip.photonView.Owner.NickName + " with " + CrashedShip.GetPhotonView().Owner.NickName);
             PV.RPC("GhostInfectionRPC", RpcTarget.AllBuffered, new object[] { MyShip.photonView.ViewID, CrashedShip.GetPhotonView().ViewID });
         }
     }
@@ -185,23 +176,13 @@ public class GhostShipGameManager : GameManager
     [PunRPC]
     public void GhostInfectionRPC(int FromViewID, int toViewID)
     {
-        bool canAttack = false;
-        if (AttackIDs.Find(s => s.id == FromViewID) == null && AttackIDs.Find(s => s.id == toViewID) == null)
-        {
-            AttackIDs.Add(new AttackInfo(FromViewID, 0.2f));
-            AttackIDs.Add(new AttackInfo(toViewID, 0.2f));
-            canAttack = true;
-        }
-        if (canAttack)
-        {
-            if(FromViewID>0)
-                RoomData.GetInstance().SetCurrScore(PhotonView.Find(FromViewID).GetComponent<PhotonView>().Owner.ActorNumber, 100);
-            PV.RPC("On_Second", RpcTarget.AllBuffered, toViewID);
+        if (FromViewID > 0)
+            RoomData.GetInstance().SetCurrScore(PhotonView.Find(FromViewID).GetComponent<PhotonView>().Owner.ActorNumber, 100);
+        PV.RPC("On_Second", RpcTarget.AllBuffered, toViewID);
 
-            GameObject to_Ship = PhotonView.Find(toViewID).gameObject;
+        GameObject to_Ship = PhotonView.Find(toViewID).gameObject;
 
-            if (to_Ship.GetPhotonView().IsMine)
-                IsGhost = true;
-        }
+        //if (to_Ship.GetPhotonView().IsMine)
+        to_Ship.GetComponent<Player_Combat_Ship>().isTagger = true;
     }
 }

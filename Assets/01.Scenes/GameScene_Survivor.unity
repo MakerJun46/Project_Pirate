@@ -541,6 +541,8 @@ MonoBehaviour:
   ObserverModePanel: {fileID: 1566715599}
   UI_Observer: {fileID: 477278910}
   ObserverCameras_Parent: {fileID: 1296322491}
+  mainCanvas: {fileID: 1241222759}
+  RecognitionTagPrefab: {fileID: 6694296912514199134, guid: 5bc0280b265437c46a34faec24d3915a, type: 3}
   VC_Winner: {fileID: 1384850262}
   waveData: {fileID: 11400000, guid: 78c9749e1567cdb4780f4fa9919b1913, type: 2}
 --- !u!114 &161101654
@@ -4445,17 +4447,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
   shallowColor: {r: 0, g: 0.8784313, b: 1, a: 0.5176471}
-  deepColor: {r: 0.12689495, g: 0.47221953, b: 0.8679245, a: 1}
+  deepColor: {r: 0.12689292, g: 0.47221953, b: 0.8679245, a: 1}
   colorDepth: 20
-  horizonColor: {r: 0.12586188, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12585986, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 2.26
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.0755663, b: 0.25363395, a: 0}
+  shoreColor: {r: 0, g: 0.075564764, b: 0.2536318, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.05822306, g: 0.11256308, b: 0.1400128, a: 1}
-  underwaterColor: {r: 0.2372989, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.05822146, g: 0.11256095, b: 0.14001077, a: 1}
+  underwaterColor: {r: 0.23729676, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -4463,7 +4465,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.097185604, g: 0.33902276, b: 0.32225728, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09718367, g: 0.3390206, b: 0.32225516, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0

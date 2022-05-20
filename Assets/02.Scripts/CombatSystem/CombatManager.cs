@@ -26,7 +26,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] GameObject LevelUpPanel;
     [SerializeField] Sprite[] levelUpSprites;
 
-    public void InitialLevelUp()
+    public void InitialCombatManager()
     {
         if(initialLevelUpCount>0)
             SetLevelUpCount(initialLevelUpCount);
