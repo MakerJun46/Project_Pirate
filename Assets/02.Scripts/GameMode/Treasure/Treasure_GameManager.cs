@@ -139,8 +139,8 @@ public class Treasure_GameManager : GameManager
     {
         List<int> TreasureScore = new List<int>();
         int Count_tmp = (int)(Player_TreasureCount_Value / 2);
-        int DropValue = - Count_tmp;
-
+        int DropValue = Count_tmp;
+        Count_tmp /= 5;
         while (Count_tmp != 0)
         {
             for(int i = Random.Range(1, 4); i >= 1; i--)
@@ -169,7 +169,7 @@ public class Treasure_GameManager : GameManager
         Player_TreasureCount_Value /= 2;
         Update_TreasureCount(MyShip.photonView.ViewID, Player_TreasureCount_Value);
 
-        RoomData.GetInstance().SetCurrScore(MyShip.photonView.OwnerActorNr, DropValue);
+        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetCurrScoreRPC",RpcTarget.AllBuffered, new object[] { MyShip.photonView.OwnerActorNr, DropValue });
     }
 
     [PunRPC]

@@ -35,7 +35,8 @@ public class RoomGameManager : GameManager
 
         Invoke("ActiveResultPanel", 1f);
         
-        rank = RoomData.GetInstance().GetPlayerFinalRank(PhotonNetwork.LocalPlayer.ActorNumber);
+        if(RoomData.GetInstance())
+            rank = RoomData.GetInstance().GetPlayerFinalRank(PhotonNetwork.LocalPlayer.ActorNumber);
 
     }
     protected override void Update()
@@ -49,35 +50,38 @@ public class RoomGameManager : GameManager
             GameModeTitleImage.sprite = currRoomData.GetCurrGameModeSprite();
             GameModeInfoTxt.text = currRoomData.GetCurrGameModeInfo();
 
-            GameMode gm = (GameMode)currRoomData.gameMode;
-
-            PreviewObject_BattleRoyal.SetActive(false);
-            PreviewObject_GhostShip.SetActive(false);
-            PreviewObject_PassTheBomb.SetActive(false);
-            PreviewObject_Treasure.SetActive(false);
-            PreviewObject_HitTheTarget.SetActive(false);
-            PreviewObject_Survivor.SetActive(false);
-
-            switch (gm)
+            if (!PhotonNetwork.IsMasterClient)
             {
-                case GameMode.BattleRoyale:
-                    PreviewObject_BattleRoyal.SetActive(true);
-                    break;
-                case GameMode.GhostShip:
-                    PreviewObject_GhostShip.SetActive(true);
-                    break;
-                case GameMode.PassTheBomb:
-                    PreviewObject_PassTheBomb.SetActive(true);
-                    break;
-                case GameMode.Treasure:
-                    PreviewObject_Treasure.SetActive(true);
-                    break;
-                case GameMode.HitTheTarget:
-                    PreviewObject_HitTheTarget.SetActive(true);
-                    break;
-                case GameMode.Survivor:
-                    PreviewObject_Survivor.SetActive(true);
-                    break;
+                GameMode gm = (GameMode)currRoomData.gameMode;
+
+                PreviewObject_BattleRoyal.SetActive(false);
+                PreviewObject_GhostShip.SetActive(false);
+                PreviewObject_PassTheBomb.SetActive(false);
+                PreviewObject_Treasure.SetActive(false);
+                PreviewObject_HitTheTarget.SetActive(false);
+                PreviewObject_Survivor.SetActive(false);
+
+                switch (gm)
+                {
+                    case GameMode.BattleRoyale:
+                        PreviewObject_BattleRoyal.SetActive(true);
+                        break;
+                    case GameMode.GhostShip:
+                        PreviewObject_GhostShip.SetActive(true);
+                        break;
+                    case GameMode.PassTheBomb:
+                        PreviewObject_PassTheBomb.SetActive(true);
+                        break;
+                    case GameMode.Treasure:
+                        PreviewObject_Treasure.SetActive(true);
+                        break;
+                    case GameMode.HitTheTarget:
+                        PreviewObject_HitTheTarget.SetActive(true);
+                        break;
+                    case GameMode.Survivor:
+                        PreviewObject_Survivor.SetActive(true);
+                        break;
+                }
             }
         }
     }

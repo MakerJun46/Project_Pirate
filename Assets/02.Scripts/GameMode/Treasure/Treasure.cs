@@ -30,7 +30,7 @@ public class Treasure : MonoBehaviourPunCallbacks
 
         MR.material = GemMats[randScore - 1];
 
-        Score = randScore;
+        Score = randScore*5;
     }
 
     private void Update()
