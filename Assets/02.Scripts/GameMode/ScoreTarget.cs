@@ -8,6 +8,7 @@ public class ScoreTarget : MonoBehaviourPunCallbacks
     [SerializeField] float score = 1;
     Animator anim;
 
+    bool attacked = false;
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -16,9 +17,10 @@ public class ScoreTarget : MonoBehaviourPunCallbacks
     [PunRPC]
     public void Attacked(object[] param)
     {
-        if (param.Length > 2)
+        if (param.Length > 2 && attacked==false)
         {
-            if(PhotonNetwork.IsMasterClient)
+            attacked = true;
+            if (PhotonNetwork.IsMasterClient)
                 RoomData.GetInstance().SetCurrScore(PhotonView.Find((int)param[2]).OwnerActorNr, score);
             FloatingTextController.CreateFloatingText("+ "+score.ToString(), this.transform, Color.yellow);
             StartCoroutine("DestroyCoroutine"); 

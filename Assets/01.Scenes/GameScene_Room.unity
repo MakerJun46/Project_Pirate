@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.574
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19277257, g: 0.40103838, b: 0.512897, a: 0.574}
+  m_IndirectSpecularColor: {r: 0.1929591, g: 0.40223637, b: 0.5120426, a: 0.574}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5392,6 +5392,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8266847031295343343, guid: 5df762af2aafe524ba8790dfba969aca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5df762af2aafe524ba8790dfba969aca, type: 3}
 --- !u!1 &1513582803 stripped
@@ -5608,18 +5612,18 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   colorGradientTexture: {fileID: 0}
-  shallowColor: {r: 0.24158809, g: 0.5337364, b: 0.57547164, a: 0.5176471}
+  shallowColor: {r: 0.24158746, g: 0.5337364, b: 0.57547164, a: 0.5176471}
   deepColor: {r: 0, g: 0.4656086, b: 1, a: 1}
   colorDepth: 20
-  horizonColor: {r: 0.12580454, g: 1, b: 0.66924626, a: 0.7647059}
+  horizonColor: {r: 0.12580395, g: 1, b: 0.66924626, a: 0.7647059}
   horizonDistance: 2.26
   shoreFade: 0.446
-  shoreColor: {r: 0, g: 0.075522475, b: 0.25357345, a: 0}
+  shoreColor: {r: 0, g: 0.07552203, b: 0.25357282, a: 0}
   shoreStrength: 0
   shoreBlend: 0.291
   shoreDepth: 1.407
-  waveColor: {r: 0.058177695, g: 0.11250258, b: 0.13995546, a: 1}
-  underwaterColor: {r: 0.2372384, g: 0.7544341, b: 0.8301887, a: 0}
+  waveColor: {r: 0.058177218, g: 0.11250196, b: 0.13995486, a: 1}
+  underwaterColor: {r: 0.23723778, g: 0.7544341, b: 0.8301887, a: 0}
   underwaterColorStrength: 0
   underwaterRefractionStrength: -0.61
   surfaceFoamTexture: {fileID: 2800000, guid: 35e1f17b4d842fb4cb8be75e5c65fc80, type: 3}
@@ -5627,7 +5631,7 @@ MonoBehaviour:
   surfaceFoamCutoff: 0.002
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
-  surfaceFoamColor1: {r: 0.09713086, g: 0.33896226, b: 0.32219678, a: 0.3137255}
+  surfaceFoamColor1: {r: 0.09713029, g: 0.33896163, b: 0.32219616, a: 0.3137255}
   surfaceFoamColor2: {r: 0, g: 1, b: 0.62352943, a: 0.050980393}
   surfaceFoamMovement: {x: 0, y: 0.18, z: 0, w: 1.211}
   surfaceFoamDirection1: 0
@@ -6236,10 +6240,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429489569884, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7783536429526852573, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7783536429666175763, guid: d3609870f0bdbda4892943f779db7e7d, type: 3}
@@ -12065,8 +12065,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -145, y: 0}
-  m_SizeDelta: {x: -310, y: -10}
+  m_AnchoredPosition: {x: -125, y: 0}
+  m_SizeDelta: {x: -350, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2119235443
 MonoBehaviour:
@@ -12095,13 +12095,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 48
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'PLAYER '
+  m_Text: '1st : PLAYER '
 --- !u!222 &2119235444
 CanvasRenderer:
   m_ObjectHideFlags: 0

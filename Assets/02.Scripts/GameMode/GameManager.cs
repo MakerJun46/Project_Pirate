@@ -162,12 +162,14 @@ public class GameManager : MonoBehaviour, IPunObservable
 
         Player_Controller_Ship[] enemyShips = FindObjectsOfType<Player_Controller_Ship>();
 
+        /*
         for (int i=0;i< enemyShips.Length;i++)
         {
             RecognitionTag tmpRecogTag  = Instantiate(RecognitionTagPrefab, mainCanvas).GetComponent<RecognitionTag>();
             tmpRecogTag.transform.SetAsFirstSibling();
             tmpRecogTag.myEnemy = enemyShips[i];
         }
+        */
     }
 
     public virtual void EndGame()
