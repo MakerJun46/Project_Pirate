@@ -183,7 +183,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                         readyCount++;
                 }
                 ReadyCountText.text = "Ready : " + readyCount + " / " + PhotonNetwork.CurrentRoom.PlayerCount;
-                if (readyCount >= 3 && readyCount >= PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
+                if (readyCount >= (GameManager.isObserver ? 3 : 2) && readyCount >= PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient) // 최소 2인 플레이
                 {
                     GetComponent<PhotonView>().RPC("StartGame", RpcTarget.All);
                 }

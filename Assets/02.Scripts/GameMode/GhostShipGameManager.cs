@@ -67,7 +67,14 @@ public class GhostShipGameManager : GameManager
             }
         }
 
-        if (PhotonNetwork.IsMasterClient==false)
+        if (GameManager.isObserver)
+        {
+            if (PhotonNetwork.IsMasterClient == false)
+            {
+                InitializeGame(); // Observer모드인 경우 masterClient(옵저버)제외하고 initializeGame()
+            }
+        }
+        else
         {
             InitializeGame();
         }
@@ -124,7 +131,13 @@ public class GhostShipGameManager : GameManager
 
             if (MyShip.GetComponent<Player_Combat_Ship>().isTagger == false)
                 scoreTime += Time.deltaTime;
-            if (scoreTime >= 1 && PhotonNetwork.IsMasterClient == false)
+
+            if (scoreTime >= 1 && !GameManager.isObserver) // 옵저버가 없는 경우
+            {
+                scoreTime -= 1;
+                RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);
+            }
+            else if (scoreTime >= 1 && (GameManager.isObserver && PhotonNetwork.IsMasterClient == false)) // 옵저버가 있는 경우 옵저버 제외하고 점수 추가
             {
                 scoreTime -= 1;
                 RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);
@@ -135,7 +148,7 @@ public class GhostShipGameManager : GameManager
     [PunRPC]
     public void GhostDIedRPC(int ViewID)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if ((GameManager.isObserver && PhotonNetwork.IsMasterClient))
         {
             UI_Observer.transform.GetChild(0).gameObject.SetActive(false);
             UI_Observer.transform.GetChild(1).gameObject.SetActive(false);

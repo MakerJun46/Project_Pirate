@@ -12,6 +12,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour, IPunObservable
 {
     protected static GameManager instance;
+
+    public static bool isObserver = false;
+
     public static GameManager GetInstance()
     {
         if (instance == null)
@@ -101,18 +104,18 @@ public class GameManager : MonoBehaviour, IPunObservable
         GoStopBtns[0].GetComponent<Button>().onClick.AddListener(GoOrStop_Button);
         GoStopBtns[1].GetComponent<Button>().onClick.AddListener(GoOrStop_Button);
         ControllerUI.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(Booster_Button);
-        
+
         SteeringImg = ControllerUI.transform.GetChild(4).GetComponent<Image>();
     }
 
 
     public virtual void SetObserverCamera()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (isObserver && PhotonNetwork.IsMasterClient)
         {
             Color[] c = { Color.red, Color.blue, Color.green, Color.black };
 
-            if(SceneManager.GetActiveScene().name != "GameScene_Treasure")
+            if (SceneManager.GetActiveScene().name != "GameScene_Treasure")
             {
                 UI_Observer.SetActive(true);
                 ObserverCameras_Parent.SetActive(true);
@@ -162,14 +165,12 @@ public class GameManager : MonoBehaviour, IPunObservable
 
         Player_Controller_Ship[] enemyShips = FindObjectsOfType<Player_Controller_Ship>();
 
-        /*
-        for (int i=0;i< enemyShips.Length;i++)
+        for (int i = 0; i < enemyShips.Length; i++)
         {
-            RecognitionTag tmpRecogTag  = Instantiate(RecognitionTagPrefab, mainCanvas).GetComponent<RecognitionTag>();
+            RecognitionTag tmpRecogTag = Instantiate(RecognitionTagPrefab, mainCanvas).GetComponent<RecognitionTag>();
             tmpRecogTag.transform.SetAsFirstSibling();
             tmpRecogTag.myEnemy = enemyShips[i];
         }
-        */
     }
 
     public virtual void EndGame()
@@ -194,7 +195,7 @@ public class GameManager : MonoBehaviour, IPunObservable
     /// <param name="_win"></param>
     public virtual void JudgeWinLose()
     {
-        if (PhotonNetwork.IsMasterClient == false)
+        if ((isObserver && PhotonNetwork.IsMasterClient == false) || !isObserver) // 옵저버가 있는 경우 옵저버 제외하고 실행, 아닌 경우 모두 실행
         {
             WinPanel.SetActive(IsWinner);
             LosePanel.SetActive(!IsWinner);
@@ -316,7 +317,7 @@ public class GameManager : MonoBehaviour, IPunObservable
 
         float fillAmount = 1f;
 
-        while(fillAmount > 0)
+        while (fillAmount > 0)
         {
             fillAmount -= 1f / boosterCoolTime * Time.deltaTime;
 
@@ -339,30 +340,43 @@ public class GameManager : MonoBehaviour, IPunObservable
     #region Best Player
     public void ActiveScoreEffect(int _actorID, int _score)
     {
-        for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
+        for (int i = (isObserver ? 1 : 0); i < PhotonNetwork.PlayerList.Length; i++)
         {
-            if(PhotonNetwork.PlayerList[i].ActorNumber == _actorID){
-                if(bestPlayerListBox.Count> i - 1)
-                    bestPlayerListBox[i - 1].AddScoreEffect(_score);
+            if (PhotonNetwork.PlayerList[i].ActorNumber == _actorID)
+            {
+                if (isObserver)
+                {
+                    if (bestPlayerListBox.Count > i - 1)
+                        bestPlayerListBox[i - 1].AddScoreEffect(_score);
+                }
+                else
+                {
+                    if (bestPlayerListBox.Count > i)
+                        bestPlayerListBox[i].AddScoreEffect(_score);
+                }
             }
         }
     }
     public virtual void RefreshPlayeScore(bool isFinal)
     {
         int maxScore = -1;
-        for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
+        for (int i = (isObserver ? 1 : 0); i < PhotonNetwork.PlayerList.Length; i++)
         {
-            int score=0;
+            int score = 0;
             if (isFinal)
                 score = RoomData.GetInstance().FinalScores[PhotonNetwork.PlayerList[i].ActorNumber];
             else
                 score = RoomData.GetInstance().currGameScores[PhotonNetwork.PlayerList[i].ActorNumber];
 
-            bestPlayerListBox[i-1].SetScore(score);
+
+            if (isObserver)
+                bestPlayerListBox[i - 1].SetScore(score);
+            else
+                bestPlayerListBox[i].SetScore(score);
 
             string tmp = (string)PhotonNetwork.PlayerList[i].CustomProperties["ProfileIndex"];
             int profileIndex = int.Parse(tmp);
-            bestPlayerListBox[i-1].SetInfoUI(profileIndex, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
+            bestPlayerListBox[i].SetInfoUI(profileIndex, PhotonNetwork.PlayerList[i].NickName + "  점수 :" + score);
 
             if (maxScore < score)
             {
@@ -373,7 +387,7 @@ public class GameManager : MonoBehaviour, IPunObservable
         for (int i = 0; i < bestPlayerListBox.Count; i++)
         {
 
-            bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore && bestPlayerListBox[i].score>0);
+            bestPlayerListBox[i].SetWinnerImg(bestPlayerListBox[i].score >= maxScore && bestPlayerListBox[i].score > 0);
 
             /*
             if (PhotonNetwork.PlayerList.Length-1 <= i)

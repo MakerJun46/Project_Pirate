@@ -50,7 +50,7 @@ public class RoomGameManager : GameManager
             GameModeTitleImage.sprite = currRoomData.GetCurrGameModeSprite();
             GameModeInfoTxt.text = currRoomData.GetCurrGameModeInfo();
 
-            if (!PhotonNetwork.IsMasterClient)
+            if ((GameManager.isObserver && !PhotonNetwork.IsMasterClient) || !GameManager.isObserver)
             {
                 GameMode gm = (GameMode)currRoomData.gameMode;
 
@@ -150,7 +150,7 @@ public class RoomGameManager : GameManager
 
                 for (int j = 0; j < PhotonNetwork.PlayerList.Length; j++)
                 {
-                    if (PhotonNetwork.PlayerList[j].IsMasterClient)
+                    if (GameManager.isObserver && PhotonNetwork.PlayerList[j].IsMasterClient)
                         continue;
                     if (bestPlayerNumbers[i] == PhotonNetwork.PlayerList[j].ActorNumber)
                     {
@@ -168,7 +168,7 @@ public class RoomGameManager : GameManager
             }
 
             FindObjectOfType<NetworkManager>().StartFadeInOut(true);
-            if (PhotonNetwork.IsMasterClient==false)
+            if ((GameManager.isObserver && PhotonNetwork.IsMasterClient==false) || !GameManager.isObserver)
             {
                 // 자신의 등수 알아내기
 
