@@ -63,6 +63,9 @@ public class PassTheBombGameManager : GameManager
             int randomPlayerIndex = AllShip[Random.Range(0, AllShip.Count)].GetComponent<PhotonView>().OwnerActorNr;
             print("BOMB : " + randomPlayerIndex);
             PV.RPC("FirstHasBomb", RpcTarget.AllBuffered, randomPlayerIndex);
+
+            if (!GameManager.isObserver) // 옵저버가 아니면 얘도 게임 실행
+                InitializeGame();
         }
         else
         {
@@ -120,7 +123,12 @@ public class PassTheBombGameManager : GameManager
 
             if(MyShip.GetComponent<Player_Combat_Ship>().hasBomb ==false)
                 scoreTime += Time.deltaTime;
-            if (scoreTime >= 1 && PhotonNetwork.IsMasterClient==false)
+            if (scoreTime >= 1 && !GameManager.isObserver) // 옵저버가 없는 경우
+            {
+                scoreTime -= 1;
+                RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);
+            }
+            else if(scoreTime >= 1 && (GameManager.isObserver && PhotonNetwork.IsMasterClient == false)) // 옵저버가 있는 경우 옵저버 제외하고 점수 추가
             {
                 scoreTime -= 1;
                 RoomData.GetInstance().SetCurrScore(PhotonNetwork.LocalPlayer.ActorNumber, 10);
@@ -131,7 +139,7 @@ public class PassTheBombGameManager : GameManager
     [PunRPC]
     public void Bomb_Explode(int ViewID)
     {
-        if(PhotonNetwork.IsMasterClient)
+        if(GameManager.isObserver && PhotonNetwork.IsMasterClient)
         {
             UI_Observer.transform.GetChild(0).gameObject.SetActive(false);
             UI_Observer.transform.GetChild(1).gameObject.SetActive(false);

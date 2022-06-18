@@ -61,6 +61,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(StartGameCoroutine());
+
+            if(!GameManager.isObserver && !characterGened)
+            {
+                characterGened = true;
+                Invoke("Spawn", 2f);
+            }
         }
         else if(characterGened==false)
         {
@@ -76,7 +82,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             yield return new WaitForEndOfFrame();
             // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
             // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
-            if (GameManager.GetInstance().BestPlayerCount + 1 >= PhotonNetwork.CurrentRoom.PlayerCount)
+            // 옵저버 제외할 때 BestPlayerCount + 1 이던거 지워줬음
+            if (GameManager.GetInstance().BestPlayerCount >= PhotonNetwork.CurrentRoom.PlayerCount)
             {
                 break;
             }
@@ -116,12 +123,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         GameManager.GetInstance().InitializePlayerScore(SceneManager.GetActiveScene().name == "GameScene_Room");
         yield return new WaitForSeconds(1f);
 
-        // 모든 플레이어가 씬에 로드되어야 while문 벗어나서 게임 시작
-        // 옵저버를 제외한 모든 플레이어 수이기 떄문에 - 1 해줬음
-        if (PhotonNetwork.IsMasterClient && SceneManager.GetActiveScene().name == "GameScene_Room")
+
+        if ((GameManager.isObserver && PhotonNetwork.IsMasterClient) && SceneManager.GetActiveScene().name == "GameScene_Room")
         {
             GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
         }
+
 
         yield return StartCoroutine("LoadingFadeInOut", true);
 
@@ -130,7 +137,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (FindObjectOfType<CutSceneManager>())
             yield return new WaitForSeconds(Mathf.Max(0f, (float)FindObjectOfType<CutSceneManager>().director.duration - 6f));
 
-        if (PhotonNetwork.IsMasterClient)
+        if (GameManager.isObserver && PhotonNetwork.IsMasterClient)
         {
             GameManager.GetInstance().SetObserverCamera();  // 옵저버 세팅 실행
         }

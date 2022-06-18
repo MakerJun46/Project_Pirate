@@ -42,7 +42,9 @@ public class Treasure_GameManager : GameManager
         {
             Debug.Log("SpawnStart");
             StartCoroutine(TreasureSpawner());
-            ControllerUI.SetActive(false);
+
+            if (GameManager.isObserver)
+                ControllerUI.SetActive(false);
         }
         else
         {
@@ -140,17 +142,17 @@ public class Treasure_GameManager : GameManager
         List<int> TreasureScore = new List<int>();
         int Count_tmp = (int)(Player_TreasureCount_Value / 2);
         int DropValue = Count_tmp;
+
         Count_tmp /= 5;
+
         while (Count_tmp != 0)
         {
-            for(int i = Random.Range(1, 4); i >= 1; i--)
+            int i = (int)Random.Range(1, 4);
+
+            if (Count_tmp % i == 0)
             {
-                if(Count_tmp % i == 0)
-                {
-                    Count_tmp -= i;
-                    TreasureScore.Add(i);
-                    break;
-                }
+                Count_tmp -= i;
+                TreasureScore.Add(i);
             }
         }
 
@@ -169,7 +171,7 @@ public class Treasure_GameManager : GameManager
         Player_TreasureCount_Value /= 2;
         Update_TreasureCount(MyShip.photonView.ViewID, Player_TreasureCount_Value);
 
-        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetCurrScoreRPC",RpcTarget.AllBuffered, new object[] { MyShip.photonView.OwnerActorNr, DropValue });
+        RoomData.GetInstance().GetComponent<PhotonView>().RPC("SetCurrScoreRPC", RpcTarget.AllBuffered, new object[] { MyShip.photonView.OwnerActorNr, DropValue });
     }
 
     [PunRPC]
@@ -204,7 +206,7 @@ public class Treasure_GameManager : GameManager
 
         int TreasureSpawnCount = 0;
 
-        while(currPlayTime < maxPlayTime)
+        while (currPlayTime < maxPlayTime)
         {
             if (TreasureSpawnCount % 20 == 0)
             {
@@ -223,7 +225,7 @@ public class Treasure_GameManager : GameManager
 
             TreasureSpawnCount++;
 
-            yield return new WaitForSeconds(treasureSpawn_Time); 
+            yield return new WaitForSeconds(treasureSpawn_Time);
         }
     }
 }

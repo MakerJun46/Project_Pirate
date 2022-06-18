@@ -60,7 +60,7 @@ public class CombatManager : MonoBehaviour
     {
         LevelUpPanel.SetActive(true);
 
-        if (PhotonNetwork.IsMasterClient == false)
+        if ((GameManager.isObserver && PhotonNetwork.IsMasterClient == false) || !GameManager.isObserver) // 옵저버 있는 경우 옵저버 제외, 아닌 경우 모두
         {
             List<Vector2> randomRoullet = new List<Vector2>();
             Player_Combat_Ship currShip = myShip;
