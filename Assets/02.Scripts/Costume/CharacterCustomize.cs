@@ -9,6 +9,11 @@ public class CharacterCustomize : MonoBehaviourPun
     [SerializeField] GameObject[] ClothObj;
     [SerializeField] GameObject[] SkinObjs;
 
+    private void Start()
+    {
+        GetComponentInChildren<Animator>().SetFloat("IdleAnim", Random.Range(0, 2));
+    }
+
     [PunRPC]
     public void EquipCostume(int typeIndex, int index)
     {
