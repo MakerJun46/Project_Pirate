@@ -42,18 +42,12 @@ public class Treasure_GameManager : GameManager
         {
             Debug.Log("SpawnStart");
             StartCoroutine(TreasureSpawner());
-
-            if (GameManager.isObserver)
-                ControllerUI.SetActive(false);
         }
-        else
-        {
-            Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
+        Player_TreasureCount_Text = MyShip.transform.Find("Canvas").transform.Find("Count_Text").GetComponent<TextMeshProUGUI>();
 
-            PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
+        PV.RPC("UI_initialize", RpcTarget.AllBuffered, MyShip.photonView.ViewID);
 
-            CombatManager.instance.EquipSpecialCannon(0, (int)SpecialCannon.SpecialCannonType.KnockBack);
-        }
+        CombatManager.instance.EquipSpecialCannon(0, (int)SpecialCannon.SpecialCannonType.KnockBack);
 
         VC_Top.GetComponent<CinemachineVirtualCamera>().LookAt = TreasureSpawner_Object.transform.GetChild(0).transform;
         VC_Top.GetComponent<CinemachineVirtualCamera>().Follow = TreasureSpawner_Object.transform.GetChild(0).transform;

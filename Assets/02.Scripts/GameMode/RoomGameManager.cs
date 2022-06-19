@@ -42,7 +42,7 @@ public class RoomGameManager : GameManager
     protected override void Update()
     {
         base.Update();
-        
+
         RoomData currRoomData = RoomData.GetInstance();
         if (currRoomData)
         {
@@ -219,4 +219,5 @@ public class RoomGameManager : GameManager
         else
             return 1;
     }
+
 }
